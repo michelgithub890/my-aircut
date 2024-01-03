@@ -43,7 +43,7 @@ const HomePro = () => {
         <div>
 
             {profil?.map(pro => (
-                <div className="flex justify-end items-center gap-3 shadow-lg p-3" key={pro.id}>
+                <div className="flex justify-end items-center gap-3 border-b-2 p-3" key={pro.id}>
                     <div>{pro.company}</div>
                     <IoMdLogOut size={"2.2rem"} onClick={signOut} />
                 </div>

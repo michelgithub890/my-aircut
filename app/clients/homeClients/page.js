@@ -54,7 +54,7 @@ const HomeClients = () => {
 
                     <div>booking to come</div>
 
-                    <div className="flex justify-end items-center gap-3 shadow-lg p-3">
+                    <div className="flex justify-end items-center gap-3 border-b-2 p-3">
                         {session?.user.email ? 
                             <>
                                 {users?.filter(user => user.email === session?.user.email).map(user => (
