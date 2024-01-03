@@ -6,9 +6,6 @@ import { useRouter } from 'next/navigation'
 // DATE PICKER 
 import DatePicker, { registerLocale } from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css" 
-import dayjs from 'dayjs'
-import 'dayjs/locale/fr'
-dayjs.locale('fr')
 // FIREBASE
 import useFirebase from '@/firebase/useFirebase'
 // DATE FNS 
@@ -28,8 +25,6 @@ const UpdateStaffDaysOff = () => {
     },[])
 
     const _handleSaveDates = () => {
-        // Obtenez la date actuelle sans heure
-        const today = dayjs().startOf('day')
 
         const startInt = new Date(valueStart).getTime()
         const endInt = new Date(valueEnd).getTime()
@@ -38,18 +33,8 @@ const UpdateStaffDaysOff = () => {
     
         // Vérifiez si les dates de début et de fin sont définies
         if (valueStart && valueEnd) {
-            // Convertissez les valeurs en objets dayjs pour les comparer
-            const startDate = dayjs(valueStart)
-            const endDate = dayjs(valueEnd)
-    
-            // Vérifiez si la date de début est antérieure à aujourd'hui
-            if (startDate.isBefore(today)) { 
-                alert("La date de début ne doit pas être antérieure à aujourd'hui.")
-                return
-            }
-    
             // Vérifiez si la date de fin est égale ou postérieure à la date de début
-            if (startDate.isAfter(endDate)) {
+            if (startInt > endInt) {
                 alert("La date de fin doit être égale ou postérieure à la date de début.")
                 return
             }
@@ -85,8 +70,9 @@ const UpdateStaffDaysOff = () => {
                     locale="fr"
                     selected={valueStart}
                     onChange={(date) => setValueStart(date)}
+                    minDate={new Date()}
                 />
-            </div>
+            </div> 
 
             <div className="flex justify-center mt-4">
                 <DatePicker
@@ -95,8 +81,9 @@ const UpdateStaffDaysOff = () => {
                     locale="fr"
                     selected={valueEnd}
                     onChange={(date) => setValueEnd(date)}
+                    minDate={new Date()}
                 />
-            </div>
+            </div> 
 
             <div className="flex justify-center">
                 <button className="myButton" onClick={_handleSaveDates}>Enregistrer</button>

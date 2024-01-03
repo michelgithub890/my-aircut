@@ -79,7 +79,7 @@ const HomePro = () => {
             </div>  
 
             <div className="flex justify-around mt-4">  
-                <Link href={"/pro/servicesPro"} className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
+                <Link href={"/pro/servicesPro"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
                     <div className="flex justify-center">
                         <Image src={imageServices} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                     </div>
@@ -105,7 +105,7 @@ const HomePro = () => {
                     <div className='text-center' style={{fontSize:12}}>PARAMÈTRES</div>
                 </Link>
                 {/* QR CODE */}
-                <Link href={"/pro/siteWeb"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/siteWeb"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
                     <div className="flex justify-center">
                         <Image src={imageSiteWeb} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                     </div>
@@ -114,13 +114,13 @@ const HomePro = () => {
             </div>
 
             <div className="flex justify-around mt-4">
-                <Link href={"/pro/forfaitPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/forfaitPro"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
                     <div className="flex justify-center">
                         <Image src={imageForfait} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                     </div>
                     <div className='text-center' style={{fontSize:12}}>ABONNEMENT</div>
                 </Link>
-                <Link href={"/pro/staffPro"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/staffPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
                     <div className="flex justify-center"> 
                         <Image src={imageStaff} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                     </div>

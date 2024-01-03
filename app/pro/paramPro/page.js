@@ -10,8 +10,6 @@ import imageDelete from '@/public/assets/images/delete.png'
 // NEXT 
 import Image from 'next/image'
 import Link from 'next/link' 
-// DATE 
-import { compareAsc, parse } from 'date-fns'
 
 const ParamPro = () => {
     const { _readDaysOff, daysOff, _deleteData, _readProfil, profil } = useFirebase()
@@ -20,14 +18,6 @@ const ParamPro = () => {
         _readDaysOff()
         _readProfil()
     },[])
-
-    const sortDaysOff = (a, b) => {
-        // Convertissez les chaînes de date en objets Date
-        let dateA = parse(a.start, 'EEEE d MMMM yyyy', new Date())
-        let dateB = parse(b.start, 'EEEE d MMMM yyyy', new Date())
-    
-        return compareAsc(dateA, dateB)
-    }
 
     // DELETE DAY OFF 
     const _handleDeleteDaysOff = (id) => {
@@ -50,7 +40,7 @@ const ParamPro = () => {
                         </div>
                     </div>
 
-                    {daysOff?.sort(sortDaysOff).filter(dayOff => dayOff.emetteur === "pro").map(dayOff => (
+                    {daysOff?.sort((a,b) => a.startInt - b.startInt).filter(dayOff => dayOff.emetteur === "pro").map(dayOff => (
                         <div key={dayOff.id} className="border-b-2 p-3 flex justify-between items-center">
                             <div>
                                 <div>du {dayOff.startString}</div>
