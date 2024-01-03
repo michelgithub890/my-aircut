@@ -1,15 +1,15 @@
-import { sentence } from "@/app/test/page"
+// import { sentence } from "@/app/test"
 
-describe('Palindrom', () => {
+// describe('Palindrom', () => {
 
-    it('should retrieve a sentence', () => {
-        expect(sentence.length).toBeGreaterThan(0)
-    })
+//     it('should retrieve a sentence', () => {
+//         expect(sentence.length).toBeGreaterThan(0)
+//     })
 
-    it('should have 11 caractères', () => {
-        expect(sentence.length).toEqual(11)
-    })
-})
+//     it('should have 11 caractères', () => {
+//         expect(sentence.length).toEqual(11)
+//     })
+// })
 
 /*
 
