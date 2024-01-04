@@ -8,8 +8,12 @@ import Link from 'next/link'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import useFirebase from '@/firebase/useFirebase'
+// MODELS 
 import { MODEL_COLOR } from '@/models/ModelColor'
+// HEADER 
 import HeaderClients from '@/components/clients/HeaderClients'
+// ENCODE PASSWORD 
+import CryptoJS from 'crypto-js'
 
 // Schéma de validation mis à jour
 const validationSchema = Yup.object({
@@ -31,15 +35,18 @@ const validationSchema = Yup.object({
 const SignUp = () => {
     const [error, setError] = useState("")
     const { _writeData, _readUsers, users } = useFirebase()
-    const [proId, setProId] = useState(localStorage.getItem('proId'))
+    const [proId, setProId] = useState("")
     const router = useRouter()
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
     })
 
     useEffect(() => {
+        setProId(localStorage.getItem('proId'))
+    },[])
+
+    useEffect(() => {
         _readUsers(proId)
-        console.log('signup useeffect ', proId)
     },[proId])
 
     const onSubmit = async (data) => {
@@ -53,6 +60,10 @@ const SignUp = () => {
         console.log('signup data', data, proId, isUser)
 
         const cleanedEmail = email.replace(/[@.]/g, '')
+
+        const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY
+
+        var ciphertext = CryptoJS.AES.encrypt(password, secretKey).toString()
         
         if (isUser === 0) {
             const data = {
@@ -62,7 +73,8 @@ const SignUp = () => {
                 status:"user",
                 endpoint:endpoint,
                 p256dh:p256dh,
-                auth:auth
+                auth:auth,
+                password:ciphertext
             }
             _writeData(`pro/${proId}/users`, data)
             localStorage.setItem('isAuth', email)

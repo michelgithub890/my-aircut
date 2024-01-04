@@ -5,22 +5,23 @@ import HeaderClients from '@/components/clients/HeaderClients'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 // NEXT 
-import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 const ProfilClients = () => {
     const { _readUsers, users } = useFirebase()
-    const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'))
-    const [proId, setProId] = useState(localStorage.getItem('proId'))
+    const [isAuth, setIsAuth] = useState("")
+    const [proId, setProId] = useState("")
     const [isMonted, setIsMonted] = useState(false)
-    const { data: session, status } = useSession()
     const router = useRouter()
 
     useEffect(() => {
         setIsMonted(true)
+        setIsAuth(localStorage.getItem('isAuth'))
+        setProId(localStorage.getItem('proId'))
     },[]) 
 
     useEffect(() => {
+        _readUsers(proId)
         if (isMonted && !isAuth) {
             router.push("/clients/homeClients")
         }
@@ -28,7 +29,8 @@ const ProfilClients = () => {
     },[isMonted])
 
     const _handleSignOut = () => {
-        signOut()
+        localStorage.removeItem('isAuth')
+        router.push("/clients/homeClients")
     }
 
     return (
@@ -36,7 +38,7 @@ const ProfilClients = () => {
             
             <HeaderClients title="Retour" />
 
-            {users?.filter(user => user.email === session?.user.email).map(user => (
+            {users?.filter(user => user.email === isAuth).map(user => (
                 <div key={user.id} className="text-center mt-6">
                     <div>{user.name}</div>
                     <div>{user.email}</div>

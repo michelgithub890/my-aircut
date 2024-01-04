@@ -31,13 +31,14 @@ const ChatClients = () => {
     const { _handleChange, values, _refresh } = useForm(INITIAL_STATE)
     const { _writeData, _readMessagesChat, messagesChat, _deleteData, _readUsers, users, _updateData } = useFirebase()
     const [openDialog, setOpenDialog] = useState(false)
-    const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'))
-    const [proId, setProId] = useState(localStorage.getItem('proId'))
+    const [isAuth, setIsAuth] = useState("")
+    const [proId, setProId] = useState("")
     const [messageToDelete, setMessageToDelete] = useState(null)
 
     useEffect(() => {
+        setIsAuth(localStorage.getItem('isAuth'))
+        setProId(localStorage.getItem('proId'))
         _readMessagesChat()
-        _readUsers()
     },[])
 
     useEffect(() => {

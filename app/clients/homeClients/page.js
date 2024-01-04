@@ -22,12 +22,14 @@ import useFirebase from '@/firebase/useFirebase'
 
 const HomeClients = () => {
     const { data: session, status } = useSession()
-    const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'))
-    const [proId, setProId] = useState(localStorage.getItem('proId'))
+    const [isAuth, setIsAuth] = useState("")
+    const [proId, setProId] = useState("")
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat } = useFirebase()
     const router = useRouter()
 
     useEffect(() => {
+        setIsAuth(localStorage.getItem('isAuth'))
+        setProId(localStorage.getItem('proId'))
         _readProfil()
         _readMessagesChat()
     },[])
@@ -139,6 +141,8 @@ const HomeClients = () => {
                             <div className='text-center' style={{fontSize:12}}>CHAT</div>
                         </Link>
                     </div>
+
+                    <div>isAuth = {isAuth}</div>
 
                     <div className="flex justify-around mt-4">
                         <Link href={isAuth ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
