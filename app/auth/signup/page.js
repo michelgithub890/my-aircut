@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
@@ -29,12 +29,18 @@ const validationSchema = Yup.object({
 })
 
 const SignUp = () => {
-    const [error, setError] = useState("");
-    const { _writeData } = useFirebase()
-    const router = useRouter();
+    const [error, setError] = useState("")
+    const { _writeData, _readUsers, users } = useFirebase()
+    const [proId, setProId] = useState(localStorage.getItem('proId'))
+    const router = useRouter()
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
     })
+
+    useEffect(() => {
+        _readUsers(proId)
+        console.log('signup useeffect ', proId)
+    },[proId])
 
     const onSubmit = async (data) => {
         const { email, password, name } = data
@@ -42,45 +48,78 @@ const SignUp = () => {
         const p256dh = localStorage.getItem('p256dh')
         const auth = localStorage.getItem('auth')
 
-        try {
-            // Tentez d'inscrire l'utilisateur
-            const user = await signUpUser(email, password)
-            console.log('Utilisateur créé avec UID:', user.uid)
+        const isUser = users.filter(user => user.email === email).length
+        
+        console.log('signup data', data, proId, isUser)
 
-            if (user) {
-                console.log('Utilisateur créé avec UID: if user ok', user.uid)
-                // Tentative de connexion automatique après l'inscription
-                const res = await signIn("credentials", {
-                    email,
-                    password,
-                    redirect: false,
-                })
-
-                if (res.error) {
-                    // Gérer les erreurs de connexion
-                    setError("Erreur lors de la connexion : " + res.error);
-                } else {
-                    // Redirection en cas de succès
-                    const cleanedEmail = email.replace(/[@.]/g, '')
-                    const data = {
-                        name:name,
-                        email:email,
-                        uid:cleanedEmail,
-                        status:"user",
-                        endpoint:endpoint,
-                        p256dh:p256dh,
-                        auth:auth
-                    }
-                    _writeData(`users`, data)
-                    router.replace("/");
-                }
+        const cleanedEmail = email.replace(/[@.]/g, '')
+        
+        if (isUser === 0) {
+            const data = {
+                name:name,
+                email:email,
+                uid:cleanedEmail,
+                status:"user",
+                endpoint:endpoint,
+                p256dh:p256dh,
+                auth:auth
             }
-            
-        } catch (error) {
-            // Gérer les erreurs d'inscription ou de connexion
-            console.error(error);
-            setError("Erreur lors de l'inscription ou de la connexion : " + error.message);
+            _writeData(`pro/${proId}/users`, data)
+            localStorage.setItem('isAuth', email)
+            router.push("/")
+        } else {
+            setError("Vous êtes déja enregistré, veuillez vous connecter.")
         }
+
+        console.log('signup onsubmit isUser', isUser)
+
+        // demander si le client existe coté pro et coté clients
+
+        // si le client existe rediriger ou créer une alerte ou afficher une erreur en bas du code 
+
+        // si le client est nouveau, enregistrer le client dans firebase 
+        // encoder le password 
+
+
+        // try {
+        //     // Tentez d'inscrire l'utilisateur
+        //     const user = await signUpUser(email, password)
+        //     console.log('Utilisateur créé avec UID:', user.uid)
+
+        //     if (user) {
+        //         console.log('Utilisateur créé avec UID: if user ok', user.uid)
+        //         // Tentative de connexion automatique après l'inscription
+        //         const res = await signIn("credentials", {
+        //             email,
+        //             password,
+        //             redirect: false,
+        //         })
+
+        //         if (res.error) {
+        //             // Gérer les erreurs de connexion
+        //             setError("Erreur lors de la connexion : " + res.error);
+        //         } else {
+        //             // Redirection en cas de succès
+        //             const cleanedEmail = email.replace(/[@.]/g, '')
+        //             const data = {
+        //                 name:name,
+        //                 email:email,
+        //                 uid:cleanedEmail,
+        //                 status:"user",
+        //                 endpoint:endpoint,
+        //                 p256dh:p256dh,
+        //                 auth:auth
+        //             }
+        //             _writeData(`users`, data)
+        //             router.replace("/");
+        //         }
+        //     }
+            
+        // } catch (error) {
+        //     // Gérer les erreurs d'inscription ou de connexion
+        //     console.error(error);
+        //     setError("Erreur lors de l'inscription ou de la connexion : " + error.message);
+        // }
     }
 
     const signUpUser = async (email, password) => {

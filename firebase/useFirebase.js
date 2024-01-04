@@ -16,22 +16,22 @@ const useFirebase = () => {
     const [hours, setHours] = useState([])
 
     // READ USERS 
-    const _readUsers = () => {
-        setUsers([])
-        const starCountRef = ref(database, 'users')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setUsers(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // const _readUsers = () => {
+    //     setUsers([])
+    //     const starCountRef = ref(database, 'users')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setUsers(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
  
     // READ GROUP 
     const _readLists = () => {
@@ -211,6 +211,29 @@ const useFirebase = () => {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // READ USERS 
+    const _readUsers = (proId) => {
+        setUsers([])
+        const starCountRef = ref(database, `/pro/${proId}/users`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setUsers(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // WRITE DATA 
     const _writeData = (id,data) => {
         try {
@@ -267,7 +290,8 @@ const useFirebase = () => {
         _readStaffs, 
         staffs,
         _readHours,
-        hours
+        hours,
+        //////////////////////
     }
 }
 

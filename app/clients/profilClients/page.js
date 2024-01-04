@@ -10,16 +10,22 @@ import { useRouter } from 'next/navigation'
 
 const ProfilClients = () => {
     const { _readUsers, users } = useFirebase()
+    const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'))
+    const [proId, setProId] = useState(localStorage.getItem('proId'))
+    const [isMonted, setIsMonted] = useState(false)
     const { data: session, status } = useSession()
     const router = useRouter()
 
     useEffect(() => {
-        _readUsers()
+        setIsMonted(true)
     },[]) 
 
     useEffect(() => {
-        if (status === "unauthenticated") router.push("/clients/homeClients")
-    },[status])
+        if (isMonted && !isAuth) {
+            router.push("/clients/homeClients")
+        }
+        _readUsers(proId)
+    },[isMonted])
 
     const _handleSignOut = () => {
         signOut()

@@ -19,7 +19,6 @@ import { format } from 'date-fns'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 // NEXT 
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 // IMAGES  
 import { IoIosArrowRoundBack } from "react-icons/io"
@@ -32,13 +31,18 @@ const ChatClients = () => {
     const { _handleChange, values, _refresh } = useForm(INITIAL_STATE)
     const { _writeData, _readMessagesChat, messagesChat, _deleteData, _readUsers, users, _updateData } = useFirebase()
     const [openDialog, setOpenDialog] = useState(false)
+    const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'))
+    const [proId, setProId] = useState(localStorage.getItem('proId'))
     const [messageToDelete, setMessageToDelete] = useState(null)
-    const { data: session, status } = useSession() 
 
     useEffect(() => {
         _readMessagesChat()
         _readUsers()
     },[])
+
+    useEffect(() => {
+        _readUsers(proId)
+    },[proId])
 
     const _updateMessage = (id) => {
         const data = {
@@ -125,7 +129,7 @@ const ChatClients = () => {
                 <div>Retour</div>
             </div>
 
-            {users?.filter(user => user.email === session?.user.email).map(user => 
+            {users?.filter(user => user.email === isAuth).map(user => 
                 <div key={user.id}>
                     <Input 
                         name='message'

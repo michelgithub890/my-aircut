@@ -141,6 +141,7 @@ const Signin = () => {
                     <Link href="/auth/forgotPassword" className="text-center"><span className="underline">Mot de passe oublié</span></Link>
 
                     <Link href="/auth/signup" className="text-center"><span className="underline">Pas de compte ? Créer un compte</span></Link>
+                    
                 </form>
             </div>
 

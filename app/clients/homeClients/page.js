@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 // NEXT 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -22,14 +22,22 @@ import useFirebase from '@/firebase/useFirebase'
 
 const HomeClients = () => {
     const { data: session, status } = useSession()
+    const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'))
+    const [proId, setProId] = useState(localStorage.getItem('proId'))
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat } = useFirebase()
     const router = useRouter()
 
     useEffect(() => {
         _readProfil()
-        _readUsers()
         _readMessagesChat()
     },[])
+
+    useEffect(() => { 
+        if (proId) {
+            _readUsers(proId)
+        }
+        console.log('homeClient useefect1 ', isAuth, users)
+    },[proId])
     
     if (session?.user.email === 'aubaudsalon@gmail.com') router.push('/pro/homePro')
 
@@ -55,9 +63,9 @@ const HomeClients = () => {
                     <div>booking to come</div>
 
                     <div className="flex justify-end items-center gap-3 border-b-2 p-3">
-                        {session?.user.email ? 
+                        {isAuth ? 
                             <>
-                                {users?.filter(user => user.email === session?.user.email).map(user => (
+                                {users?.filter(user => user.email === isAuth).map(user => (
                                     <div key={user.id} className="flex items-center gap-3">
                                         <div>{user.name}</div>
                                         <Link href={"/clients/profilClients"}>
@@ -68,7 +76,7 @@ const HomeClients = () => {
                             </>
                         :
                             <>
-                                <div>Se connecter {session?.user.email}</div>
+                                <div>Se connecter</div>
                                 <Link href={"/auth/signin"}>
                                     <Image src={imageProfilOff} className='img-fluid' alt='image calendar' style={{ height:'2.2rem', width:'2.2rem' }} />
                                 </Link>
@@ -118,7 +126,7 @@ const HomeClients = () => {
                             </div>
                             <div className='text-center' style={{fontSize:12}}>NOUS SITUER</div>
                         </div>
-                        <Link href={status === "unauthenticated" ? "/clients/chatClients/chatClientsAuth" : "/clients/chatClients"} className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
+                        <Link href={isAuth ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
                             <div className="flex justify-center">
                                 {messagesChat
                                     ?.filter(message => message.userEmail === session?.user.email && message.destinataire === "client" && !message.read)
@@ -133,7 +141,7 @@ const HomeClients = () => {
                     </div>
 
                     <div className="flex justify-around mt-4">
-                        <Link href={status === "authenticated" ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
+                        <Link href={isAuth ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
                             <div className="flex justify-center">
                                 <Image src={imageProfil} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                             </div>
@@ -157,11 +165,6 @@ const HomeClients = () => {
 }
 
 export default HomeClients
-
-
-
-
-
 
 
 
