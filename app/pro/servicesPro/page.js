@@ -19,12 +19,20 @@ import useFirebase from '@/firebase/useFirebase'
 const ServicesPro = () => {
     const { _readLists, lists, _readServices, services } = useFirebase()
     const [showList, setShowList] = useState("")
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
-        _readLists()
-        _readServices()
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readLists(proId) 
+        _readServices(proId)
+    },[proId])
 
     const _handleAddService = (id, name) => {
         localStorage.setItem('idList', id)

@@ -27,6 +27,7 @@ const ChatSingle = () => {
     const [messageToDelete, setMessageToDelete] = useState(null)
     const [urlStored, setUrlStored] = useState("")
     const [emetteur, setEmetteur] = useState()
+    const [proId, setProId] = useState()
 
     useEffect(() => {
         const loadFromLocalStorage = () => {
@@ -35,14 +36,20 @@ const ChatSingle = () => {
                 const parsedEmetteurData = emetteurData ? JSON.parse(emetteurData) : null
                 setEmetteur(parsedEmetteurData)
                 setUrlStored(localStorage.getItem('url')) 
+                const proIdStored = localStorage.getItem('proId')
+                if (proIdStored) setProId(proIdStored)
+
             } catch (error) {
                 console.error('Erreur lors de l\'analyse des données de localStorage:', error)
             }
         }
-        _readMessagesChat()
         loadFromLocalStorage()
-        _readUsers()
     },[])
+
+    useEffect(() => {
+        _readMessagesChat(proId)
+        _readUsers(proId)
+    },[proId])
 
     useEffect(() => {
         window.scrollTo(0,0)
@@ -53,7 +60,7 @@ const ChatSingle = () => {
         const data = {
             read:true
         }
-        _updateData(`chat/${id}`, data)
+        _updateData(`pro/${proId}/chat/${id}`, data)
     }
 
     const _handleSend = (user) => {
@@ -70,7 +77,7 @@ const ChatSingle = () => {
             dateInt:dateInt,
             message:values.message,
         }
-        _writeData(`chat`, data)
+        _writeData(`pro/${proId}/chat`, data)
         _refresh()
     }
 

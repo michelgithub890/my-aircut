@@ -13,15 +13,23 @@ import Link from 'next/link'
 
 const ParamPro = () => {
     const { _readDaysOff, daysOff, _deleteData, _readProfil, profil } = useFirebase()
+    const [proId, setProId] = useState()
 
     useEffect(() => {
-        _readDaysOff()
-        _readProfil()
-    },[])
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
+    },[]) 
+
+    useEffect(() => {
+        _readDaysOff(proId)
+        _readProfil(proId)
+    },[proId])
 
     // DELETE DAY OFF 
     const _handleDeleteDaysOff = (id) => {
-        _deleteData(`daysOff/${id}`)
+        _deleteData(`pro/${proId}/daysOff/${id}`)
     }
 
     return (

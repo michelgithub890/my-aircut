@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 // NEXT  
 import { useRouter } from 'next/navigation' 
 // FIREBASE  
@@ -10,11 +10,19 @@ import HeaderPro from '@/components/pro/HeaderPro'
 const ChatPro = () => {
     const { _readMessagesChat, messagesChat, _readUsers, users } = useFirebase() 
     const router = useRouter()
+    const [proId, setProId] = useState()
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
+    },[])
     
     useEffect(() => {
-        _readMessagesChat()
-        _readUsers()
-    },[])
+        _readMessagesChat(proId)
+        _readUsers(proId)
+    },[proId])
 
     const _handleNav = (emetteur) => {
         localStorage.setItem('emetteur', JSON.stringify(emetteur))

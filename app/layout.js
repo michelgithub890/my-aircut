@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
     if (montage === 1) {
       if (typeof window !== "undefined") {
         const search = searchParams.get('search')
-        if (search) localStorage.setItem('proId', search)
+        if (search) search ? localStorage.setItem('proId', search) : localStorage.setItem('proId', "aubaudsalon12345678")
         setProId(search)
       setMontage(2)
       }

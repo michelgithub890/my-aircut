@@ -19,11 +19,19 @@ const HoursOpenPlanning = () => {
     const [endTime, setEndTime] = useState('')
     const [titleModal, setTilteModal] = useState("")
     const [openModalConfirm, setOpenModalConfirm] = useState(false)
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
-        _readProfil()
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readProfil(proId)
+    },[proId])
 
     const _handleSaveDates = () => {
 
@@ -39,7 +47,7 @@ const HoursOpenPlanning = () => {
                     hoursEndPlanning: formattedEndTime
                 }
                 const id = profil[0].id
-                _updateData(`profil/${id}`, data)
+                _updateData(`pro/${proId}/profil/${id}`, data)
                 router.push("/pro/paramPro")
                 // Redirection ou autres traitements
             } else {

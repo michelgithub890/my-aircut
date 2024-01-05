@@ -31,7 +31,7 @@ const HomeClients = () => {
             const authData = auth ? JSON.parse(auth) : []
             setIsAuth(authData)
             const storedPro = localStorage.getItem("proId")
-            if (storedPro) setProId(storedPro)
+            if (storedPro) setProId(storedPro) 
         }
     },[])
 
@@ -39,7 +39,7 @@ const HomeClients = () => {
         if (proId) {
             _readUsers(proId)
             _readProfil(proId) 
-            _readMessagesChat()
+            _readMessagesChat(proId)
         }
     },[proId])
 

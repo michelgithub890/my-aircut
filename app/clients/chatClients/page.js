@@ -40,18 +40,18 @@ const ChatClients = () => {
         const authData = JSON.parse(auth)
         setIsAuth(authData)
         setProId(localStorage.getItem('proId'))
-        _readMessagesChat()
     },[])
 
     useEffect(() => {
         _readUsers(proId)
+        _readMessagesChat(proId)
     },[proId])
 
     const _updateMessage = (id) => {
         const data = {
             read:true
         }
-        _updateData(`chat/${id}`, data)
+        _updateData(`/pro/${proId}/chat/${id}`, data)
     }
 
     const _handleSend = (user) => {
@@ -68,7 +68,7 @@ const ChatClients = () => {
             dateInt:dateInt,
             message:values.message,
         }
-        _writeData(`chat`, data)
+        _writeData(`pro/${proId}/chat`, data)
         _refresh()
     }
 

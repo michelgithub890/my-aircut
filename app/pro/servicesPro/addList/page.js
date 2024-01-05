@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation' 
 // REACT HOOK FORM 
 import { useForm } from 'react-hook-form'
@@ -21,11 +21,17 @@ const validationSchema = Yup.object({
 
 const AddList = () => {
     const { _writeData } = useFirebase()
+    const [proId, setProId] = useState()
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, formState: { errors } } = useForm({ 
         resolver: yupResolver(validationSchema)
     })
+
+    useEffect(() => {
+        const proIdStored = localStorage.getItem('proId')
+        if (proIdStored) setProId(proIdStored)
+    },[])
 
     // Function to handle form submission
     const onSubmit = (data) => {
@@ -35,7 +41,7 @@ const AddList = () => {
         const dataGroup = {
             name:name
         }
-        _writeData(`services/list`, dataGroup)
+        _writeData(`pro/${proId}/services/list`, dataGroup)
         router.push('/pro/servicesPro')
     }
 

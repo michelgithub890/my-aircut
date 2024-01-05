@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // DATE PICKER 
 import DatePicker, { registerLocale } from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
@@ -17,7 +17,15 @@ const AddDayOff = () => {
     const { _writeData } = useFirebase()
     const [valueStart, setValueStart] = useState(new Date())
     const [valueEnd, setValueEnd] = useState(new Date())
+    const [proId, setProId] = useState()
     const router = useRouter()
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
+    },[])
 
     const _handleSaveDates = () => {
         // convert date to int 
@@ -44,7 +52,7 @@ const AddDayOff = () => {
                 endString,
             }
             // console.log("addDayOff _handleSaveDate ", data)
-            _writeData('daysOff', data)
+            _writeData(`pro/${proId}/daysOff`, data)
             router.push("/pro/paramPro")
         } else {
             alert("Vous devez renseigner une date de début et une date de fin.")

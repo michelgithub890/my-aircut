@@ -33,23 +33,23 @@ const useFirebase = () => {
     //     }
     // }
  
-    // READ GROUP 
-    const _readLists = () => {
-        setLists([])
-        const starCountRef = ref(database, 'services/list')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setLists(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // // READ GROUP 
+    // const _readLists = () => {
+    //     setLists([])
+    //     const starCountRef = ref(database, 'services/list')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setLists(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
 
     const _readStaffs = () => {
         setStaffs([])
@@ -85,59 +85,59 @@ const useFirebase = () => {
         }
     }
     
-    // READ SERVICES   
-    const _readServices = () => {
-        setServices([])
-        const starCountRef = ref(database, 'services/items')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setServices(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // // READ SERVICES   
+    // const _readServices = () => {
+    //     setServices([])
+    //     const starCountRef = ref(database, 'services/items')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setServices(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
 
     // READ DAYS OFF 
-    const _readDaysOff = () => {
-        setDaysOff([])
-        const starCountRef = ref(database, 'daysOff')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setDaysOff(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // const _readDaysOff = () => {
+    //     setDaysOff([])
+    //     const starCountRef = ref(database, 'daysOff')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setDaysOff(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
 
     // READ CHAT   
-    const _readMessagesChat = () => {
-        setMessagesChat([])
-        const starCountRef = ref(database, 'chat')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setMessagesChat(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // const _readMessagesChat = () => {
+    //     setMessagesChat([])
+    //     const starCountRef = ref(database, 'chat')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setMessagesChat(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
 
     // READ ORDERS  
     const _readOrders = () => {
@@ -249,6 +249,75 @@ const useFirebase = () => {
         }
     }
 
+    const _readMessagesChat = (proId) => {
+        setMessagesChat([])
+        const starCountRef = ref(database, `pro/${proId}/chat`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setMessagesChat(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    const _readDaysOff = (proId) => {
+        setDaysOff([])
+        const starCountRef = ref(database, `pro/${proId}/daysOff`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setDaysOff(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    // READ GROUP 
+    const _readLists = (proId) => {
+        setLists([])
+        const starCountRef = ref(database, `pro/${proId}/services/list`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setLists(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    // READ SERVICES   
+    const _readServices = (proId) => {
+        setServices([])
+        const starCountRef = ref(database, `pro/${proId}/services/items`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setServices(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

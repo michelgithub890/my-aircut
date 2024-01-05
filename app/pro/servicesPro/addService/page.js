@@ -29,6 +29,7 @@ const AddService = () => {
     const [idList, setIdList] = useState()
     const [nameList, setNameList] = useState()
     const [valueTime, setValueTime] = useState('15')
+    const [proId, setProId] = useState()
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -36,10 +37,14 @@ const AddService = () => {
     })
 
     useEffect(() => {
-        const id  = localStorage.getItem('idList')
-        setIdList(id)
-        const name = localStorage.getItem('nameList')
-        setNameList(name)
+        if (typeof window !== "undefined") {
+            const id  = localStorage.getItem('idList')
+            setIdList(id)
+            const name = localStorage.getItem('nameList')
+            setNameList(name)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
     // Function to handle form submission
@@ -55,7 +60,7 @@ const AddService = () => {
             nameList:nameList,
         }
 
-        _writeData(`services/items`, dataService)
+        _writeData(`pro/${proId}/services/items`, dataService)
         router.push('/pro/servicesPro')
     }
 
