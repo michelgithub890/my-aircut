@@ -16,17 +16,21 @@ const ProfilClients = () => {
 
     useEffect(() => {
         setIsMonted(true)
-        setIsAuth(localStorage.getItem('isAuth'))
-        setProId(localStorage.getItem('proId'))
+        if (typeof window !== "undefined") {
+            const auth = localStorage.getItem('isAuth')
+            const authData = auth ? JSON.parse(auth) : null
+            setIsAuth(authData);
+    
+            const storedProId = localStorage.getItem('proId')
+            if (storedProId) {
+                setProId(storedProId);
+            }
+        }
     },[]) 
 
     useEffect(() => {
-        _readUsers(proId)
-        if (isMonted && !isAuth) {
-            router.push("/clients/homeClients")
-        }
-        _readUsers(proId)
-    },[isMonted])
+        if (proId) _readUsers(proId)
+    },[proId])
 
     const _handleSignOut = () => {
         localStorage.removeItem('isAuth')
@@ -38,7 +42,7 @@ const ProfilClients = () => {
             
             <HeaderClients title="Retour" />
 
-            {users?.filter(user => user.email === isAuth).map(user => (
+            {isAuth && users?.filter(user => user.email === isAuth?.email).map(user => (
                 <div key={user.id} className="text-center mt-6">
                     <div>{user.name}</div>
                     <div>{user.email}</div>

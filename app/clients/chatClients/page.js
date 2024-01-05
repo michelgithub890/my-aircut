@@ -36,7 +36,9 @@ const ChatClients = () => {
     const [messageToDelete, setMessageToDelete] = useState(null)
 
     useEffect(() => {
-        setIsAuth(localStorage.getItem('isAuth'))
+        const auth = localStorage.getItem('isAuth')
+        const authData = JSON.parse(auth)
+        setIsAuth(authData)
         setProId(localStorage.getItem('proId'))
         _readMessagesChat()
     },[])
@@ -130,7 +132,7 @@ const ChatClients = () => {
                 <div>Retour</div>
             </div>
 
-            {users?.filter(user => user.email === isAuth).map(user => 
+            {users?.filter(user => user.email === isAuth?.email).map(user => 
                 <div key={user.id}>
                     <Input 
                         name='message'

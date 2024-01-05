@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 // NEXT 
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link' 
@@ -21,30 +20,35 @@ import imageProfilOff from '@/public/assets/images/profiloff.png'
 import useFirebase from '@/firebase/useFirebase'
 
 const HomeClients = () => {
-    const { data: session, status } = useSession()
-    const [isAuth, setIsAuth] = useState("")
+    const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState("")
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat } = useFirebase()
     const router = useRouter()
 
     useEffect(() => {
-        setIsAuth(localStorage.getItem('isAuth'))
-        setProId(localStorage.getItem('proId'))
-        _readProfil()
-        _readMessagesChat()
+        if (typeof window !== "undefined") {
+            const auth = localStorage.getItem("isAuth")
+            const authData = auth ? JSON.parse(auth) : []
+            setIsAuth(authData)
+            const storedPro = localStorage.getItem("proId")
+            if (storedPro) setProId(storedPro)
+        }
     },[])
 
     useEffect(() => { 
         if (proId) {
             _readUsers(proId)
+            _readProfil(proId) 
+            _readMessagesChat()
         }
-        console.log('homeClient useefect1 ', isAuth, users)
     },[proId])
-    
-    if (session?.user.email === 'aubaudsalon@gmail.com') router.push('/pro/homePro')
+
+    useEffect(() => {
+        if (isAuth?.status === 'pro') router.push('/pro/homePro')
+    },[isAuth])
 
     const _handleMap = () => {
-        window.open(profil[0].map, "_blank")
+        window.open(profil[0].map, "_blank") 
     }
 
     const _handlePhone = () => {
@@ -62,12 +66,12 @@ const HomeClients = () => {
             {profil?.map(pro => (
                 <div key={pro.id}>
 
-                    <div>booking to come</div>
+                    <div>booking to come {isAuth?.status}</div>
 
                     <div className="flex justify-end items-center gap-3 border-b-2 p-3">
-                        {isAuth ? 
+                        {isAuth?.[proId] ? 
                             <>
-                                {users?.filter(user => user.email === isAuth).map(user => (
+                                {users?.filter(user => user.email === isAuth?.email).map(user => (
                                     <div key={user.id} className="flex items-center gap-3">
                                         <div>{user.name}</div>
                                         <Link href={"/clients/profilClients"}>
@@ -131,7 +135,7 @@ const HomeClients = () => {
                         <Link href={isAuth ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
                             <div className="flex justify-center">
                                 {messagesChat
-                                    ?.filter(message => message.userEmail === session?.user.email && message.destinataire === "client" && !message.read)
+                                    ?.filter(message => message.userEmail === isAuth?.email && message.destinataire === "client" && !message.read)
                                     .map(message => message.id).length > 0 ? 
                                     <Image src={imageChatGif} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                                 : 
@@ -142,10 +146,8 @@ const HomeClients = () => {
                         </Link>
                     </div>
 
-                    <div>isAuth = {isAuth}</div>
-
                     <div className="flex justify-around mt-4">
-                        <Link href={isAuth ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
+                        <Link href={isAuth?.[proId] ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
                             <div className="flex justify-center">
                                 <Image src={imageProfil} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                             </div>

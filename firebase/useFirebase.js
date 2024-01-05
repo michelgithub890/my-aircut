@@ -193,23 +193,23 @@ const useFirebase = () => {
         }
     }
 
-    // READ PROFIL 
-    const _readProfil = () => {
-        setProfil([])
-        const starCountRef = ref(database, 'profil')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setProfil(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // // READ PROFIL 
+    // const _readProfil = () => {
+    //     setProfil([])
+    //     const starCountRef = ref(database, 'profil')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setProfil(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -225,6 +225,24 @@ const useFirebase = () => {
                   dataList.push({id,...data[id]})
                 }
                 setUsers(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    // READ PROFIL 
+    const _readProfil = (proId) => {
+        setProfil([])
+        const starCountRef = ref(database, `pro/${proId}/profil`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setProfil(dataList)
             })
         } catch {
             alert('il y a une erreur dans la lecture')

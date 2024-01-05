@@ -1,18 +1,21 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // REACT HOOK FORM 
 import { useForm } from 'react-hook-form'
 // MATERIAL UI 
 import { TextField } from '@mui/material'
 // NEXT AUTH 
 import { useRouter } from 'next/navigation' 
-import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 // YUP 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { MODEL_COLOR } from '@/models/ModelColor'
 import HeaderClients from '@/components/clients/HeaderClients'
+// FIREBASE 
+import useFirebase from '@/firebase/useFirebase'
+// CRYPTO JS 
+import CryptoJS from 'crypto-js'
  
 // Define your validation schema with Yup
 const validationSchema = Yup.object({
@@ -29,80 +32,65 @@ const validationSchema = Yup.object({
 const Signin = () => {
     const [error, setError] = useState("")
     const router = useRouter()
+    const [proId, setProId] = useState("")
+    const [isAuth, setIsAuth] = useState("")
+    const { _readUsers, users, _updateData } = useFirebase()
     // Initialise React Hook Form
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
     })
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const auth = localStorage.getItem('isAuth')
+            const authData = auth ? JSON.parse(auth) : []
+            setIsAuth(authData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
+    },[])
+
+    useEffect(() => {
+        if (proId) {
+            _readUsers(proId)
+        }
+    },[proId])
+
     // Function to handle form submission
     const onSubmit = async (data) => {
         const { email, password } = data
-        // console.log(data)
 
-        try {
+        // demander is l'email est déja enregistré dans la base de donnée 
+        const isExist = users.filter(user => user.email === email).length
 
-            const resUserExists = await fetch("api/userExists", { 
-                method:"POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email })
+        if (isExist === 1) {
+            // recuperer l'user 
+            users.filter(user => user.email === email).map(user => {
+
+                // demander si le mot de passe et égale 
+                const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY
+                
+                const bytes  = CryptoJS.AES.decrypt(user.password, secretKey)
+                const originalPassword = bytes.toString(CryptoJS.enc.Utf8)
+
+                // comparer les mots de passes 
+                if (originalPassword === password) {
+                    const data = {
+                        [proId]:true
+                    }
+                    _updateData(`pro/${proId}/users/${user.id}`, data)
+                    localStorage.setItem('isAuth', JSON.stringify(user))
+                    router.push("/")
+                } else {
+                    // mot de passe inconnu 
+                    setError("Mot de passe inconnu")
+                }
             })
 
-            const {user} = await resUserExists.json()
-
-            if (user) {
-                setError("User already exists.")
-                return 
-            }
-
-
-            const res = await fetch("api/register", {
-                method:"POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email, password
-                })
-            })
-
-            if (res.ok) {
-                const form = e.target
-                form.reset()
-                // router.push("/")
-            } else {
-                console.log("User registration failed.", res)
-            }
-        } catch {
-            console.log("Error during registration: ", error)
+        } else if (isExist === 0) {
+            // l'utilisateur nexiste pas 
+            setError(`L'utilisateur ${email} n'existe pas, vous devez créer un compte.`)
         }
-
-        // signin with credential 
-        try {
-            const res = await signIn("credentials", {
-                email,
-                password,
-                redirect: false,
-            })
-
-            // if error update setError  
-            if (res.error) {
-                setError("Erreur lors de la connection, vérifier vos identifiant 1")
-            }
-
-            // it's ok go to home 
-            console.log('auth signin ====> ', res)
-
-            // redirection 
-            router.push("/clients/homeClients")
-
-        // if error update setError  
-        } catch (error) {
-            setError("Erreur lors de la connection, vérifier vos identifiant")
-            console.log('Erreur lors de la connection, vérifier vos identifiant 2')
-        }
-        // Place your API call or form handling logic here
     }
 
     return (
@@ -110,8 +98,7 @@ const Signin = () => {
 
             <HeaderClients title="Retour" />
 
-            <div className={`grid place-items-center h-screen p-3`} style={{ backgroundColor:MODEL_COLOR.blueApply}}> {/* Replace 'yourColorHere' with your actual color */}
-
+            <div className={`grid place-items-center h-screen p-3 bg-slate-300 pb-52`}>
 
                 <form 
                     onSubmit={handleSubmit(onSubmit)} 
@@ -136,13 +123,14 @@ const Signin = () => {
 
                     {error && <div style={{ color:"red"}}>{error}</div>}
 
-                    <button className="myButton" type="submit">Se connecter</button>
+                    <button className="myButtonGrey" type="submit">Se connecter</button>
 
                     <Link href="/auth/forgotPassword" className="text-center"><span className="underline">Mot de passe oublié</span></Link>
 
                     <Link href="/auth/signup" className="text-center"><span className="underline">Pas de compte ? Créer un compte</span></Link>
                     
                 </form>
+
             </div>
 
         </div>

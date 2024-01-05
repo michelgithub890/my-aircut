@@ -42,115 +42,49 @@ const SignUp = () => {
     })
 
     useEffect(() => {
-        setProId(localStorage.getItem('proId'))
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            console.log("signup useEffect ", proIdStored)
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
     useEffect(() => {
-        _readUsers(proId)
+        if (proId) _readUsers(proId)
     },[proId])
 
-    const onSubmit = async (data) => {
+    const onSubmit = (data) => {
         const { email, password, name } = data
         const endpoint = localStorage.getItem('endpoint')
         const p256dh = localStorage.getItem('p256dh')
         const auth = localStorage.getItem('auth')
 
-        const isUser = users.filter(user => user.email === email).length
-        
-        console.log('signup data', data, proId, isUser)
-
-        const cleanedEmail = email.replace(/[@.]/g, '')
+        const isUser = users?.filter(user => user.email === email).length
 
         const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY
 
         var ciphertext = CryptoJS.AES.encrypt(password, secretKey).toString()
-        
+
+        console.log('signin users/', users)
+
         if (isUser === 0) {
-            const data = {
+            const itemData = {
+                [proId]:true,
                 name:name,
                 email:email,
-                uid:cleanedEmail,
                 status:"user",
                 endpoint:endpoint,
                 p256dh:p256dh,
                 auth:auth,
                 password:ciphertext
             }
-            _writeData(`pro/${proId}/users`, data)
-            localStorage.setItem('isAuth', email)
+            // console.log('signin isUser ', itemData)
+            _writeData(`pro/${proId}/users`, itemData)
+            localStorage.setItem('isAuth', JSON.stringify(itemData))
             router.push("/")
         } else {
             setError("Vous êtes déja enregistré, veuillez vous connecter.")
         }
-
-        console.log('signup onsubmit isUser', isUser)
-
-        // demander si le client existe coté pro et coté clients
-
-        // si le client existe rediriger ou créer une alerte ou afficher une erreur en bas du code 
-
-        // si le client est nouveau, enregistrer le client dans firebase 
-        // encoder le password 
-
-
-        // try {
-        //     // Tentez d'inscrire l'utilisateur
-        //     const user = await signUpUser(email, password)
-        //     console.log('Utilisateur créé avec UID:', user.uid)
-
-        //     if (user) {
-        //         console.log('Utilisateur créé avec UID: if user ok', user.uid)
-        //         // Tentative de connexion automatique après l'inscription
-        //         const res = await signIn("credentials", {
-        //             email,
-        //             password,
-        //             redirect: false,
-        //         })
-
-        //         if (res.error) {
-        //             // Gérer les erreurs de connexion
-        //             setError("Erreur lors de la connexion : " + res.error);
-        //         } else {
-        //             // Redirection en cas de succès
-        //             const cleanedEmail = email.replace(/[@.]/g, '')
-        //             const data = {
-        //                 name:name,
-        //                 email:email,
-        //                 uid:cleanedEmail,
-        //                 status:"user",
-        //                 endpoint:endpoint,
-        //                 p256dh:p256dh,
-        //                 auth:auth
-        //             }
-        //             _writeData(`users`, data)
-        //             router.replace("/");
-        //         }
-        //     }
-            
-        // } catch (error) {
-        //     // Gérer les erreurs d'inscription ou de connexion
-        //     console.error(error);
-        //     setError("Erreur lors de l'inscription ou de la connexion : " + error.message);
-        // }
-    }
-
-    const signUpUser = async (email, password) => {
-        console.log('signupuser ', email, password)
-
-        const response = await fetch('/api/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
-    
-        if (!response.ok) {
-            throw new Error('Erreur lors de l’inscription');
-        }
-    
-        const data = await response.json();
-        return data; // Contient l'UID de l'utilisateur si l'inscription est réussie
     }
 
     return (
@@ -158,7 +92,7 @@ const SignUp = () => {
 
             <HeaderClients title="Retour" />
 
-            <div className='grid place-items-center h-screen p-3' style={{ backgroundColor:MODEL_COLOR.blueApply }}>
+            <div className='grid place-items-center h-screen p-3 bg-slate-300 pb-52'>
                 <form 
                     onSubmit={handleSubmit(onSubmit)} 
                     className="flex flex-col gap-3 bg-white p-5 rounded-lg w-full md:w-3/4 lg:w-1/2 max-w-2xl"
@@ -196,7 +130,7 @@ const SignUp = () => {
                     />
 
                     {error && <div style={{ color: "red" }}>{error}</div>}
-                    <button type="submit" className="myButton">S&apos;inscrire</button>
+                    <button type="submit" className="myButtonGrey">S&apos;inscrire</button>
 
                     <Link href="/auth/signin" className="text-center"><span className="underline">Déjà un compte ? Se connecter</span></Link>
                 </form>

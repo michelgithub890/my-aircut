@@ -58,3 +58,24 @@
     background-color: #e5533d; /* Une nuance plus foncée de rouge pour l'effet de survol */
     /* color: #ddd; (si vous voulez changer la couleur du texte au survol) */
 }
+
+.myButtonGrey {
+    outline: none;
+    background-color: #ccccccff; 
+    /* color: white; */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: grey;
+    border: 1px solid grey;
+}
+  
+.myButtonGrey:hover {
+    background-color: black; /* Plus foncé que le noir pour l'effet de survol */
+    color: #ddd;   
+}

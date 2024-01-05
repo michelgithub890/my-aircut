@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 // NEXT 
-import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation' 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,35 +16,44 @@ import imageClients from '@/public/assets/images/clients.png'
 import imageForfait from '@/public/assets/images/forfait.png' 
 import imageParametre from '@/public/assets/images/parametre.png'
 import imageStaff from '@/public/assets/images/staff.png'
+import imageProfil from '@/public/assets/images/imageprofil.png'
+import imageOutils from '@/public/assets/images/logo_outils.png'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 
 const HomePro = () => {
     const { _readProfil, profil, _readMessagesChat, messagesChat } = useFirebase()
-    const { data: session, status } = useSession() 
+    const [isAuth, setIsAuth] = useState()
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
-        _readProfil()
-        _readMessagesChat()
+        if (typeof window !== "undefined") {
+            const auth = localStorage.getItem('isAuth')
+            const authData = auth ? JSON.parse(auth) : []
+            setIsAuth(authData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
     useEffect(() => {
-        if (status === "unauthenticated") router.push("/clients/homeClients")
-    },[session])
+        _readProfil(proId)
+        _readMessagesChat()
+    },[proId])
 
-    const _handleTest = () => {
-        const numberMessage = messagesChat.filter(message => message.destinataire === "pro" && !message.read).map(message => message).length
-        console.log('ChatPro _handleTest', numberMessage)
+    const _handleLogOut = () => {
+        localStorage.removeItem('isAuth')
+        router.replace("/")
     }
 
     return (
         <div>
 
-            {profil?.map(pro => (
+            {profil?.filter(pro => pro.email === isAuth?.email).map(pro => (
                 <div className="flex justify-end items-center gap-3 border-b-2 p-3" key={pro.id}>
                     <div>{pro.company}</div>
-                    <IoMdLogOut size={"2.2rem"} onClick={signOut} />
+                    <IoMdLogOut size={"2.2rem"} onClick={_handleLogOut} />
                 </div>
             ))}
   
@@ -127,6 +135,22 @@ const HomePro = () => {
                     <div className='text-center' style={{fontSize:12}}>EQUIPE</div>
                 </Link>
             </div> 
+
+            <div className="flex justify-around mt-4">
+                <Link href={"/pro/profilPro"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
+                    <div className="flex justify-center"> 
+                        <Image src={imageProfil} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                    </div>
+                    <div className='text-center' style={{fontSize:12}}>PROFIL</div>
+                </Link>
+                <Link href={"/pro/profilPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
+                    <div className="flex justify-center"> 
+                        <Image src={imageOutils} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                    </div>
+                    <div className='text-center' style={{fontSize:12}}>AIDES</div>
+                </Link>
+            </div>
+    
 
             <div style={{ height:400 }} />
             

@@ -3,18 +3,14 @@ import React, { useState, useEffect } from 'react'
 // REACT HOOK FORM 
 import { useForm } from 'react-hook-form'
 // MATERIAL UI 
-import { TextField, Button } from '@mui/material'
+import { TextField } from '@mui/material'
 // NEXT  
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation' 
-import Link from 'next/link' 
 // YUP 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
-// IMAGES 
-import { IoArrowBack } from "react-icons/io5"
 // COMPONENTS 
 import HeaderPro from '@/components/pro/HeaderPro'
 
@@ -37,9 +33,10 @@ const validationSchema = Yup.object({
 })
 
 const ProfilPro = () => {
-    const [error, setError] = useState("")
     const { _updateData, _readProfil, profil } = useFirebase()
     const router = useRouter()
+    const [isAuth, setIsAuth] = useState()
+    const [proId, setProId] = useState()
     const [initialName, setInitialName] = useState("")
     const [initialSurname, setInitialSurname] = useState("")
     const [initialCompany, setInitialCompany] = useState("")
@@ -53,12 +50,21 @@ const ProfilPro = () => {
     })
 
     useEffect(() => {
-        _readProfil()
+        if (typeof window !== "undefined") {
+            const auth = localStorage.getItem('isAuth')
+            const authData = auth ? JSON.parse(auth) : []
+            setIsAuth(authData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
     useEffect(() => {
-        if (profil && profil.length > 0) { 
-            const proData = profil[0]
+        _readProfil(proId)
+    },[proId])
+
+    useEffect(() => {
+        profil?.filter(proData => proData.email === isAuth?.email).map(proData => {
             setValue("name", proData.name)
             setValue("surname", proData.surname)
             setValue("company", proData.company) 
@@ -73,15 +79,13 @@ const ProfilPro = () => {
             setInitialAddress(proData.address)
             setInitialMap(proData.map)
             setInitialPhone(proData.phone)
-        }
+        })
     }, [profil])
 
     // Function to handle form submission
     const onSubmit = (data) => {
         const { name, surname, company, hours, address, map, phone } = data
-
         const id = profil[0].id
-
         const dataProfil = {
             name,
             surname,
@@ -91,7 +95,7 @@ const ProfilPro = () => {
             map,
             phone,
         }
-        _updateData(`profil/${id}`, dataProfil)
+        _updateData(`pro/${proId}/profil/${id}`, dataProfil)
         router.push('/pro/homePro')
     }
 
@@ -172,7 +176,6 @@ const ProfilPro = () => {
                         helperText={errors.map?.message}
                         InputLabelProps={{ shrink: true }}
                     />
-                    {error && <div style={{ color:"red"}}>{error}</div>}
 
                     <button className="myButton" type="submit">Enregistrer</button>
                     
