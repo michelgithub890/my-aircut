@@ -19,20 +19,28 @@ const daysWeek = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', '
 const UpdateStaff = () => {
     const { _readStaffs, staffs, _readDaysOff, daysOff, _updateData, _readHours, hours, _deleteData } = useFirebase()
     const [staffId, setStaffId] = useState()
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
-        setStaffId(localStorage.getItem('staffId'))
-        _readStaffs()
-        _readDaysOff()
-        _readHours()
+        if (typeof window !== "undefined") {
+            setStaffId(localStorage.getItem('staffId'))
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readStaffs(proId)
+        _readDaysOff(proId)
+        _readHours(proId)
+    },[proId])
 
     // DELETE DAY OFF  
     const _handleDeleteDaysOff = (id) => {
-        _deleteData(`daysOff/${id}`)
+        _deleteData(`pro/${proId}/daysOff/${id}`)
     }
-
+ 
     const sortDaysOff = (a, b) => {
         // Convertissez les chaînes de date en objets Date
         let dateA = parse(a.start, 'EEEE d MMMM yyyy', new Date())
@@ -45,24 +53,28 @@ const UpdateStaff = () => {
         const data = {
             [dayWeek]:true
         }
-        _updateData(`staff/${staffId}`, data)
+        _updateData(`pro/${proId}/staff/${staffId}`, data)
     }
 
     const _handlePutOffDay = (dayWeek) => {
         const data = {
             [dayWeek]:false
         }
-        _updateData(`staff/${staffId}`, data)
+        _updateData(`pro/${proId}/staff/${staffId}`, data)
     }
 
     const _handleAddHours = (dayWeek) => {
-        console.log('UpdateStaff _handleAddHours', dayWeek)
         localStorage.setItem('dayWeek', dayWeek)
         router.push("/pro/staffPro/updateStaff/updateStaffHours")
     }
 
     const _handleDeleteHours = (id) => {
-        _deleteData(`hours/${id}`)
+        _deleteData(`pro/${proId}/hours/${id}`)
+    }
+
+    const _convertTimeToMinutes = (time) => {
+        const [hours, minutes] = time.split(":").map(Number)
+        return hours * 60 + minutes
     }
 
     return (
@@ -84,8 +96,8 @@ const UpdateStaff = () => {
                     <Link href={"/pro/staffPro/updateStaff/updateStaffDaysOff"}>
                         <div className="border-b-2 p-3">Jours de fermetures</div>
                     </Link>
-
-                    {daysOff?.sort(sortDaysOff).filter(dayOff => dayOff.emetteur === staffId).map(dayOff => (
+ 
+                    {daysOff?.sort((a, b) => a.startInt - b.startInt).filter(dayOff => dayOff.emetteur === staffId).map(dayOff => (
                         <div key={dayOff.id} className="border-b-2 p-3 flex justify-between items-center">
                             <div>
                                 <div>du {dayOff.startString}</div>
@@ -138,9 +150,9 @@ const UpdateStaff = () => {
                                         />
                                     </div>
 
-                                    {hours?.filter(hour => hour.emetteur === staffId && hour.day === dayWeek).map(hour => (
+                                    {hours?.sort((a,b) => _convertTimeToMinutes(a.start) - _convertTimeToMinutes(b.start)).filter(hour => hour.emetteur === staffId && hour.day === dayWeek).map(hour => (
                                         <div key={hour.id} className="flex justify-center items-center gap-3 p-2">
-                                            <div>{hour.start}:{hour.end}</div>
+                                            <div>{hour.start}:{hour.end} {hour.startInt}</div>
                                             <Image 
                                                 src={imageDelete} 
                                                 className='img-fluid' alt='image services' 

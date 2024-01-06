@@ -1,10 +1,10 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation' 
 // REACT HOOK FORM 
 import { useForm } from 'react-hook-form'
 // MATERIAL UI 
-import { TextField } from '@mui/material'
+import { TextField, useScrollTrigger } from '@mui/material'
 // NEXT LINK 
 import Link from 'next/link' 
 // YUP 
@@ -25,11 +25,19 @@ const validationSchema = Yup.object({
 
 const AddStaff = () => {
     const { _writeData } = useFirebase()
+    const [proId, setProId] = useState()
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, formState: { errors } } = useForm({ 
         resolver: yupResolver(validationSchema)
     })
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
+    },[])
 
     // Function to handle form submission
     const onSubmit = (data) => {
@@ -43,7 +51,7 @@ const AddStaff = () => {
             surname: formattedSurname
         }
     
-        _writeData(`staff`, dataStaff)
+        _writeData(`pro/${proId}/staff`, dataStaff)
         router.push('/pro/staffPro')
     }
     

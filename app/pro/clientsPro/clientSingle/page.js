@@ -22,24 +22,24 @@ const ClientSingle = () => {
     const [numberCard, setNumberCard] = useState(0)
     const [checked, setCheched] = useState(true)
     const [showHistoryBooking, setShowHistoryBooking] = useState(false)
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
-        const loadFromLocalStorage = () => {
-            try {
-                const userData = localStorage.getItem("user")
-                const parsedUserData = userData ? JSON.parse(userData) : null
-                setUserSelected(parsedUserData)
-            } catch (error) {
-                console.error('Erreur lors de l\'analyse des données de localStorage:', error)
-            }
+        if (typeof window !== "undefined") {
+            const userData = localStorage.getItem("user")
+            const parsedUserData = userData ? JSON.parse(userData) : null
+            setUserSelected(parsedUserData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
         }
-        loadFromLocalStorage()
-        _readUsers()
     },[])
 
     useEffect(() => {
-        console.log('clientSingle ', userSelected)
+        _readUsers(proId)
+    },[proId])
+
+    useEffect(() => {
         setNumberCard(userSelected?.fidelityCard ? userSelected.fidelityCard : 0)
         setCheched(userSelected?.denied ? false : true)
         
@@ -51,7 +51,7 @@ const ClientSingle = () => {
         const data = {
             denied:checked
         }
-        _updateData(`users/${userSelected.id}`, data)
+        _updateData(`pro/${proId}/users/${userSelected.id}`, data)
     }
 
     // SUBSCTRICT NUMBER CARD FIDELITY 
@@ -60,7 +60,7 @@ const ClientSingle = () => {
         const data = {
             fidelityCard:numberCard - 1
         }
-        _updateData(`users/${userSelected.id}`, data)
+        _updateData(`pro/${proId}/users/${userSelected.id}`, data)
     }
 
     // ADD NUMBER CARD FIDELITY 
@@ -69,7 +69,7 @@ const ClientSingle = () => {
         const data = {
             fidelityCard:numberCard + 1
         }
-        _updateData(`users/${userSelected.id}`, data)
+        _updateData(`pro/${proId}/users/${userSelected.id}`, data)
     }
 
     // RETURN 0 TO NUMBER CARD FIDELITY 
@@ -78,7 +78,7 @@ const ClientSingle = () => {
         const data = {
             fidelityCard:0
         }
-        _updateData(`users/${userSelected.id}`, data)
+        _updateData(`pro/${proId}/users/${userSelected.id}`, data)
     }
 
     const _handleMessages = () => {

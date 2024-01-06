@@ -17,7 +17,7 @@ import useFirebase from '@/firebase/useFirebase'
 import HeaderPro from '@/components/pro/HeaderPro'
 
 // Define your validation schema with Yup
-const validationSchema = Yup.object({
+const validationSchema = Yup.object({ 
     name: Yup.string()
                 .required("Le nom est obligatoire."),
 })
@@ -26,14 +26,22 @@ const ClientsPro = () => {
     const { _readUsers, users } = useFirebase()
     const router = useRouter()
     const [name, setName] = useState('')
+    const [proId, setProId] = useState()
     // Initialise React Hook Form 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
     })
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
+    },[])
  
     useEffect(() => {
-        _readUsers()
-    },[])
+        _readUsers(proId)
+    },[proId])
 
     const handleClearInput = () => {
         setName('')
@@ -70,7 +78,7 @@ const ClientsPro = () => {
             </div>
 
             {users
-                ?.filter(user => user.name.toLowerCase().includes(name.toLowerCase().trim()))
+                ?.filter(user => user.name.toLowerCase().includes(name.toLowerCase().trim()) && user.status !== "pro")
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map(user => (
                     <div key={user.id} className="border-b-2 p-3" onClick={() => _handleChoiceClient(user)} style={{ cursor:"pointer" }}>

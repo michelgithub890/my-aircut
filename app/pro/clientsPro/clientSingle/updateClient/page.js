@@ -23,6 +23,7 @@ const UpdateClient = () => {
     const { _updateData, _readUsers, users } = useFirebase()
     const [userSelected, setUserSelected] = useState()
     const [initialName, setInitialName] = useState("")
+    const [proId, setProId] = useState()
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -30,18 +31,18 @@ const UpdateClient = () => {
     })
 
     useEffect(() => {
-        const loadFromLocalStorage = () => {
-            try {
-                const userData = localStorage.getItem("user")
-                const parsedUserData = userData ? JSON.parse(userData) : null
-                setUserSelected(parsedUserData)
-            } catch (error) {
-                console.error('Erreur lors de l\'analyse des données de localStorage:', error)
-            }
+        if (typeof window !== "undefined") {
+            const userData = localStorage.getItem("user")
+            const parsedUserData = userData ? JSON.parse(userData) : null
+            setUserSelected(parsedUserData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
         }
-        loadFromLocalStorage()
-        _readUsers()
     },[])
+
+    useEffect(() => {
+        _readUsers(proId)
+    },[proId])
 
     useEffect(() => {
         users?.filter(user => user.id === userSelected.id).map(user => {
@@ -55,7 +56,7 @@ const UpdateClient = () => {
         const dataUser = {
             name
         }
-        _updateData(`users/${userSelected?.id}`, dataUser)
+        _updateData(`pro/${proId}/users/${userSelected?.id}`, dataUser)
         router.push('/pro/clientsPro/clientSingle')
     }
 

@@ -31,6 +31,7 @@ const UpdateService = () => {
     const [initialPrice, setInitialPrice] = useState("")
     const [valueTime, setValueTime] = useState('15')
     const [confirmDelelte, setConfirmDelete] = useState(false)
+    const [proId, setProId] = useState()
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
@@ -38,9 +39,13 @@ const UpdateService = () => {
     })
 
     useEffect(() => {
-        let serviceData = localStorage.getItem("service")
-        let storedServiceData = JSON.parse(serviceData)
-        setService(storedServiceData)
+        if (typeof window !== "undefined") {
+            let serviceData = localStorage.getItem("service")
+            let storedServiceData = JSON.parse(serviceData)
+            setService(storedServiceData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
     useEffect(() => {
@@ -60,13 +65,13 @@ const UpdateService = () => {
             price,
             duration:valueTime,
         }
-        _updateData(`services/items/${service.id}`, dataService)
+        _updateData(`pro/${proId}/services/items/${service.id}`, dataService)
         router.push('/pro/servicesPro')
     }
 
     // DELETE LIST 
     const _handleDeleteService = () => {
-        _deleteData(`services/items/${service.id}`)
+        _deleteData(`pro/${proId}/services/items/${service.id}`)
         router.push("/pro/servicesPro")
     }
 

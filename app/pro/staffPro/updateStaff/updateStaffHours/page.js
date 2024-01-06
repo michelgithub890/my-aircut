@@ -19,11 +19,16 @@ const UpdateStaffHours = () => {
     const [endTime, setEndTime] = useState('')
     const [staffId, setStaffId] = useState()
     const [dayWeek, setDayWeek] = useState()
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
-        setStaffId(localStorage.getItem('staffId'))
-        setDayWeek(localStorage.getItem('dayWeek'))
+        if (typeof window !== "undefined") {
+            setStaffId(localStorage.getItem('staffId'))
+            setDayWeek(localStorage.getItem('dayWeek'))
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
     const handleSubmit = (e) => {
@@ -38,7 +43,7 @@ const UpdateStaffHours = () => {
         if (startTime && endTime) {
             // Convertissez les heures au format 'HH:mm'
             const formattedStartTime = dayjs(startTime).format('HH:mm')
-            const formattedEndTime = dayjs(endTime).format('HH:mm')
+            const formattedEndTime = dayjs(endTime).format('HH:mm') 
     
             // Vérifiez si l'heure de fin est supérieure à l'heure de début
             if (dayjs(endTime).isAfter(startTime)) {
@@ -48,7 +53,7 @@ const UpdateStaffHours = () => {
                     day:dayWeek,
                     emetteur:staffId
                 }
-                _writeData(`hours/`, data)
+                _writeData(`pro/${proId}/hours/`, data)
                 router.push("/pro/staffPro/updateStaff")
                 // Redirection ou autres traitements
             } else {

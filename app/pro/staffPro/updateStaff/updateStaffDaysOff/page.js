@@ -18,10 +18,13 @@ const UpdateStaffDaysOff = () => {
     const [valueStart, setValueStart] = useState(new Date())
     const [valueEnd, setValueEnd] = useState(new Date())
     const [staffId, setStaffId] = useState()
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
         setStaffId(localStorage.getItem('staffId'))
+        const proIdStored = localStorage.getItem('proId')
+        if (proIdStored) setProId(proIdStored)
     },[])
 
     const _handleSaveDates = () => {
@@ -47,7 +50,7 @@ const UpdateStaffDaysOff = () => {
                 startString,
                 endString,
             }
-            _writeData(`daysOff`, data)
+            _writeData(`pro/${proId}/daysOff`, data)
             router.push("/pro/staffPro/updateStaff")
         } else {
             alert("Vous devez renseigner une date de début et une date de fin.")

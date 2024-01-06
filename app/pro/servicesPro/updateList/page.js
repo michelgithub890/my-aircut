@@ -24,6 +24,7 @@ const UpdateList = () => {
     const [list, setList] = useState({})
     const [initialName, setInitialName] = useState("")
     const [confirmDelelte, setConfirmDelete] = useState(false)
+    const [proId, setProId] = useState()
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
@@ -31,11 +32,18 @@ const UpdateList = () => {
     })
 
     useEffect(() => {
-        let listData = localStorage.getItem("list")
-        let storedListData = JSON.parse(listData)
-        setList(storedListData)
-        _readServices()
+        if (typeof window !== "undefined") {
+            let listData = localStorage.getItem("list")
+            let storedListData = JSON.parse(listData)
+            setList(storedListData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readServices(proId)
+    },[proId])
 
     useEffect(() => {
         setValue("name", list.name)
@@ -49,7 +57,7 @@ const UpdateList = () => {
         const dataList = {
             name:name
         }
-        _updateData(`services/list/${list.id}`, dataList)
+        _updateData(`pro/${proId}/services/list/${list.id}`, dataList)
         router.push('/pro/servicesPro')
     }
 
@@ -57,9 +65,9 @@ const UpdateList = () => {
     const _handleDeleteList = () => {
         services.filter(service => service.idList === list.id).map(service => {
             console.log('updateList _handleDeleteList ', service.name)
-            _deleteData(`services/items/${service.id}`)
+            _deleteData(`pro/${proId}/services/items/${service.id}`)
         })
-        _deleteData(`services/list/${list.id}`)
+        _deleteData(`pro/${proId}/services/list/${list.id}`)
         router.push("/pro/servicesPro")
     }
 

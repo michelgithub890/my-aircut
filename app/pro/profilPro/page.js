@@ -85,7 +85,8 @@ const ProfilPro = () => {
     // Function to handle form submission
     const onSubmit = (data) => {
         const { name, surname, company, hours, address, map, phone } = data
-        const id = profil[0].id
+        const id = profil.filter(pro => pro.proId === proId).map(pro => pro.id)
+        console.log('profil', finalId)
         const dataProfil = {
             name,
             surname,

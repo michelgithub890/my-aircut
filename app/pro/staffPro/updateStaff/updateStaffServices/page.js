@@ -13,26 +13,34 @@ import imageCaseACocherOk from '@/public/assets/images/caseACocherOk.png'
 const UpdateStaffServices = () => {
     const { _readServices, services, _readLists, lists, _readStaffs, staffs, _updateData } = useFirebase()
     const [staffId, setStaffId] = useState()
+    const [proId, setProId] = useState()
 
     useEffect(() => {
-        setStaffId(localStorage.getItem('staffId'))
-        _readServices()
-        _readLists()
-        _readStaffs()
+        if (typeof window !== "undefined") {
+            setStaffId(localStorage.getItem('staffId'))
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readServices(proId)
+        _readLists(proId)
+        _readStaffs(proId)
+    },[proId])
 
     const _handlePutOnService = (serviceId) => {
         const data = {
             [staffId]:true
         }
-        _updateData(`services/items/${serviceId}`, data)
+        _updateData(`pro/${proId}/services/items/${serviceId}`, data)
     }
 
     const _handlePutOffService = (serviceId) => {
         const data = {
             [staffId]:false
         }
-        _updateData(`services/items/${serviceId}`, data)
+        _updateData(`pro/${proId}/services/items/${serviceId}`, data)
     }
 
     return (

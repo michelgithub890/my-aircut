@@ -7,18 +7,26 @@ import useFirebase from '@/firebase/useFirebase'
 
 const ForfaitPro = () => {
     const { _updateData, _readProfil, profil } = useFirebase()
+    const [proId, setProId] = useState()
     const [confirm, setConfirm] = useState(false)
 
     useEffect(() => {
-        _readProfil()
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
+    useEffect(() => { 
+        _readProfil(proId)
+    },[proId])
+
     const _handleUpdateForfait = () => {
-        const id = profil[0].id
+        const id = profil.filter(pro => pro.proId === proId).map(pro => pro.id)
         const data = {
             forfait:"demandeDesabonnement"
         }
-        _updateData(`profil/${id}`, data)
+        _updateData(`pro/${proId}/profil/${id}`, data)
     }
 
     return (
@@ -26,16 +34,16 @@ const ForfaitPro = () => {
 
             <HeaderPro title="Abonnement" />
 
-            {profil?.map(pro => (
+            {profil?.filter(pro => pro.proId === proId).map(pro => (
                 <div key={pro.id} className="mt-10">
                     <>
                         {pro.forfait === "demandeDesabonnement" ?
                             <div>
-                                <div className="text-center text-2xl">Votre demande de désabonnement est en cours de traitement.</div>
+                                <div className="text-center text-xl">Votre demande de désabonnement est en cours de traitement.</div>
                             </div>
                         :
                             <div>
-                                <div className="text-center text-2xl">Vous êtes abonné</div>
+                                <div className="text-center text-xl">Vous êtes abonné</div>
                                 <div className='flex justify-center mt-10'>
                                     {confirm ? 
                                         <button className="myButtonRed" onClick={_handleUpdateForfait}>Confirmer</button>

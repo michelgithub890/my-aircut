@@ -51,39 +51,39 @@ const useFirebase = () => {
     //     }
     // }
 
-    const _readStaffs = () => {
-        setStaffs([])
-        const starCountRef = ref(database, 'staff')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setStaffs(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // const _readStaffs = () => {
+    //     setStaffs([])
+    //     const starCountRef = ref(database, 'staff')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setStaffs(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
 
-    const _readHours = () => {
-        setHours([])
-        const starCountRef = ref(database, 'hours')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setHours(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // const _readHours = () => {
+    //     setHours([])
+    //     const starCountRef = ref(database, 'hours')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setHours(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
     
     // // READ SERVICES   
     // const _readServices = () => {
@@ -176,22 +176,22 @@ const useFirebase = () => {
     }
 
     // READ PUSHS   
-    const _readPushs = () => {
-        setPushs([])
-        const starCountRef = ref(database, 'pushs')
-        try {
-            onValue(starCountRef, (snapshot) => {
-                const data = snapshot.val()
-                const dataList = []
-                for (let id in data) {
-                  dataList.push({id,...data[id]})
-                }
-                setPushs(dataList)
-            })
-        } catch {
-            alert('il y a une erreur dans la lecture')
-        }
-    }
+    // const _readPushs = () => {
+    //     setPushs([])
+    //     const starCountRef = ref(database, 'pushs')
+    //     try {
+    //         onValue(starCountRef, (snapshot) => {
+    //             const data = snapshot.val()
+    //             const dataList = []
+    //             for (let id in data) {
+    //               dataList.push({id,...data[id]})
+    //             }
+    //             setPushs(dataList)
+    //         })
+    //     } catch {
+    //         alert('il y a une erreur dans la lecture')
+    //     }
+    // }
 
     // // READ PROFIL 
     // const _readProfil = () => {
@@ -313,6 +313,57 @@ const useFirebase = () => {
                   dataList.push({id,...data[id]})
                 }
                 setServices(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    const _readStaffs = (proId) => {
+        setStaffs([])
+        const starCountRef = ref(database, `pro/${proId}/staff`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setStaffs(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    const _readHours = (proId) => {
+        setHours([])
+        const starCountRef = ref(database, `pro/${proId}/hours`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setHours(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    const _readPushs = (proId) => {
+        setPushs([])
+        const starCountRef = ref(database, `pro/${proId}/pushs`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setPushs(dataList)
             })
         } catch {
             alert('il y a une erreur dans la lecture')

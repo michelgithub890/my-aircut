@@ -143,7 +143,7 @@ const HomePro = () => {
                     </div>
                     <div className='text-center' style={{fontSize:12}}>PROFIL</div>
                 </Link>
-                <Link href={"/pro/profilPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/aidesPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
                     <div className="flex justify-center"> 
                         <Image src={imageOutils} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                     </div>

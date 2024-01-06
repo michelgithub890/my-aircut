@@ -34,6 +34,7 @@ const validationSchema = Yup.object({
 const PushPro = () => {
     const [showHistory, setShowHistory] = useState(false)
     const { _readPushs, pushs, _writeData } = useFirebase()
+    const [proId, setProId] = useState()
     const router = useRouter()
     // Initialise React Hook Form
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -41,8 +42,15 @@ const PushPro = () => {
     })
 
     useEffect(() => {
-        _readPushs()
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readPushs(proId)
+    },[proId])
 
     // Function to handle form submission
     const onSubmit = async (data) => {
@@ -85,7 +93,7 @@ const PushPro = () => {
             date:formattedDate
         }
 
-        _writeData('pushs', dataPush)
+        _writeData(`pro/${proId}/pushs`, dataPush)
 
         reset({ title: "", message: "" })
     }
@@ -145,8 +153,6 @@ const PushPro = () => {
                     ))}
                 </div>
             }
-
-
 
             <div style={{ height:400 }} />
 

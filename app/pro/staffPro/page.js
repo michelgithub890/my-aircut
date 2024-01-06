@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 // COMPONENTS 
 import HeaderPro from '@/components/pro/HeaderPro' 
 // NEXT 
@@ -12,12 +12,20 @@ import imageAddStaff from '@/public/assets/images/addStaff.png'
 import useFirebase from '@/firebase/useFirebase'
 
 const StaffPro = () => { 
-    const { _readStaffs, staffs } = useFirebase()
+    const { _readStaffs, staffs } = useFirebase() 
+    const [proId, setProId] = useState()
     const router = useRouter()
 
     useEffect(() => {
-        _readStaffs()
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readStaffs(proId)
+    },[proId])
 
     const _handleChoiceStaff = (staffId) => {
         localStorage.setItem("staffId",(staffId))
