@@ -48,25 +48,29 @@ const HomeClients = () => {
     },[isAuth])
 
     const _handleMap = () => {
-        window.open(profil[0].map, "_blank") 
+        profil?.filter(pro => pro.proId == proId).map(pro => {
+            window.open(pro.map, "_blank") 
+        })
     }
 
     const _handlePhone = () => {
-        const phoneUrl = `tel:${profil[0].phone}`
-        try {
-            window.location.href = phoneUrl
-        } catch {
-            console.log('impossible')
-        }  
+        profil?.filter(pro => pro.proId == proId).map(pro => {
+            const phoneUrl = `tel:${pro.phone}`
+            try {
+                window.location.href = phoneUrl
+            } catch {
+                console.log('impossible')
+            }  
+        })
     }
 
     return (
         <div>
 
-            {profil?.map(pro => (
+            {profil?.filter(pro => pro.proId === proId).map(pro => (
                 <div key={pro.id}>
 
-                    <div>booking to come {isAuth?.status}</div>
+                    <div>booking to come</div>
 
                     <div className="flex justify-end items-center gap-3 border-b-2 p-3">
                         {isAuth?.[proId] ? 
@@ -132,7 +136,7 @@ const HomeClients = () => {
                             </div>
                             <div className='text-center' style={{fontSize:12}}>NOUS SITUER</div>
                         </div>
-                        <Link href={isAuth ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
+                        <Link href={isAuth?.[proId] ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
                             <div className="flex justify-center">
                                 {messagesChat
                                     ?.filter(message => message.userEmail === isAuth?.email && message.destinataire === "client" && !message.read)

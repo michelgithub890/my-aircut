@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 // COMPONENTS 
 import HeaderClients from '@/components/clients/HeaderClients'
 // FIREBASE 
@@ -7,10 +7,18 @@ import useFirebase from '@/firebase/useFirebase'
 
 const OpeningHours = () => {
     const { _readProfil, profil } = useFirebase()
+    const [proId, setProId] = useState()
 
     useEffect(() => {
-        _readProfil()
+        if (typeof window !== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
+
+    useEffect(() => {
+        _readProfil(proId)
+    },[proId])
 
     // MULTILIGNE 
     const _convertNewLineToBreak = (str) => {

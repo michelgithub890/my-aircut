@@ -36,10 +36,13 @@ const ChatClients = () => {
     const [messageToDelete, setMessageToDelete] = useState(null)
 
     useEffect(() => {
-        const auth = localStorage.getItem('isAuth')
-        const authData = JSON.parse(auth)
-        setIsAuth(authData)
-        setProId(localStorage.getItem('proId'))
+        if (typeof window !== "undefined") {
+            const auth = localStorage.getItem('isAuth')
+            const authData = JSON.parse(auth)
+            setIsAuth(authData)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+        }
     },[])
 
     useEffect(() => {
@@ -85,7 +88,7 @@ const ChatClients = () => {
     
     const confirmDelete = () => {
         if (messageToDelete) {
-            _deleteData(`chat/${messageToDelete}`)
+            _deleteData(`pro/${proId}/chat/${messageToDelete}`)
         }
         handleCloseDialog();
     }
