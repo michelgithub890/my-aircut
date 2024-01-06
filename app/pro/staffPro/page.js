@@ -14,18 +14,20 @@ import useFirebase from '@/firebase/useFirebase'
 const StaffPro = () => { 
     const { _readStaffs, staffs } = useFirebase() 
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
         _readStaffs(proId)
-    },[proId])
+    },[count])
 
     const _handleChoiceStaff = (staffId) => {
         localStorage.setItem("staffId",(staffId))

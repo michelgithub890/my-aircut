@@ -26,21 +26,31 @@ const BookingClients = () => {
     const [showServices, setShowServices] = useState(false)
     const [showDay, setShowDay] = useState()
     const [numberRender, setNumberRender] = useState(7)
+    const [countMontage, setCountMontage] = useState(0)
+    const [proId, setProId] = useState()
 
     useEffect(() => {
-        // get services storage 
-        let servicesData = JSON.parse(localStorage.getItem("services"))
-        // set services for show in render
-        setServicesStorage(servicesData)
-        // close choice services 
-        setShowServices(false)
-        const today = new Date()
-        const formattedDate = format(today, 'eeee dd MMMM yyyy', { locale: fr })
-        setTodayDate(formattedDate)
-        _readDaysOff()
-        _readStaffs()
-        _readServices()
-        _readHours()
+        if (typeof window !== "undefined") {
+            // get services storage 
+            let servicesData = JSON.parse(localStorage.getItem("services"))
+            // set services for show in render
+            setServicesStorage(servicesData)
+            // close choice services 
+            setShowServices(false)
+            const today = new Date()
+            const formattedDate = format(today, 'eeee dd MMMM yyyy', { locale: fr })
+            setTodayDate(formattedDate)
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+            setCountMontage(count + 1)
+        }
+    },[count])
+
+    useEffect(() => {
+        _readDaysOff(proId)
+        _readStaffs(proId)
+        _readServices(proId)
+        _readHours(proId)
     },[count])
 
     const _handleRemove = () => {

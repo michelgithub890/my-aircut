@@ -20,6 +20,7 @@ const UpdateStaff = () => {
     const { _readStaffs, staffs, _readDaysOff, daysOff, _updateData, _readHours, hours, _deleteData } = useFirebase()
     const [staffId, setStaffId] = useState()
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
@@ -27,6 +28,7 @@ const UpdateStaff = () => {
             setStaffId(localStorage.getItem('staffId'))
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
@@ -34,7 +36,7 @@ const UpdateStaff = () => {
         _readStaffs(proId)
         _readDaysOff(proId)
         _readHours(proId)
-    },[proId])
+    },[count])
 
     // DELETE DAY OFF  
     const _handleDeleteDaysOff = (id) => {

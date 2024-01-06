@@ -28,28 +28,24 @@ const ChatSingle = () => {
     const [urlStored, setUrlStored] = useState("")
     const [emetteur, setEmetteur] = useState()
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
-        const loadFromLocalStorage = () => {
-            try {
-                const emetteurData = localStorage.getItem("emetteur")
-                const parsedEmetteurData = emetteurData ? JSON.parse(emetteurData) : null
-                setEmetteur(parsedEmetteurData)
-                setUrlStored(localStorage.getItem('url')) 
-                const proIdStored = localStorage.getItem('proId')
-                if (proIdStored) setProId(proIdStored)
-
-            } catch (error) {
-                console.error('Erreur lors de l\'analyse des données de localStorage:', error)
-            }
+        if (typeof window !== "undefined") {
+            const emetteurData = localStorage.getItem("emetteur")
+            const parsedEmetteurData = emetteurData ? JSON.parse(emetteurData) : null
+            setEmetteur(parsedEmetteurData)
+            setUrlStored(localStorage.getItem('url')) 
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
-        loadFromLocalStorage()
     },[])
 
     useEffect(() => {
         _readMessagesChat(proId)
         _readUsers(proId)
-    },[proId])
+    },[count])
 
     useEffect(() => {
         window.scrollTo(0,0)

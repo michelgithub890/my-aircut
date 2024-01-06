@@ -8,17 +8,19 @@ import useFirebase from '@/firebase/useFirebase'
 const OpeningHours = () => {
     const { _readProfil, profil } = useFirebase()
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
         _readProfil(proId)
-    },[proId])
+    },[count])
 
     // MULTILIGNE 
     const _convertNewLineToBreak = (str) => {
@@ -31,7 +33,7 @@ const OpeningHours = () => {
     }
 
     return (
-        profil?.map(pro => (
+        profil?.filter(pro => pro.proId === proId).map(pro => (
             <div key={pro.id}>
 
                 <HeaderClients title="Retour" />

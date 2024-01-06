@@ -39,9 +39,6 @@ const NewPassword = () => {
       resolver: yupResolver(validationSchema)
   })
 
-    // recupérer email 
-    // récupérer proId 
-
     useEffect(() => {
         setMontage(true)
     },[])

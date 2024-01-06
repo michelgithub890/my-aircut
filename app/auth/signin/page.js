@@ -34,6 +34,7 @@ const Signin = () => {
     const router = useRouter()
     const [proId, setProId] = useState("")
     const [isAuth, setIsAuth] = useState("")
+    const [count, setCount] = useState(0)
     const { _readUsers, users, _updateData } = useFirebase()
     // Initialise React Hook Form
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -47,14 +48,15 @@ const Signin = () => {
             setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
+            console.log('signIn', count)
         }
     },[])
 
     useEffect(() => {
-        if (proId) {
-            _readUsers(proId)
-        }
-    },[proId])
+        _readUsers(proId)
+        console.log('signIn =>', count)
+    },[count])
 
     // Function to handle form submission
     const onSubmit = async (data) => {

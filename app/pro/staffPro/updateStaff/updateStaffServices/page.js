@@ -14,12 +14,14 @@ const UpdateStaffServices = () => {
     const { _readServices, services, _readLists, lists, _readStaffs, staffs, _updateData } = useFirebase()
     const [staffId, setStaffId] = useState()
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             setStaffId(localStorage.getItem('staffId'))
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
@@ -27,7 +29,7 @@ const UpdateStaffServices = () => {
         _readServices(proId)
         _readLists(proId)
         _readStaffs(proId)
-    },[proId])
+    },[count])
 
     const _handlePutOnService = (serviceId) => {
         const data = {

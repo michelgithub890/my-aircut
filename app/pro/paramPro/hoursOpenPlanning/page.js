@@ -20,18 +20,20 @@ const HoursOpenPlanning = () => {
     const [titleModal, setTilteModal] = useState("")
     const [openModalConfirm, setOpenModalConfirm] = useState(false)
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
         _readProfil(proId)
-    },[proId])
+    },[count])
 
     const _handleSaveDates = () => {
 

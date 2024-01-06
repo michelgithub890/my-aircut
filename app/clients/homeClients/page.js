@@ -13,7 +13,6 @@ import imagePhone from '@/public/assets/images/phone.png'
 import imageChat from '@/public/assets/images/chat.png' 
 import imageChatGif from '@/public/assets/images/chatgif.gif'
 import imageProfil from '@/public/assets/images/imageprofil.png'
-import imageLogo from '@/public/assets/images/logo.png'
 import imageProfilOn from '@/public/assets/images/profilon.png'
 import imageProfilOff from '@/public/assets/images/profiloff.png'
 // FIREBASE 
@@ -22,7 +21,9 @@ import useFirebase from '@/firebase/useFirebase'
 const HomeClients = () => {
     const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState("")
+    const [count, setCount] = useState(0)
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat } = useFirebase()
+    const [customIcon, setCustomIcon] = useState()
     const router = useRouter()
 
     useEffect(() => {
@@ -32,6 +33,7 @@ const HomeClients = () => {
             setIsAuth(authData)
             const storedPro = localStorage.getItem("proId")
             if (storedPro) setProId(storedPro) 
+            setCount(count + 1)
         }
     },[])
 
@@ -40,8 +42,9 @@ const HomeClients = () => {
             _readUsers(proId)
             _readProfil(proId) 
             _readMessagesChat(proId)
+            setCustomIcon(`../../../public/assets/images/profiloff.png`)
         }
-    },[proId])
+    },[count])
 
     useEffect(() => {
         if (isAuth?.status === 'pro') router.push('/pro/homePro')
@@ -72,6 +75,7 @@ const HomeClients = () => {
 
                     <div>booking to come</div>
 
+
                     <div className="flex justify-end items-center gap-3 border-b-2 p-3">
                         {isAuth?.[proId] ? 
                             <>
@@ -97,7 +101,7 @@ const HomeClients = () => {
                     <div className="text-center mt-4 text-xl">{pro.company}</div>
 
                     <div className="flex justify-center">
-                        <Image src={imageLogo} priority={true} className='img-fluid' alt='image calendar' style={{ height:150, width:150 }} />
+                        <Image src={`/assets/icons/${pro.icon}.png`} priority={true} className='img-fluid' alt='image calendar' width={230} height={230} />
                     </div>
 
                     {/* CARD CALENDAR */}

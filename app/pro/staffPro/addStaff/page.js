@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation' 
+import { useRouter, useSearchParams } from 'next/navigation' 
 // REACT HOOK FORM 
 import { useForm } from 'react-hook-form'
 // MATERIAL UI 

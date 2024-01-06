@@ -27,6 +27,7 @@ const ClientsPro = () => {
     const router = useRouter()
     const [name, setName] = useState('')
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
     // Initialise React Hook Form 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
@@ -36,12 +37,13 @@ const ClientsPro = () => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
  
     useEffect(() => {
         _readUsers(proId)
-    },[proId])
+    },[count])
 
     const handleClearInput = () => {
         setName('')

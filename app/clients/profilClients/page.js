@@ -12,6 +12,7 @@ const ProfilClients = () => {
     const [isAuth, setIsAuth] = useState("")
     const [proId, setProId] = useState("")
     const [isMonted, setIsMonted] = useState(false)
+    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
@@ -22,15 +23,14 @@ const ProfilClients = () => {
             setIsAuth(authData);
     
             const storedProId = localStorage.getItem('proId')
-            if (storedProId) {
-                setProId(storedProId);
-            }
+            if (storedProId) setProId(storedProId)
+            setCount(count + 1)
         }
     },[]) 
 
     useEffect(() => {
-        if (proId) _readUsers(proId)
-    },[proId])
+        _readUsers(proId)
+    },[count])
 
     const _handleSignOut = () => {
         localStorage.removeItem('isAuth')
@@ -50,7 +50,7 @@ const ProfilClients = () => {
             ))}
 
             <div className="flex justify-center mt-10">
-                <button className="myButton" onClick={_handleSignOut}>Se deconnecter</button>
+                <button className="myButtonGrey" onClick={_handleSignOut}>Se deconnecter</button>
             </div>
 
             <div style={{ height:400 }} />

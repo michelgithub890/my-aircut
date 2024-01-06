@@ -9,17 +9,19 @@ const ForfaitPro = () => {
     const { _updateData, _readProfil, profil } = useFirebase()
     const [proId, setProId] = useState()
     const [confirm, setConfirm] = useState(false)
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
     useEffect(() => { 
         _readProfil(proId)
-    },[proId])
+    },[count])
 
     const _handleUpdateForfait = () => {
         const id = profil.filter(pro => pro.proId === proId).map(pro => pro.id)

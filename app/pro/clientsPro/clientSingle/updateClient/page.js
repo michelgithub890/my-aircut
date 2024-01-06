@@ -24,6 +24,7 @@ const UpdateClient = () => {
     const [userSelected, setUserSelected] = useState()
     const [initialName, setInitialName] = useState("")
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -37,12 +38,13 @@ const UpdateClient = () => {
             setUserSelected(parsedUserData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
         _readUsers(proId)
-    },[proId])
+    },[count])
 
     useEffect(() => {
         users?.filter(user => user.id === userSelected.id).map(user => {

@@ -26,6 +26,7 @@ const ForgotPassword = () => {
     const [error, setError] = useState("")
     const { _readProfil, profil } = useFirebase()
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
     const router = useRouter()
     // Initialise React Hook Form
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -33,15 +34,16 @@ const ForgotPassword = () => {
     })
 
     useEffect(() => {
-        const proIdStored = localStorage.getItem('proId')
-        if (proIdStored) setProId(proIdStored)
+        if (typeof window!== "undefined") {
+            const proIdStored = localStorage.getItem('proId')
+            if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
+        }
     },[])
 
     useEffect(() => {
-        if (proId) {
-            _readProfil(proId)
-        }
-    },[proId])
+        _readProfil(proId)
+    },[count])
 
     // Function to handle form submission
     const onSubmit = async (data) => {

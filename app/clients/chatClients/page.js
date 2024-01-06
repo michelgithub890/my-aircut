@@ -33,6 +33,7 @@ const ChatClients = () => {
     const [openDialog, setOpenDialog] = useState(false)
     const [isAuth, setIsAuth] = useState("")
     const [proId, setProId] = useState("")
+    const [count, setCount] = useState(0)
     const [messageToDelete, setMessageToDelete] = useState(null)
 
     useEffect(() => {
@@ -42,13 +43,16 @@ const ChatClients = () => {
             setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readUsers(proId)
-        _readMessagesChat(proId)
-    },[proId])
+        if (proId) {
+            _readUsers(proId)
+            _readMessagesChat(proId)
+        }
+    },[count])
 
     const _updateMessage = (id) => {
         const data = {

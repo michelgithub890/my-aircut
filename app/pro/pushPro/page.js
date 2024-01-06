@@ -35,6 +35,7 @@ const PushPro = () => {
     const [showHistory, setShowHistory] = useState(false)
     const { _readPushs, pushs, _writeData } = useFirebase()
     const [proId, setProId] = useState()
+    const [count, setCount] = useState(0)
     const router = useRouter()
     // Initialise React Hook Form
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -45,12 +46,13 @@ const PushPro = () => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
         _readPushs(proId)
-    },[proId])
+    },[count])
 
     // Function to handle form submission
     const onSubmit = async (data) => {
