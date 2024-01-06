@@ -25,7 +25,6 @@ const UpdateList = () => {
     const [initialName, setInitialName] = useState("")
     const [confirmDelelte, setConfirmDelete] = useState(false)
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
     const router = useRouter()
     // Initialise React Hook Form 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
@@ -39,13 +38,14 @@ const UpdateList = () => {
             setList(storedListData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readServices(proId)
-    },[count])
+        if (proId) {
+            _readServices(proId)
+        }
+    },[proId])
 
     useEffect(() => {
         setValue("name", list.name)

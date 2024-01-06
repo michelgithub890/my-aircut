@@ -21,7 +21,6 @@ import useFirebase from '@/firebase/useFirebase'
 const HomeClients = () => {
     const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState("")
-    const [count, setCount] = useState(0)
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat } = useFirebase()
     const [customIcon, setCustomIcon] = useState()
     const router = useRouter()
@@ -33,7 +32,6 @@ const HomeClients = () => {
             setIsAuth(authData)
             const storedPro = localStorage.getItem("proId")
             if (storedPro) setProId(storedPro) 
-            setCount(count + 1)
         }
     },[])
 
@@ -44,7 +42,7 @@ const HomeClients = () => {
             _readMessagesChat(proId)
             setCustomIcon(`../../../public/assets/images/profiloff.png`)
         }
-    },[count])
+    },[proId])
 
     useEffect(() => {
         if (isAuth?.status === 'pro') router.push('/pro/homePro')

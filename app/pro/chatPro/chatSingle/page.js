@@ -28,7 +28,6 @@ const ChatSingle = () => {
     const [urlStored, setUrlStored] = useState("")
     const [emetteur, setEmetteur] = useState()
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -38,14 +37,15 @@ const ChatSingle = () => {
             setUrlStored(localStorage.getItem('url')) 
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readMessagesChat(proId)
-        _readUsers(proId)
-    },[count])
+        if (proId) {
+            _readMessagesChat(proId)
+            _readUsers(proId)
+        }
+    },[proId])
 
     useEffect(() => {
         window.scrollTo(0,0)

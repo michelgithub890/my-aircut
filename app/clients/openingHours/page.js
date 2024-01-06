@@ -8,19 +8,19 @@ import useFirebase from '@/firebase/useFirebase'
 const OpeningHours = () => {
     const { _readProfil, profil } = useFirebase()
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readProfil(proId)
-    },[count])
+        if (proId) {
+            _readProfil(proId)
+        }
+    },[proId])
 
     // MULTILIGNE 
     const _convertNewLineToBreak = (str) => {

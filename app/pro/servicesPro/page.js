@@ -20,21 +20,21 @@ const ServicesPro = () => {
     const { _readLists, lists, _readServices, services } = useFirebase()
     const [showList, setShowList] = useState("")
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readLists(proId) 
-        _readServices(proId)
-    },[count])
+        if (proId) {
+            _readLists(proId) 
+            _readServices(proId)
+        }
+    },[proId])
 
     const _handleAddService = (id, name) => {
         localStorage.setItem('idList', id)

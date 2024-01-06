@@ -36,7 +36,6 @@ const SignUp = () => {
     const [error, setError] = useState("")
     const { _writeData, _readUsers, users } = useFirebase()
     const [proId, setProId] = useState("")
-    const [count, setCount] = useState(0)
     const router = useRouter()
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
@@ -47,13 +46,14 @@ const SignUp = () => {
             const proIdStored = localStorage.getItem('proId')
             console.log("signup useEffect ", proIdStored)
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readUsers(proId)
-    },[count])
+        if (proId) {
+            _readUsers(proId)
+        }
+    },[proId])
 
     const onSubmit = (data) => {
         const { email, password, name } = data

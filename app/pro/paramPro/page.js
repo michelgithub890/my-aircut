@@ -14,20 +14,20 @@ import Link from 'next/link'
 const ParamPro = () => {
     const { _readDaysOff, daysOff, _deleteData, _readProfil, profil } = useFirebase()
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[]) 
 
     useEffect(() => {
-        _readDaysOff(proId)
-        _readProfil(proId)
-    },[count])
+        if (proId) {
+            _readDaysOff(proId)
+            _readProfil(proId)
+        }
+    },[proId])
 
     // DELETE DAY OFF 
     const _handleDeleteDaysOff = (id) => {

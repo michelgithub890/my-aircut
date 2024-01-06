@@ -12,7 +12,6 @@ const ProfilClients = () => {
     const [isAuth, setIsAuth] = useState("")
     const [proId, setProId] = useState("")
     const [isMonted, setIsMonted] = useState(false)
-    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
@@ -24,13 +23,14 @@ const ProfilClients = () => {
     
             const storedProId = localStorage.getItem('proId')
             if (storedProId) setProId(storedProId)
-            setCount(count + 1)
         }
     },[]) 
 
     useEffect(() => {
-        _readUsers(proId)
-    },[count])
+        if (proId) {
+            _readUsers(proId)
+        }
+    },[proId])
 
     const _handleSignOut = () => {
         localStorage.removeItem('isAuth')

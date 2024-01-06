@@ -37,7 +37,6 @@ const ProfilPro = () => {
     const router = useRouter()
     const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
     const [initialName, setInitialName] = useState("")
     const [initialSurname, setInitialSurname] = useState("")
     const [initialCompany, setInitialCompany] = useState("")
@@ -57,13 +56,14 @@ const ProfilPro = () => {
             setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readProfil(proId)
-    },[count])
+        if (proId) {
+            _readProfil(proId)
+        }
+    },[proId])
 
     useEffect(() => {
         profil?.filter(proData => proData.email === isAuth?.email).map(proData => {

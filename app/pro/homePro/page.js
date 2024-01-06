@@ -25,7 +25,6 @@ const HomePro = () => {
     const { _readProfil, profil, _readMessagesChat, messagesChat } = useFirebase()
     const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
@@ -35,14 +34,15 @@ const HomePro = () => {
             setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readProfil(proId)
-        _readMessagesChat(proId)
-    },[count])
+        if (proId) {
+            _readProfil(proId)
+            _readMessagesChat(proId)
+        }
+    },[proId])
 
     const _handleLogOut = () => {
         localStorage.removeItem('isAuth')
@@ -52,9 +52,9 @@ const HomePro = () => {
     return (
         <div>
 
-            <div>test {profil.map(pro => pro.id).length}</div>
+            <div>test {profil.map(pro => pro.id).length} {proId}</div>
 
-            {profil?.filter(pro => pro.email === isAuth?.email).map(pro => (
+            {profil?.filter(pro => pro.proId === proId).map(pro => (
                 <div className="flex justify-end items-center gap-3 border-b-2 p-3" key={pro.id}>
                     <div>{pro.company}</div>
                     <IoMdLogOut size={"2.2rem"} onClick={_handleLogOut} />

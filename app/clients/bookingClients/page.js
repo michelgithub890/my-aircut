@@ -26,7 +26,6 @@ const BookingClients = () => {
     const [showServices, setShowServices] = useState(false)
     const [showDay, setShowDay] = useState()
     const [numberRender, setNumberRender] = useState(7)
-    const [countMontage, setCountMontage] = useState(0)
     const [proId, setProId] = useState()
 
     useEffect(() => {
@@ -42,16 +41,17 @@ const BookingClients = () => {
             setTodayDate(formattedDate)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCountMontage(count + 1)
         }
     },[count])
 
     useEffect(() => {
-        _readDaysOff(proId)
-        _readStaffs(proId)
-        _readServices(proId)
-        _readHours(proId)
-    },[count])
+        if (proId) {
+            _readDaysOff(proId)
+            _readStaffs(proId)
+            _readServices(proId)
+            _readHours(proId)
+        }
+    },[proId])
 
     const _handleRemove = () => {
         localStorage.removeItem('services')

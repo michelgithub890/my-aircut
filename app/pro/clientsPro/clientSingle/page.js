@@ -23,7 +23,6 @@ const ClientSingle = () => {
     const [checked, setCheched] = useState(true)
     const [showHistoryBooking, setShowHistoryBooking] = useState(false)
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
     const router = useRouter()
 
     useEffect(() => {
@@ -33,13 +32,14 @@ const ClientSingle = () => {
             setUserSelected(parsedUserData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readUsers(proId)
-    },[count])
+        if (proId) {
+            _readUsers(proId)
+        }
+    },[proId])
 
     useEffect(() => {
         setNumberCard(userSelected?.fidelityCard ? userSelected.fidelityCard : 0)

@@ -11,20 +11,20 @@ import useFirebase from '@/firebase/useFirebase'
 
 const SiteWeb = () => {
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
     const { _readProfil, profil } = useFirebase()
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
 
     useEffect(() => {
-        _readProfil(proId)
-    },[count])
+        if (proId) {
+            _readProfil(proId)
+        }
+    },[proId])
 
     return (
         <div>

@@ -11,22 +11,21 @@ const ChatPro = () => {
     const { _readMessagesChat, messagesChat, _readUsers, users } = useFirebase() 
     const router = useRouter()
     const [proId, setProId] = useState()
-    const [count, setCount] = useState(0)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
             setCount(count + 1)
-            console.log('chatPro ', count)
         }
     },[])
     
     useEffect(() => {
-        _readMessagesChat(proId)
-        _readUsers(proId)
-        console.log('chatPro =>', count)
-    },[count])
+        if (proId) {
+            _readMessagesChat(proId)
+            _readUsers(proId)
+        }
+    },[proId])
 
     const _handleNav = (emetteur) => {
         localStorage.setItem('emetteur', JSON.stringify(emetteur))
