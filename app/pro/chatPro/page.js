@@ -16,7 +16,6 @@ const ChatPro = () => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-            setCount(count + 1)
         }
     },[])
     

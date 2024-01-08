@@ -12,8 +12,9 @@ import Image from 'next/image'
 import Link from 'next/link' 
 
 const ParamPro = () => {
-    const { _readDaysOff, daysOff, _deleteData, _readProfil, profil } = useFirebase()
+    const { _readDaysOff, daysOff, _deleteData, _readProfil, profil, _updateData } = useFirebase()
     const [proId, setProId] = useState()
+    const [numberWeek, setNumberWeek] = useState(4)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -29,9 +30,35 @@ const ParamPro = () => {
         }
     },[proId])
 
+    useEffect(() => {
+        profil?.filter(pro => pro.proId === proId).map(pro => {
+            setNumberWeek(pro.numberWeek ? pro.numberWeek : 4)
+        })
+    },[profil])
+
     // DELETE DAY OFF 
     const _handleDeleteDaysOff = (id) => {
         _deleteData(`pro/${proId}/daysOff/${id}`)
+    }
+
+    // SUBSTRIDE WEEK NUMBER 
+    const _subsribeWeekNumber = (id) => {
+        if (numberWeek > 0) {
+            const data = {
+                numberWeek:numberWeek- 1
+            }
+            _updateData(`pro/${proId}/profil/${id}`, data)
+        }
+    }
+
+    // ADD WEEK NUMBER 
+    const _addWeekNumber = (id) => {
+        if (numberWeek < 8) {
+            const data = {
+                numberWeek:numberWeek + 1
+            }
+            _updateData(`pro/${proId}/profil/${id}`, data)
+        }
     }
 
     return (
@@ -39,7 +66,7 @@ const ParamPro = () => {
 
             <HeaderPro title="Paramètres" />
 
-            {profil?.map(pro => (
+            {profil?.filter(pro => pro.proId === proId).map(pro => (
                 <div key={pro.id}>
                     <div className="border-b-2 p-3 mt-3">
                         <div className="flex justify-center gap-4 items-center p-3">
@@ -73,6 +100,14 @@ const ParamPro = () => {
                     </div>
 
                     <div className="border-b-2 p-3 text-center">de {pro.hoursStartPlanning} à {pro.hoursEndPlanning}</div>
+
+                    {/* NBR WEEKS TO BOOKING */}
+                    <div className="text-center mt-4">Nombre de semaines de réservations possible (max 8)</div>
+                    <div className="flex justify-center p-3 items-center">
+                        <div className="text-3xl me-4" onClick={() => _subsribeWeekNumber(pro.id)}>-</div>
+                        <div className="text-2xl">{numberWeek}</div>
+                        <div className="text-3xl ms-4" onClick={() => _addWeekNumber(pro.id)}>+</div>
+                    </div>
 
                 </div>
             ))}

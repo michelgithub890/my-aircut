@@ -16,17 +16,20 @@ import { format, addDays, parse, isWithinInterval } from 'date-fns'
 import { fr } from 'date-fns/locale'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
+// HOOKS 
+import usePlanningClient from '@/hooks/usePlanningClient'
 
 const BookingClients = () => {
-    const { _readDaysOff, daysOff, _readStaffs, staffs, _readServices, services, _readHours, hours } = useFirebase()
-    const [servicesStorage, setServicesStorage] = useState([])
+    const { _readDaysOff, daysOff, _readStaffs, staffs, _readServices, services, _readHours, hours, _readLists, lists, _readProfil, profil } = useFirebase()
+    const { _displayPlanningFinal } = usePlanningClient()
+    const [servicesStorage, setServicesStorage] = useState()
     const [count, setCount] = useState(1)
     const [age, setAge] = useState(0)
     const [todayDate, setTodayDate] = useState()
     const [showServices, setShowServices] = useState(false)
     const [showDay, setShowDay] = useState()
-    const [numberRender, setNumberRender] = useState(7)
     const [proId, setProId] = useState()
+    const [numberDays, setNumberDays] = useState(7)
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -50,6 +53,8 @@ const BookingClients = () => {
             _readStaffs(proId)
             _readServices(proId)
             _readHours(proId)
+            _readLists(proId)
+            _readProfil(proId)
         }
     },[proId])
 
@@ -60,11 +65,13 @@ const BookingClients = () => {
     }
 
     const _handleRemoveService = (serviceId) => {
-        // filter array / créer une copie du tableau de service en storage et le retourner sans celui selectionner 
-        const servicesFilter = servicesStorage.filter(item => item.id !== serviceId)
-        // put in storage / mettre en mémoire le tableau filtré
-        localStorage.setItem('services', JSON.stringify(servicesFilter))
-        setCount(count + 1)
+            console.log('bookingClients _handleRemoveService ', )
+            // filter array / créer une copie du tableau de service en storage et le retourner sans celui selectionner 
+            const servicesFilter = servicesStorage.filter(item => item.id !== serviceId)
+            // put in storage / mettre en mémoire le tableau filtré
+            localStorage.setItem('services', JSON.stringify(servicesFilter))
+            setCount(count + 1)
+
     }
 
     const _customTitle = () => {
@@ -120,8 +127,6 @@ const BookingClients = () => {
         return availableDates
     }
 
-
-
     const _handleTest = () => {
         // date d'aujourd'hui 
         const today = new Date() 
@@ -137,8 +142,6 @@ const BookingClients = () => {
         })
 
         // console.log('BookingClients _handleTest', staffAvailables)
-
-
 
         const hoursAvailables = []
 
@@ -205,34 +208,39 @@ const BookingClients = () => {
 
         // console.log('BookingClients _handleTest', _days60()) 
 
+        // services [0] 
+        console.log('planning service', servicesStorage)
+
         const daysHoursFinals = []
 
+        
+
         // filter le service selectionné 
-        services.filter(service => service.id === servicesStorage[0]?.id).map(service => { 
-            console.log('BookingClients _showDayFinal', service.name)
-            // quel équipier peux réaliser le service ? 
-            staffs.filter(staff => service[staff.id]).map(staff => {
-                console.log('BookingClients _showDayFinal', service.name, staff.name) 
-                // maper sur 60 jours 
-                _days60().map(day => {
+        // services.filter(service => service.id === servicesStorage[0]?.id).map(service => { 
+        //     console.log('BookingClients _showDayFinal', service.name)
+        //     // quel équipier peux réaliser le service ? 
+        //     staffs.filter(staff => service[staff.id]).map(staff => {
+        //         console.log('BookingClients _showDayFinal', service.name, staff.name) 
+        //         // maper sur 60 jours 
+        //         _days60().map(day => {
 
-                    daysOff
-                        .filter(dayOff => dayOff.emetteur === "pro" && dayOff === staff.id).map(dayOff => {
+        //             daysOff
+        //                 .filter(dayOff => dayOff.emetteur === "pro" && dayOff === staff.id).map(dayOff => {
 
-                        day >= dayOff.startInt && day <= dayOff.endInt && '' 
+        //                 day >= dayOff.startInt && day <= dayOff.endInt && '' 
 
 
 
-                        // filter les jours off du salon et du staff
-                        // day >= dayOff.startInt && day <= dayOff.endInt ? null :
+        //                 // filter les jours off du salon et du staff
+        //                 // day >= dayOff.startInt && day <= dayOff.endInt ? null :
                         
-                    })
+        //             })
 
-                    console.log('BookingClients _showDayFinal daysOff', service.name, staff.name, _dateString(day))
+        //             console.log('BookingClients _showDayFinal daysOff', service.name, staff.name, _dateString(day))
 
-                })
-            })
-        }) 
+        //         })
+        //     })
+        // }) 
 
     }
 
@@ -252,6 +260,22 @@ const BookingClients = () => {
         })
     }
 
+    const _handleChoiceService = (service) => {
+        let choiceData = localStorage.getItem("services")
+        let serviceData = JSON.parse(choiceData)
+        serviceData ? serviceData = serviceData : serviceData = []
+        serviceData.push({...service, idStorage:`id-${Date.now()}`})
+        localStorage.setItem('services', JSON.stringify(serviceData))
+        setCount(count + 1)
+    }
+
+    const _convertMinutesToHHMM = (minutes) => {
+        let hours = Math.floor(minutes / 60)
+        let mins = minutes % 60
+        return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
+    }
+    
+
     return (
         <div>
 
@@ -259,8 +283,9 @@ const BookingClients = () => {
 
             <div className="text-center mt-3">{_customTitle()}</div>
 
-            {servicesStorage && servicesStorage.map(service => (
-                <div key={service.id} className="mt-3 mx-3">
+            {/* LIST SERVICES STORED */}
+            {servicesStorage && servicesStorage.map((service, index) => (
+                <div key={index} className="mt-3 mx-3">
                     <Card>
                         <CardContent>
                             <div className="flex justify-between items-center">
@@ -293,75 +318,68 @@ const BookingClients = () => {
                 </div>
             ))}
 
-            {servicesStorage && servicesStorage.length === 0 ? <ChoiceServiceClient setCount={setCount} count={count} /> :
-                !showServices ?
-                    servicesStorage.length <= 3 ? 
-                    <div className="text-center mt-3" onClick={() => setShowServices(true)}>Ajouter un service</div> :
-                    <div className="text-center mt-3">Vous ne pouvez plus ajouter de services</div>
-                : 
-                    <ChoiceServiceClient setCount={setCount} count={count} />
+            {/* IF NOT SERVICE */}
+            {!servicesStorage || servicesStorage?.length === 0 && 
+                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
+            }
+
+            {/* IF SERVICES STORED < 3 */}
+            {showServices && 
+                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
+            }
+
+            {/* ASK MORE SERVICES */}
+            {servicesStorage?.length > 0 && servicesStorage?.length < 3 && !showServices && 
+                <div className="text-center p-3" onClick={() => setShowServices(true)}>Ajouter un service</div> 
+            }
+
+            {showServices && servicesStorage?.length > 0 && 
+                <div className="text-center pt-3" onClick={() => setShowServices(false)}>Fermer</div>
             }
 
             <div className="border-t-2" />
-
-            {/* {_displayDays().map((day, i) => (
-                i < numberRender &&
-                <div key={day}>
-                    <div className="flex justify-between items-center p-3 shadow-md" onClick={() => _handleShowDay(day)}>
-                        <div>{_dateString(day)}</div>
-                        {showDay === day ? 
-                            <IoIosArrowUp /> : 
-                            <IoIosArrowDown />
-                        }
-                    </div>
+{/* 
+            {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours).map(date => (
+                <div key={date.date}>
+                    <div>{date.date}</div>
                 </div>
             ))} */}
 
-            {_showDayFinal()}
+
+
+            {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours, profil, proId).map((item, index) => (
+                numberDays > index &&
+                <div className="mt-3 mx-3" key={item.date}>
+                    <Card>
+                        <CardContent>
+                            <div className="flex justify-between" onClick={() => setShowDay(showDay === item.date ? "" : item.date)}>
+                                <div>{_dateString(item.date)}</div>
+                                {showDay === item.date ? 
+                                    <IoIosArrowUp style={{ height:20, width:20 }} /> : <IoIosArrowDown style={{ height:20, width:20 }} />
+                                }
+                            </div> 
+                        </CardContent>
+                    </Card>
+
+                    {showDay === item.date && 
+                    <div className="flex flex-wrap">
+                        {item.staffAvailable.map((staffTime, index) => (
+                            <div key={index} className="ms-1 me-1">
+                                <button className="myButton">{_convertMinutesToHHMM(staffTime.time)}</button>
+                            </div>
+                        ))}
+                    </div>
+                    }
+
+                </div>
+            ))}
+
 
             <div className="flex justify-center mt-3">
                 <button className="myButton" onClick={_handleTest}>tester</button>
             </div>
 
-            <div className="flex justify-center mt-3">
-                <button className="myButtonRed" onClick={_handleRemove}>delete</button>
-            </div>
 
-            {/* {_handleTest().map(date => <div key={date}>{date}</div>)} */}
-
-            {/* {_handleTest()} */}
-
-            <div className="mt-3 mx-3">
-                <Card>
-                    <CardContent>
-                        <div className="flex justify-between" onClick={() => setShowDay(!showDay)}>
-                            <div>{todayDate}</div>
-                            {!showDay ? 
-                                <IoIosArrowDown style={{ height:20, width:20 }} /> : 
-                                <IoIosArrowUp style={{ height:20, width:20 }} />
-                            }
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            <div className="m-3">
-                <FormControl>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Age"
-                        onChange={_handleChangeStaff}
-                        style={{ width:200 }}
-                    >
-                        <MenuItem value={0}>Sans préférences</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                        <MenuItem value={30}>30</MenuItem>
-                    </Select>
-                </FormControl>
-            </div>
 
             {/* <div>displayDays = {_displayDays().map(day => <div key={day}>{_dateString(day)}</div>)}</div> */}
 

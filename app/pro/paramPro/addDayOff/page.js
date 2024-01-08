@@ -28,9 +28,17 @@ const AddDayOff = () => {
     },[])
 
     const _handleSaveDates = () => {
-        // convert date to int 
-        const startInt = new Date(valueStart).getTime()
-        const endInt = new Date(valueEnd).getTime()
+        // start int 
+        const start = new Date(valueStart) 
+        start.setHours(0, 0, 0, 0)  
+        const startInt = start.getTime()
+        // end int
+        const end = new Date(valueEnd) 
+        end.setHours(0, 0, 0, 0)  
+        const endInt = end.getTime()
+
+        // console.log("addDayOff _handleSaveDate ", startInt, endInt)
+
         // convert date to string 
         const startString = format(new Date(valueStart), "eeee dd MMMM yyyy", { locale:fr })
         const endString = format(new Date(valueEnd), "eeee dd MMMM yyyy", { locale:fr })

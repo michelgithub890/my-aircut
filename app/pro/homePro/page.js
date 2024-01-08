@@ -52,8 +52,6 @@ const HomePro = () => {
     return (
         <div>
 
-            <div>test {profil.map(pro => pro.id).length} {proId}</div>
-
             {profil?.filter(pro => pro.proId === proId).map(pro => (
                 <div className="flex justify-end items-center gap-3 border-b-2 p-3" key={pro.id}>
                     <div>{pro.company}</div>

@@ -6,25 +6,8 @@ import useFirebase from '@/firebase/useFirebase'
 import { IoIosArrowDown } from "react-icons/io"
 import { IoIosArrowUp } from "react-icons/io"
 
-const ChoiceServiceClient = ({ setCount, count }) => {
-    const { _readLists, lists, _readServices, services } = useFirebase()
+const ChoiceServiceClient = ({ _handleChoiceService, services, lists }) => {
     const [showList, setShowList] = useState("")
-
-    useEffect(() => {
-        _readLists()
-        _readServices()
-    },[])
-
-    const _handleChoiceService = (service) => {
-        let choiceData = localStorage.getItem("services")
-        let serviceData = JSON.parse(choiceData)
-        serviceData ? serviceData = serviceData : serviceData = []
-        serviceData.push(service)
-
-        localStorage.setItem('services', JSON.stringify(serviceData))
-
-        setCount(count + 1)
-    }
 
     return (
         <div>
@@ -40,7 +23,6 @@ const ChoiceServiceClient = ({ setCount, count }) => {
                         {showList === list.id ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </div>
  
-         
                     {showList === list.id && 
                         <>
 
@@ -53,8 +35,7 @@ const ChoiceServiceClient = ({ setCount, count }) => {
                             
                         </>
                     }
-           
-
+    
                 </div>
             ))}
 

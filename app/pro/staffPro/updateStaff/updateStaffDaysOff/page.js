@@ -28,9 +28,15 @@ const UpdateStaffDaysOff = () => {
     },[])
 
     const _handleSaveDates = () => {
-
-        const startInt = new Date(valueStart).getTime()
-        const endInt = new Date(valueEnd).getTime()
+        // start int 
+        const start = new Date(valueStart) 
+        start.setHours(0, 0, 0, 0)  
+        const startInt = start.getTime()
+        // end int
+        const end = new Date(valueEnd) 
+        end.setHours(0, 0, 0, 0)  
+        const endInt = end.getTime()
+        
         const startString = format(new Date(valueStart), "eeee dd MMMM yyyy", { locale:fr })
         const endString = format(new Date(valueEnd), "eeee dd MMMM yyyy", { locale:fr })
     
