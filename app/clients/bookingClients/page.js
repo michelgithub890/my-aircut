@@ -24,8 +24,8 @@ const BookingClients = () => {
     const { _displayPlanningFinal } = usePlanningClient()
     const [servicesStorage, setServicesStorage] = useState()
     const [count, setCount] = useState(1)
-    const [age, setAge] = useState(0)
     const [todayDate, setTodayDate] = useState()
+    const [currentHour, setCurrentHour] = useState()
     const [showServices, setShowServices] = useState(false)
     const [showDay, setShowDay] = useState()
     const [proId, setProId] = useState()
@@ -40,8 +40,11 @@ const BookingClients = () => {
             // close choice services 
             setShowServices(false)
             const today = new Date()
-            const formattedDate = format(today, 'eeee dd MMMM yyyy', { locale: fr })
+            const formattedDate = format(today, 'eeee dd MMMM', { locale: fr })
             setTodayDate(formattedDate)
+            const hours = today.getHours()
+            const minutes = today.getMinutes()
+            setCurrentHour(hours * 60 + minutes)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
         }
@@ -64,10 +67,10 @@ const BookingClients = () => {
         setServicesStorage([])
     }
 
-    const _handleRemoveService = (serviceId) => {
+    const _handleRemoveService = (idStorage) => {
             console.log('bookingClients _handleRemoveService ', )
             // filter array / créer une copie du tableau de service en storage et le retourner sans celui selectionner 
-            const servicesFilter = servicesStorage.filter(item => item.id !== serviceId)
+            const servicesFilter = servicesStorage.filter(item => item.idStorage !== idStorage)
             // put in storage / mettre en mémoire le tableau filtré
             localStorage.setItem('services', JSON.stringify(servicesFilter))
             setCount(count + 1)
@@ -91,8 +94,22 @@ const BookingClients = () => {
         return title
     }
 
-    const _handleChangeStaff = (event) => {
-        setAge(event.target.value)
+    const _handleChangeStaff = (service,idStaff) => {
+
+        const monTableau = servicesStorage 
+
+        const array = []
+
+        monTableau.map(serviceStored => {
+            if (serviceStored.idStorage === service.idStorage) {
+                array.push({...service, idStaff})
+            } else {
+                array.push(serviceStored)
+            }
+        })
+        
+        localStorage.setItem('services', JSON.stringify(array))
+        setCount(count + 1)
     }
 
     const _displayDays = () => {
@@ -125,50 +142,6 @@ const BookingClients = () => {
         })
 
         return availableDates
-    }
-
-    const _handleTest = () => {
-        // date d'aujourd'hui 
-        const today = new Date() 
-        today.setHours(0, 0, 0, 0)
-        const currentDay = format(new Date(today), "eeee", { locale:fr })
-
-        const staffAvailables = []
-
-        services.filter(service => service.id === servicesStorage[0].id).map(service => {
-            staffs.filter(staff => staff[currentDay]).map(staff => {
-                service[staff.id] ? staffAvailables.push(staff) : null
-            })
-        })
-
-        // console.log('BookingClients _handleTest', staffAvailables)
-
-        const hoursAvailables = []
-
-        staffAvailables.forEach(staff => {
-            hours.filter(hour => hour.emetteur === staff.id && hour.day === currentDay).forEach(hour => {
-        
-                // Convertir les heures de début et de fin en minutes
-                const [startHours, startMinutes] = hour.start.split(':').map(Number)
-                const [endHours, endMinutes] = hour.end.split(':').map(Number)
-                const startTimeInMinutes = startHours * 60 + startMinutes
-                const endTimeInMinutes = endHours * 60 + endMinutes
-        
-                // Itérer à travers chaque intervalle de 15 minutes et ajouter au tableau
-                for (let time = startTimeInMinutes; time < endTimeInMinutes; time += 15) {
-                    const hours = Math.floor(time / 60)
-                    const minutes = time % 60
-                    const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
-                    hoursAvailables.push({hours:timeString, staff:staff.name});
-                }
-            })
-        })
-
-        // console.log('BookingClients _handleTest', hoursAvailables)
-
-        // le staff est-il disponible dans le créneaux horaires ? 
-
-        return staffAvailables
     }
 
     const _dateString = (date) => {
@@ -264,7 +237,7 @@ const BookingClients = () => {
         let choiceData = localStorage.getItem("services")
         let serviceData = JSON.parse(choiceData)
         serviceData ? serviceData = serviceData : serviceData = []
-        serviceData.push({...service, idStorage:`id-${Date.now()}`})
+        serviceData.push({...service, idStorage:`id-${Date.now()}`, idStaff:"Sans préférences"})
         localStorage.setItem('services', JSON.stringify(serviceData))
         setCount(count + 1)
     }
@@ -274,7 +247,6 @@ const BookingClients = () => {
         let mins = minutes % 60
         return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
     }
-    
 
     return (
         <div>
@@ -292,7 +264,7 @@ const BookingClients = () => {
                                 <div>
                                     <div>{service.name}</div>
                                 </div>
-                                <div onClick={() => _handleRemoveService(service.id)}>
+                                <div onClick={() => _handleRemoveService(service.idStorage)}>
                                     <Image src={imageDelete} className='img-fluid' alt='image calendar' style={{ height:20, width:20 }} />
                                 </div>
                             </div>
@@ -301,15 +273,19 @@ const BookingClients = () => {
                                     <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={age}
+                                        value={service.idStaff || "Sans préférences"}
                                         label="Age"
-                                        onChange={_handleChangeStaff}
-                                        style={{ width:180, height:40 }}
+                                        // onChange={() => _handleChangeStaff(service)}
+                                        style={{ width: 180, height: 40 }}
                                     >
-                                        <MenuItem value={0}>Sans préférences</MenuItem>
-                                        <MenuItem value={10}>10</MenuItem>
-                                        <MenuItem value={20}>20</MenuItem>
-                                        <MenuItem value={30}>30</MenuItem>
+                                        <MenuItem value="Sans préférences" onClick={() => _handleChangeStaff(service, "Sans préférences")}>
+                                            Sans préférences
+                                        </MenuItem>
+                                        {staffs.filter(staff => service[staff.id]).map(staff => (
+                                            <MenuItem value={staff.id} key={staff.id} onClick={() => _handleChangeStaff(service, staff.id)}>
+                                                {staff.surname}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </FormControl>
                             </div>
@@ -338,18 +314,10 @@ const BookingClients = () => {
             }
 
             <div className="border-t-2" />
-{/* 
-            {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours).map(date => (
-                <div key={date.date}>
-                    <div>{date.date}</div>
-                </div>
-            ))} */}
-
-
 
             {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours, profil, proId).map((item, index) => (
                 numberDays > index &&
-                <div className="mt-3 mx-3" key={item.date}>
+                <div className="mt-3 mx-3" key={index}>
                     <Card>
                         <CardContent>
                             <div className="flex justify-between" onClick={() => setShowDay(showDay === item.date ? "" : item.date)}>
@@ -363,9 +331,12 @@ const BookingClients = () => {
 
                     {showDay === item.date && 
                     <div className="flex flex-wrap">
-                        {item.staffAvailable.map((staffTime, index) => (
-                            <div key={index} className="ms-1 me-1">
-                                <button className="myButton">{_convertMinutesToHHMM(staffTime.time)}</button>
+                        {/* {item.level1.map(level1 => console.log('level1:', level1.time))} */}
+                        {/* {item.level1.map(level1 =>  console.log('service:', level1.time))}  */}
+                        {item.level1.map((level1,index2) => (
+                            <div key={index2} className="ms-1 me-1">
+                                {_dateString(item.date) === todayDate && currentHour > level1.time ? "" :
+                                <button className="myButton">{_convertMinutesToHHMM(level1.time)}</button>}
                             </div>
                         ))}
                     </div>
@@ -374,14 +345,9 @@ const BookingClients = () => {
                 </div>
             ))}
 
-
             <div className="flex justify-center mt-3">
-                <button className="myButton" onClick={_handleTest}>tester</button>
+                <button className="myButton">tester</button>
             </div>
-
-
-
-            {/* <div>displayDays = {_displayDays().map(day => <div key={day}>{_dateString(day)}</div>)}</div> */}
 
             <div style={{ height:400 }} />
             

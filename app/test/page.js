@@ -41,9 +41,44 @@ const PageTest = () => {
 
     }
 
-    // arrayDays = [0,1,2,3,4,5,6,7,8,9,10]
-    // arrayDaysOff = [1,3,7]
-    // arrayDaysOff= [{start:1, end:2}, {start:5, end:7}]
+    const _filterArray = () => {
+        const array1 = [1,2,3,4,5]
+        const array2 = ["a","b","c"]
+        const array3 = ["d","e","f"]
+        const array4 = ["g","h","i"]
+
+        const arrayFinal = []
+
+        array1.forEach(a1 => {
+            let arrayForA2 = []
+            array2.forEach(a2 => {
+                let arrayForA3 = []
+                array3.forEach(a3 => {
+                    let arrayForA4 = []
+                    array4.forEach(a4 => {
+                        arrayForA4.push(a4)
+                    })
+                    if (array4.length > 0)
+                    arrayForA3.push([a3, arrayForA4])
+                })
+                if (arrayForA3 > 0) {
+                    arrayForA2.push([a2, arrayForA3])
+                }
+            })
+            if (arrayForA2.length > 0) {
+                arrayFinal.push([a1, arrayForA2])
+            }
+        })
+        console.log('page test', arrayFinal)
+    }
+
+    const _handleHours = () => {
+        let array = []
+        for (let i = 0; i < 14400; i += 15) {   
+            array.push(i)
+        }
+        console.log('test _handleHours:', array)
+    }
 
     return (
         <div>
@@ -55,7 +90,7 @@ const PageTest = () => {
             ))}
 
             <div className="flex justify-center">
-                <button className="myButton" onClick={_arrayDaysOff}>test</button>
+                <button className="myButton" onClick={_handleHours}>test</button>
             </div>
 
         </div>
@@ -79,3 +114,16 @@ export default PageTest
     }
 
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
