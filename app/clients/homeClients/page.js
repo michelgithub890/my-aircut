@@ -17,12 +17,14 @@ import imageProfilOn from '@/public/assets/images/profilon.png'
 import imageProfilOff from '@/public/assets/images/profiloff.png'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
+import ModalConfirm from '@/components/modals/ModalConfirm'
 
 const HomeClients = () => {
     const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState("")
-    const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat } = useFirebase()
+    const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat, _readBooks, books, _deleteData } = useFirebase()
     const [customIcon, setCustomIcon] = useState()
+    const [showModalRemove, setShowModalRemove] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
@@ -40,6 +42,7 @@ const HomeClients = () => {
             _readUsers(proId)
             _readProfil(proId) 
             _readMessagesChat(proId)
+            _readBooks(proId)
             setCustomIcon(`../../../public/assets/images/profiloff.png`)
         }
     },[proId])
@@ -65,14 +68,15 @@ const HomeClients = () => {
         })
     }
 
+    const _handleRemoveBook = (id) => {
+        _deleteData(`pro/${proId}/books/${id}`)
+    }
+
     return (
         <div>
 
             {profil?.filter(pro => pro.proId === proId).map(pro => (
                 <div key={pro.id}>
-
-                    <div>booking to come</div>
-
 
                     <div className="flex justify-end items-center gap-3 border-b-2 p-3">
                         {isAuth?.[proId] ? 
@@ -84,7 +88,7 @@ const HomeClients = () => {
                                             <Image src={imageProfilOn} className='img-fluid' alt='image calendar' style={{ height:'2.2rem', width:'2.2rem' }} />
                                         </Link>
                                     </div>
-                                ))}
+                                ))} 
                             </>
                         :
                             <>
@@ -95,6 +99,21 @@ const HomeClients = () => {
                             </>
                         }
                     </div>
+
+                    {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).map(book => (
+                        <div className="myBook" key={book.id}>
+                            <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
+                                <div>{book.dateString} à {book.timeSTring}</div>
+                                <div>coupe: {book.service1}</div>
+                            </div>
+                            <ModalConfirm
+                                handleClose={() => setShowModalRemove(false)} 
+                                open={showModalRemove} 
+                                handleConfirm={() => _handleRemoveBook(book.id)}
+                                title={"Êtes vous sûr de vouloir supprimer le rendez-vous ?"}
+                            />
+                        </div>
+                    ))}
 
                     <div className="text-center mt-4 text-xl">{pro.company}</div>
 

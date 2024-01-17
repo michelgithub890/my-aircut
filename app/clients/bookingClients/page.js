@@ -5,6 +5,7 @@ import HeaderClients from '@/components/clients/HeaderClients'
 import ChoiceServiceClient from '@/components/clients/bookingClient/ChoiceServiceClient'
 // NEXT 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 // IMAGES 
 import imageDelete from '@/public/assets/images/delete.png'
 import { IoIosArrowDown } from "react-icons/io"
@@ -18,10 +19,12 @@ import { fr } from 'date-fns/locale'
 import useFirebase from '@/firebase/useFirebase'
 // HOOKS 
 import usePlanningClient from '@/hooks/usePlanningClient'
+import ModalAlert from '@/components/modals/ModalAlert'
 
 const BookingClients = () => {
-    const { _readDaysOff, daysOff, _readStaffs, staffs, _readServices, services, _readHours, hours, _readLists, lists, _readProfil, profil } = useFirebase()
+    const { _readDaysOff, daysOff, _readStaffs, staffs, _readServices, services, _readHours, hours, _readLists, lists, _readProfil, profil, _readBooks, books, _writeData } = useFirebase()
     const { _displayPlanningFinal } = usePlanningClient()
+    const [isAuth, setIsAuth] = useState()
     const [servicesStorage, setServicesStorage] = useState()
     const [count, setCount] = useState(1)
     const [todayDate, setTodayDate] = useState()
@@ -30,6 +33,9 @@ const BookingClients = () => {
     const [showDay, setShowDay] = useState()
     const [proId, setProId] = useState()
     const [numberDays, setNumberDays] = useState(7)
+    const [openModalAlert, setOpenModalAlert] = useState(false)
+    const [showConfirmBooking, setShowConfirmBooking] = useState(false)
+    const router = useRouter()
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -51,6 +57,12 @@ const BookingClients = () => {
     },[count])
 
     useEffect(() => {
+        const auth = localStorage.getItem("isAuth")
+        const authData = auth ? JSON.parse(auth) : [] 
+        setIsAuth(authData)
+    },[])
+
+    useEffect(() => {
         if (proId) {
             _readDaysOff(proId)
             _readStaffs(proId)
@@ -58,6 +70,7 @@ const BookingClients = () => {
             _readHours(proId)
             _readLists(proId)
             _readProfil(proId)
+            _readBooks(proId)
         }
     },[proId])
 
@@ -74,6 +87,8 @@ const BookingClients = () => {
             // put in storage / mettre en mémoire le tableau filtré
             localStorage.setItem('services', JSON.stringify(servicesFilter))
             setCount(count + 1)
+            localStorage.removeItem("dataBook")
+            setShowConfirmBooking(false)
 
     }
 
@@ -247,6 +262,106 @@ const BookingClients = () => {
         let mins = minutes % 60
         return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
     }
+ 
+    const _handleBooking = (item, booking) => {
+
+        // comment savoir si auth
+        if (isAuth?.[proId]) {
+
+            
+            // si 1 service 
+            if (servicesStorage.length === 1) {
+                const choiceStaff = booking.arrayStaff1[Math.floor(Math.random() * booking.arrayStaff1.length)]
+                const dataBook = {
+                    date: item.date,
+                    dateString: _dateString(item.date), 
+                    service1:servicesStorage[0].name,
+                    serviceId:servicesStorage[0].id,
+                    time:booking.hour,
+                    timeSTring:_convertMinutesToHHMM(booking.hour),
+                    duration1:parseInt(servicesStorage[0].duration),
+                    staffId:choiceStaff.staffId,
+                    staffSurname:choiceStaff.staffSurname,
+                    arrayStaff1:booking.arrayStaff1,
+                    authEmail:isAuth.email,
+                    authId:isAuth.id,
+                    authName:isAuth.name,
+                }
+                localStorage.setItem("dataBook", dataBook)
+                localStorage.setItem('dataBook', JSON.stringify(dataBook))
+                
+                setShowDay("")
+                setShowConfirmBooking(true)
+        }
+            // comment sauvegarder 
+
+        } else { 
+            setOpenModalAlert(true) 
+        }
+    }
+
+    const _handleConfirmBooking = () => {
+        // confirm if ok 
+        let getDataBook = localStorage.getItem("dataBook")
+        let dataBook = JSON.parse(getDataBook)
+
+        // comment vérifier qu'il n'y a pas eu une réservation entretemps 
+
+        // console.log(`si le staff a une réservation entre ${dataBook.time} et ${dataBook.time + dataBook.duration1 - 15}`)
+
+        books.filter(book => book.staffId === dataBook.staffId).map(book => {
+            // console.log(`si le staff a une réservation entre ${book.time} et ${book.time + book.duration1 - 15}`)
+        })
+
+        // NIVEAU 1
+        // je verifie si il n'y a pas eu une réservation avec le même staff au même créneaux avant d'enregistrer la réservation 
+
+        if (servicesStorage[0].idStaff === "Sans préférences") {
+            // y a t il déja une réservation 
+            let isBooking = books
+                .filter(book => book.staffId === dataBook.staffId)
+                .filter(book => book.date === dataBook.date)
+                .filter(book => book.time >= dataBook.time)
+                
+            if (isBooking.length === 0) {
+                // si staff occuper proposer un autre staff (si selectionné) 
+                // _writeData(`pro/${proId}/books`, dataBook)
+                // router.push("/clients/homeClients")
+                // localStorage.removeItem("dataBook")
+                // localStorage.removeItem("services")
+            }
+            console.log('bookingClient _handleConfirmBooking servicesStorage:', servicesStorage[0].idStaff )
+        } 
+
+        if (servicesStorage[0].idStaff !== "Sans préférences") {
+
+            // demander si le staff a une réservation au moment du creneau 
+            // .filter(book => time >= book.time && time <= book.time + book.duration1 - 15)
+            let isBooking = books
+                .filter(book => book.staffId === dataBook.staffId)
+                .filter(book => book.date === dataBook.date)
+                .filter(book => book.time >= dataBook.time && book.time <= dataBook.time + dataBook.duration1 - 15)
+
+            if (isBooking.length === 0) {
+                _writeData(`pro/${proId}/books`, dataBook)
+                router.push("/clients/homeClients")
+                localStorage.removeItem("dataBook")
+                localStorage.removeItem("services") 
+            }
+
+            // créneau a réserver 
+            // console.log('bookingClient _handleConfirmBooking créneau:', `${dataBook.time} et ${dataBook.time + dataBook.duration1 - 15}` )
+
+            // console.log('bookingClient _handleConfirmBooking servicesStorage:', servicesStorage[0].idStaff )
+
+        }
+
+    }
+
+    const _handleCloseModalAlert = () => {
+        setOpenModalAlert(false)
+        router.push("/auth/signin")
+    }
 
     return (
         <div>
@@ -299,13 +414,17 @@ const BookingClients = () => {
                 <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
             }
 
+            {!servicesStorage && 
+                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
+            }
+
             {/* IF SERVICES STORED < 3 */}
             {showServices && 
                 <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
             }
 
             {/* ASK MORE SERVICES */}
-            {servicesStorage?.length > 0 && servicesStorage?.length < 3 && !showServices && 
+            {servicesStorage?.length > 0 && servicesStorage?.length < 3 && !showServices && !showConfirmBooking &&
                 <div className="text-center p-3" onClick={() => setShowServices(true)}>Ajouter un service</div> 
             }
 
@@ -315,41 +434,59 @@ const BookingClients = () => {
 
             <div className="border-t-2" />
 
-            {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours, profil, proId).map((item, index) => (
-                numberDays > index &&
-                <div className="mt-3 mx-3" key={index}>
-                    <Card>
-                        <CardContent>
-                            <div className="flex justify-between" onClick={() => setShowDay(showDay === item.date ? "" : item.date)}>
-                                <div>{_dateString(item.date)}</div>
-                                {showDay === item.date ? 
-                                    <IoIosArrowUp style={{ height:20, width:20 }} /> : <IoIosArrowDown style={{ height:20, width:20 }} />
-                                }
-                            </div> 
-                        </CardContent>
-                    </Card>
-
-                    {showDay === item.date && 
-                    <div className="flex flex-wrap">
-                        {/* {item.level1.map(level1 => console.log('level1:', level1.time))} */}
-                        {/* {item.level1.map(level1 =>  console.log('service:', level1.time))}  */}
-                        {item.level1.map((level1,index2) => (
-                            <div key={index2} className="ms-1 me-1">
-                                {_dateString(item.date) === todayDate && currentHour > level1.time ? "" :
-                                <button className="myButton">{_convertMinutesToHHMM(level1.time)}</button>}
-                            </div>
-                        ))}
-                    </div>
-                    }
-
+            {showConfirmBooking ? 
+                <div className="flex justify-center mt-3">
+                    <button className="myButton" onClick={_handleConfirmBooking}>Confirmer</button>
                 </div>
-            ))}
+            : 
+
+                <>
+                    {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours, profil, proId, books).map((item, index) => (
+                        numberDays > index &&
+                        <div className="mt-3 mx-3" key={index}>
+                            <Card>
+                                <CardContent>
+                                    <div className="flex justify-between" onClick={() => setShowDay(showDay === item.date ? "" : item.date)}>
+                                        <div>{_dateString(item.date)}</div>
+                                        {showDay === item.date ? 
+                                            <IoIosArrowUp style={{ height:20, width:20 }} /> : <IoIosArrowDown style={{ height:20, width:20 }} />
+                                        }
+                                    </div> 
+                                </CardContent>
+                            </Card>
+
+                            {}
+
+                            {showDay === item.date && 
+                            <div className="flex flex-wrap">
+                                {item.arrayTimes.map((booking,index2) => (
+                                    <div key={index2} className="ms-1 me-1">
+                                        {_dateString(item.date) === todayDate && currentHour > booking.hour ? "" :
+                                        <button className="myButton" onClick={() => _handleBooking(item, booking)}>{_convertMinutesToHHMM(booking.hour)}</button>}
+                                    </div>
+                                ))}
+                            </div>
+                            }
+
+                        </div>
+                    ))}
+                </>
+            
+            }
 
             <div className="flex justify-center mt-3">
-                <button className="myButton">tester</button>
+                <button className="myButton" onClick={() => [setShowConfirmBooking(false)]}>tester</button>
             </div>
 
             <div style={{ height:400 }} />
+
+            <ModalAlert 
+                title={"Vous devez vous identifier pour réserver."}
+                handleClose={_handleCloseModalAlert}
+                open={openModalAlert}
+            />
+
+            {/* ModalAlert = ({ handleClose, open, title }) */}
             
         </div>
     )

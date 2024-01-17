@@ -75,7 +75,7 @@ const PageTest = () => {
     const _handleHours = () => {
         let array = []
         for (let i = 0; i < 14400; i += 15) {   
-            array.push(i)
+            array.push(i) 
         }
         console.log('test _handleHours:', array)
     }

@@ -79,3 +79,15 @@
     background-color: black; /* Plus foncé que le noir pour l'effet de survol */
     color: #ddd;   
 }
+
+.myBook {
+    background-color: #ccf2ff; 
+    border: grey;
+    border: 1px solid #99d6edff;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}

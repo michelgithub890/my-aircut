@@ -14,6 +14,7 @@ const useFirebase = () => {
     const [daysOff, setDaysOff] = useState([])
     const [staffs, setStaffs] = useState([])
     const [hours, setHours] = useState([])
+    const [books, setBooks] = useState([])
 
     // READ USERS 
     // const _readUsers = () => {
@@ -357,13 +358,30 @@ const useFirebase = () => {
         setPushs([])
         const starCountRef = ref(database, `pro/${proId}/pushs`)
         try {
-            onValue(starCountRef, (snapshot) => {
+            onValue(starCountRef, (snapshot) => { 
                 const data = snapshot.val()
                 const dataList = []
                 for (let id in data) {
                   dataList.push({id,...data[id]})
                 }
                 setPushs(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
+
+    const _readBooks = (proId) => {
+        setBooks([])
+        const starCountRef = ref(database, `pro/${proId}/books`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setBooks(dataList)
             })
         } catch {
             alert('il y a une erreur dans la lecture')
@@ -429,6 +447,8 @@ const useFirebase = () => {
         staffs,
         _readHours,
         hours,
+        _readBooks,
+        books
         //////////////////////
     }
 }
