@@ -70,8 +70,7 @@ const usePlanningClient = () => {
                                     let isBook = arrayBooks
                                         .filter(book => book.staffId === staff.id)
                                         .filter(book => book.date === date)
-                                        .filter(book => time >= book.time && time <= book.time + book.duration1 - 15)
-                                    // console.log("useBookingClient isBook:", isBook.length)
+                                        .filter(book => time <= book.time + book.duration1 - 15 && time + parseInt(service.duration) - 15 >= book.time)
                                     if (isBook.length === 0) {
                                         arrayServices.push({
                                             serviceId:service.id, 

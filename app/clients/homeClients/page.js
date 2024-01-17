@@ -70,6 +70,7 @@ const HomeClients = () => {
 
     const _handleRemoveBook = (id) => {
         _deleteData(`pro/${proId}/books/${id}`)
+        setShowModalRemove(false)
     }
 
     return (
@@ -104,7 +105,8 @@ const HomeClients = () => {
                         <div className="myBook" key={book.id}>
                             <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
                                 <div>{book.dateString} à {book.timeSTring}</div>
-                                <div>coupe: {book.service1}</div>
+                                <div>coupe: {book.service1} - {book.duration1}min</div>
+                                <div>{book.staffSurname}</div>
                             </div>
                             <ModalConfirm
                                 handleClose={() => setShowModalRemove(false)} 

@@ -91,3 +91,15 @@
     border-radius: 0.3rem;
     margin: 0.3rem;
 }
+
+.myBookGrey {
+    background-color: whitesmoke; 
+    border: grey;
+    border: 1px solid grey;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
