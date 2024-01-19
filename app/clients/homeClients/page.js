@@ -120,7 +120,7 @@ const HomeClients = () => {
                     <div className="text-center mt-4 text-xl">{pro.company}</div>
 
                     <div className="flex justify-center">
-                        <Image src={`/assets/icons/${pro.icon}.png`} priority={true} className='img-fluid' alt='image calendar' width={230} height={230} />
+                        <Image src={`/assets/icons/${pro.icon}.png`} priority={true} className='img-fluid' alt='image calendar' width={150} height={150} />
                     </div>
 
                     {/* CARD CALENDAR */}
