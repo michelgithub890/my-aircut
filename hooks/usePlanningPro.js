@@ -39,7 +39,7 @@ const usePlanningPro = () => {
             
         })
 
-        _hoursDay(_convertTimeToHours(start[0]), _convertTimeToHours(end[0]))
+        // _hoursDay(_convertTimeToHours(start[0]), _convertTimeToHours(end[0]))
 
         return arrayDays
     }
@@ -72,11 +72,26 @@ const usePlanningPro = () => {
             return hours  
         }
     }
+
+    const _convertTimeToMinutes = (time) => {
+        const [hours, minutes] = time.split(':').map(Number)
+        return hours * 60 + minutes
+    }
     
     const _hoursDay = (start, end) => {
         let array = []
         for (let i = start; i < end; i++) {
-            array.push(i < 10 ? `0${i}:00` : `${i}:00`)  
+            array.push({hour: i < 10 ? `0${i}:00` : `${i}:00`, hourInt:i})  
+        }
+        return array
+    }
+
+    const _quarterHour = (hour) => {
+        const hourMinutes = hour * 60
+        const hourEnd = hour * 60 + 60 
+        let array = []
+        for (let i = hourMinutes; i < hourEnd; i+=15) {
+            array.push(i)
         }
         return array
     }
@@ -88,94 +103,73 @@ const usePlanningPro = () => {
         const dayString = _dayString(date.dayInt)
         const isAvailable = _isDayOff(staff, daysOff, date.dayInt)
         if (staff[dayString] && isAvailable) {
+
             // console.log('usePlanningPro le staff travail le ', dayString)
             _hoursDay(_convertTimeToHours(start[0]), _convertTimeToHours(end[0])).map(hour => {
 
-                const isHours = hours
-                    .filter(hourStaff => hourStaff.emetteur === staff.id)
-                    .filter(hourStaff => hourStaff.day === dayString)
-                    .filter(hourStaff => _convertTimeToHours(hour) >= _convertTimeToHours(hourStaff.start))
-                    .filter(hourStaff => _convertTimeToHours(hour) < _convertTimeToHours(hourStaff.end)).length
+                    _quarterHour(hour.hourInt).map((quart, index) => {
 
-                if (isHours > 0) {
+                        const isHours = hours
+                        .filter(hourStaff => hourStaff.emetteur === staff.id)
+                        .filter(hourStaff => hourStaff.day === dayString)
+                        // console hours staff et quart 
+                        .filter(hourStaff => quart >= _convertTimeToMinutes(hourStaff.start))
+                        .filter(hourStaff => quart < _convertTimeToMinutes(hourStaff.end))
 
-                    const isBooking = books 
-                        .filter(book => book.staffId === staff.id)
-                        .filter(book => book.date === date.dayInt)
-                        .map(book => {
+                        if (isHours.length > 0) {
 
-                            // start end inside hours 
-                            if (
-                                book.time >= _convertTimeToHours(hour)*60 && 
-                                book.time < _convertTimeToHours(hour)*60 + 60 && 
-                                book.time + book.duration1 <= _convertTimeToHours(hour)*60 + 60
-                            ) {array.push({
-                                    hour:hour, 
-                                    available:`booking start end 
-                                    ${book.staffSurname} 
-                                    ${book.timeSTring} 
-                                    ${book.duration1}
-                                `})}
+                            let arrayQuart = []
+                            const isBooking = books 
+                                .filter(book => book.staffId === staff.id)
+                                .filter(book => book.date === date.dayInt)
+                                .map(book => {
 
-                            // middle 
-                            if (
-                                book.time < _convertTimeToHours(hour)*60 && 
-                                book.time + book.duration1 > _convertTimeToHours(hour)*60 + 60
-                            ) {array.push({
-                                hour:hour, 
-                                available:`booking middle 
-                                ${book.staffSurname}
-                                ${book.timeSTring} 
-                                ${book.duration1}
-                            `})}
+                                    // start end inside hours 
+                                    if (
+                                        book.time === quart && 
+                                        book.time + book.duration === quart + 15 
+                                    ) {arrayQuart.push({ hour:hour, book:book })}
 
-                            // start 
-                            if (
-                                book.time >= _convertTimeToHours(hour)*60 && 
-                                book.time < _convertTimeToHours(hour)*60 + 60 && 
-                                book.time + book.duration1 > _convertTimeToHours(hour)*60 + 60
-                            ) {array.push({
-                                hour:hour, 
-                                available:`booking start 
-                                ${book.staffSurname} 
-                                ${book.timeSTring} 
-                                ${book.duration1}
-                            `})}
+                                    // start 
+                                    else if (
+                                        book.time === quart &&
+                                        book.time + book.duration > quart + 15
+                                    ) {arrayQuart.push({ hour:hour, book:book })}
 
-                            // end 
-                            if (
-                                book.time < _convertTimeToHours(hour)*60 && 
-                                book.time + book.duration1 > _convertTimeToHours(hour)*60 &&
-                                book.time + book.duration1 <= _convertTimeToHours(hour)*60 + 60
-                            ) {array.push({
-                                hour:hour, 
-                                available:`booking end 
-                                ${book.staffSurname}  
-                                ${book.timeSTring} 
-                                ${book.duration1}
-                            `})}
+                                    // middle 
+                                    else if (
+                                        book.time < quart &&
+                                        book.time + book.duration > quart + 15
+                                    ) {arrayQuart.push({ hour:hour, book:book })}
 
-                            // end 
-                            if (
-                                book.time + book.duration1 < _convertTimeToHours(hour)*60 + 60 ||
-                                book.time > _convertTimeToHours(hour)*60 + 60
-                            ) {array.push({
-                                hour:hour, 
-                                available:`booking available`})}
+                                    // end
+                                    else if (
+                                        book.time < quart &&
+                                        book.time + book.duration === quart + 15
+                                    ) {arrayQuart.push({ hour:hour, book:book })}
+
+                                    // console.log(`usePlanningPro ${book.time} - ${quart}`)
+                            })
+
+                            if (arrayQuart.length === 0) {
+                                arrayQuart.push({service:"available"})
+                            }
+
+                            if (isBooking.length === 0) {
+                                arrayQuart.push({service:"available"})
+                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                            } else {
+                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                            }
+
+                        } else {
+                            array.push({hour:{hour:index === 0 ? hour.hour : "quartHour"}, available:"hoursOff"})
+                        }
                     })
-
-                    if (isBooking.length === 0) {
-                        array.push({hour:hour, available:"available"})
-                    }
-
-                } else {
-                    array.push({hour:hour, available:"hoursOff"})
-                }
-
-                    // console.log(`usePlanningPro ${_convertTimeToHours(hour)*60} - ${_convertTimeToHours(hour)*60 + 60}`)
             })
+
         } else {
-            array.push({hour:"days Off", available:"daysOff"})
+            array.push({dayOff:true})
         }
 
         return array
