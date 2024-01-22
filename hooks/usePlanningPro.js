@@ -157,9 +157,9 @@ const usePlanningPro = () => {
 
                             if (isBooking.length === 0) {
                                 arrayQuart.push({service:"available"})
-                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart, staff:staff})
                             } else {
-                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart, staff:staff})
                             }
 
                         } else {
@@ -175,7 +175,7 @@ const usePlanningPro = () => {
         return array
     }
 
-    const _isDayOff = (staff, daysOff, date) => {
+    const _isDayOff = (staff, daysOff, date) => { 
         let isAvailable = true
         daysOff
             .filter(dayOff => dayOff.emetteur === staff.id)

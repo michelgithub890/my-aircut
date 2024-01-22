@@ -92,7 +92,7 @@ const ServicesPro = () => {
                                 </div>
                             </div>
 
-                            {services.filter(service => service.idList === list.id).map(service => (
+                            {services.filter(service => service.idList === list.id).sort((a,b) => a.name.localeCompare(b.name)).map(service => (
                                 <div key={service.id} className="border-t-2 p-3" onClick={() => _handleUpdateService(service)} style={{ cursor:"pointer" }}>
                                     <div>{service.name}</div>
                                     <div className="text-sm text-slate-700">{service.duration}min - {service.price}€</div>

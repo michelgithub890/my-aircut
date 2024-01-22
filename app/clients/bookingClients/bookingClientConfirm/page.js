@@ -156,7 +156,7 @@ const BookingClientConfirm = () => {
         return time
     }
 
-    return (
+    return ( 
         <div>
 
             <HeaderCustom title="Retour" url={"/clients/bookingClients"} />

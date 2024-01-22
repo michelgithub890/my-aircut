@@ -68,9 +68,10 @@ const ProfilClients = () => {
             {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date >= todayDate).map(book => (
                 <div className="myBook" key={book.id}>
                     <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
-                        <div>{book.dateString} à {book.timeSTring}</div>
-                        <div>coupe: {book.service1} - {book.duration1}min</div> 
-                        <div>{book.staffSurname}</div>
+                        <div>{book.dateString} à {book.timeString}</div>
+                        <div>coupe: {book.service}</div> 
+                        <div>{book.duration}min {book.price}€</div>
+                        <div>avec {book.staffSurname}</div>
                     </div> 
                     <ModalConfirm
                         handleClose={() => setShowModalRemove(false)} 
@@ -96,9 +97,10 @@ const ProfilClients = () => {
 
             {showHistory && isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter((book, index) => book.date < todayDate).map(book => (
                 <div className="myBookGrey" key={index}>
-                    <div>{book.dateString} à {book.timeSTring}</div>
-                    <div>coupe: {book.service1} - {book.duration1}min</div> 
-                    <div>{book.staffSurname}</div>
+                        <div>{book.dateString} à {book.timeString}</div>
+                        <div>coupe: {book.service}</div> 
+                        <div>{book.duration}min {book.price}€</div>
+                        <div>avec {book.staffSurname}</div>
                 </div>
             ))}
 
