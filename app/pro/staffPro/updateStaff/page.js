@@ -6,8 +6,6 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
-// DATE 
-import { compareAsc, parse } from 'date-fns'
 // IMAGES 
 import imageDelete from '@/public/assets/images/delete.png'
 import imageCaseACocher from '@/public/assets/images/caseACocher.png'
@@ -36,19 +34,14 @@ const UpdateStaff = () => {
             _readDaysOff(proId)
             _readHours(proId)
         }
+        if (staffId) {
+
+        }
     },[proId])
 
     // DELETE DAY OFF  
     const _handleDeleteDaysOff = (id) => {
         _deleteData(`pro/${proId}/daysOff/${id}`)
-    }
- 
-    const sortDaysOff = (a, b) => {
-        // Convertissez les chaînes de date en objets Date
-        let dateA = parse(a.start, 'EEEE d MMMM yyyy', new Date())
-        let dateB = parse(b.start, 'EEEE d MMMM yyyy', new Date())
-    
-        return compareAsc(dateA, dateB)
     }
 
     const _handlePutOnDay = (dayWeek) => {
@@ -79,6 +72,11 @@ const UpdateStaff = () => {
         return hours * 60 + minutes
     }
 
+    const _handleStaffAcces = (staff) => {
+        localStorage.setItem('staff', JSON.stringify(staff))
+        router.push("updateStaff/createStaffAcces")
+    }
+ 
     return (
         <div>
 
@@ -98,6 +96,8 @@ const UpdateStaff = () => {
                     <Link href={"/pro/staffPro/updateStaff/updateStaffDaysOff"}>
                         <div className="border-b-2 p-3">Jours de fermetures</div>
                     </Link>
+
+                    <div className="border-b-2 p-3" onClick={() => _handleStaffAcces(staff)}>Accès</div>
  
                     {daysOff?.sort((a, b) => a.startInt - b.startInt).filter(dayOff => dayOff.emetteur === staffId).map(dayOff => (
                         <div key={dayOff.id} className="border-b-2 p-3 flex justify-between items-center">

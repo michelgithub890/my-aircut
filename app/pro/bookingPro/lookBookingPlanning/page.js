@@ -2,22 +2,16 @@
 import React, { useState, useEffect } from 'react'
 // NEXT 
 import { useRouter } from 'next/navigation' 
-import Link from 'next/link'
 // MATERIAL UI 
-import { TextField, IconButton, Card } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
+import { Card } from '@mui/material'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 // COMPONENTS 
 import HeaderCustom from '@/components/pro/HeaderCustom'
-// REACT HOOK FORM 
-import { useForm } from 'react-hook-form'
-// YUP 
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as Yup from 'yup'
 
 const LookBookingPro = () => {
     const { _deleteData } = useFirebase()
+    const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState()
     const [confirm, setConfirm] = useState(false)
     const [bookStorage, setBookStorage] = useState()
@@ -25,6 +19,9 @@ const LookBookingPro = () => {
 
     useEffect(() => {
         if (typeof window !== "undefined") { 
+            const auth = localStorage.getItem('isAuth')
+            const authData = auth ? JSON.parse(auth) : []
+            setIsAuth(authData)
             // storage book 
             const book = localStorage.getItem('book')
             const bookData = book ? JSON.parse(book) : []
@@ -64,13 +61,15 @@ const LookBookingPro = () => {
                 <div>Email: {bookStorage?.authEmail}</div>
             </Card>
 
-            <div className="flex justify-center mt-5">
-                {!confirm ? 
-                    <button className="myButtonRed" onClick={_handleConfirm}>Supprimer</button>
-                : 
-                    <button className="myButtonRed" onClick={_handleDelete}>Confirmer</button>
-                }
-            </div>
+            {isAuth?.status !== "staff" && 
+                <div className="flex justify-center mt-5">
+                    {!confirm ? 
+                        <button className="myButtonRed" onClick={_handleConfirm}>Supprimer</button>
+                    : 
+                        <button className="myButtonRed" onClick={_handleDelete}>Confirmer</button>
+                    }
+                </div>
+            }
             
             <div style={{ height:400 }} /> 
 

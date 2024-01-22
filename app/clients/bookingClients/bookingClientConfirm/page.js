@@ -18,6 +18,7 @@ const BookingClientConfirm = () => {
     const [dataBook, setDataBook] = useState()
     const [proId, setProId] = useState()
     const [openModalBooking, setOpenModalBooking] = useState(false)
+    const [openModalNotAllowed, setOpenModalNotAllowed] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
@@ -95,10 +96,15 @@ const BookingClientConfirm = () => {
             authId:isAuth.id,
             authName:isAuth.name,
         }
-        _writeData(`pro/${proId}/books`, dataSave)
-        router.push("/clients/homeClients")
-        localStorage.removeItem("dataBook")
-        localStorage.removeItem("services")
+        
+        if (isAuth.denied === true) {
+            setOpenModalNotAllowed(true)
+        } else {
+            _writeData(`pro/${proId}/books`, dataSave)
+            router.push("/clients/homeClients")
+            localStorage.removeItem("dataBook")
+            localStorage.removeItem("services")
+        }
     }
 
     const _handleConfirmBooking = () => {
@@ -156,6 +162,10 @@ const BookingClientConfirm = () => {
         return time
     }
 
+    const _handleCloseModalNotAllowed = () => {
+        setOpenModalNotAllowed(false)
+    }
+
     return ( 
         <div>
 
@@ -192,6 +202,13 @@ const BookingClientConfirm = () => {
                 handleClose={_handleCloseModalBookingAlreadyBook}
                 open={openModalBooking}
             />
+
+            <ModalAlert 
+                title={"La réservation en ligne n'est pas disponible."}
+                handleClose={_handleCloseModalNotAllowed}
+                open={openModalNotAllowed}
+            />
+
 
         </div>
     )

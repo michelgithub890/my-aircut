@@ -87,7 +87,7 @@ const Signin = () => {
                 }
             })
 
-        } else if (isExist === 0) {
+        } else if (isExist === 0) { 
             // l'utilisateur nexiste pas 
             setError(`L'utilisateur ${email} n'existe pas, vous devez créer un compte.`)
         }

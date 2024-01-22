@@ -2,10 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 // NEXT 
 import { useRouter } from 'next/navigation' 
-import Image from 'next/image'
-import Link from 'next/link'
-// MUI 
-import { Divider, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+// ICONS 
+import { IoIosArrowRoundBack } from "react-icons/io"
 // HOOKS  
 import usePlanningPro from '@/hooks/usePlanningPro' 
 // FIREBASE 
@@ -15,6 +13,8 @@ import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 // COMPONENTS 
+import HeaderPro from '@/components/pro/HeaderPro'
+import HeaderCustom from '@/components/pro/HeaderCustom'
 
 const BookingPro = () => {  
     const { _displayDays } = usePlanningPro()
@@ -35,16 +35,16 @@ const BookingPro = () => {
         _readLists,
         lists
     } = useFirebase()
-    // const [isAuth, setIsAuth] = useState()
+    const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState()
     const router = useRouter()
     const sliderRef = useRef()
 
     useEffect(() => {
         if (typeof window !== "undefined") { 
-            // const auth = localStorage.getItem('isAuth')
-            // const authData = auth ? JSON.parse(auth) : []
-            // setIsAuth(authData)
+            const auth = localStorage.getItem('isAuth')
+            const authData = auth ? JSON.parse(auth) : []
+            setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
         }
@@ -65,7 +65,7 @@ const BookingPro = () => {
     useEffect(() => {
         const lastSlideIndex = localStorage.getItem('lastSlideIndex')
         if (lastSlideIndex !== null && sliderRef.current) {
-            sliderRef.current.slickGoTo(parseInt(lastSlideIndex))
+            sliderRef.current.slickGoTo(parseInt(lastSlideIndex)) 
         }
     }, [])
 
@@ -73,7 +73,7 @@ const BookingPro = () => {
         // dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: 1,
+        slidesToShow: 1, 
         slidesToScroll: 1,
         afterChange: currentSlide => {
             localStorage.setItem('lastSlideIndex', currentSlide)
@@ -86,69 +86,88 @@ const BookingPro = () => {
             router.push("/pro/bookingPro/lookBookingPlanning")
         } 
 
-        if (!book) {
+        if (!book && isAuth?.status !== "staff") {
             localStorage.setItem('quart', JSON.stringify(quart))
             router.push('/pro/bookingPro/addBookingPlanning')
-            // console.log('bookingPro _handleHoursBooking', quart)
+        }
+    }
+
+    const _handleReturn = () => {
+        // local storage
+        localStorage.removeItem('lastSlideIndex') 
+        // is auth 
+        if (isAuth?.status === "staff") {
+            router.push('/staff/homeStaff')
+        } else {
+            router.push('/pro/homePro')
         }
     }
 
     return (
-        <Slider  ref={sliderRef} {...settings}>
-            {_displayDays(staffs, books, profil, daysOff, hours).map((item, index) => (
-                <div key={`${index}`}> {/* Assurez-vous que item.day.id est unique */}
+        <div>
 
-                    <div className="text-center mt-3">{item.day.day}</div>
-                    <div className="text-center mt-2 mb-5">{item.staffSurname}</div>
+            <div className="flex justify-start items-center gap-3 border-b-2 p-3">
+                <IoIosArrowRoundBack size={"2.2rem"} onClick={_handleReturn} /> 
+                <div>Retour</div>
+            </div>
 
-                    {item.hours.map((hourDay, hourIndex) => (
+            <Slider  ref={sliderRef} {...settings}>
+                {_displayDays(staffs, books, profil, daysOff, hours).map((item, index) => (
+                    <div key={`${index}`}> {/* Assurez-vous que item.day.id est unique */}
 
-                        <div key={`${index}_${hourIndex}`}>
+                        <div className="text-center mt-3">{item.day.day}</div>
+                        <div className="text-center mt-2 mb-5">{item.staffSurname}</div>
 
-                            {hourDay.dayOff ?  
+                        {item.hours.map((hourDay, hourIndex) => (
 
-                                <div className="text-center p-5">Day off</div>  
-                            : 
+                            <div key={`${index}_${hourIndex}`}>
 
-                                <div className="flex">
+                                {hourDay.dayOff ?  
 
-                                    <div className={`text-center w-2/12 ${hourDay.hour.hour === "quartHour" ? "min-h-2" : ""}`}>
-                                        {hourDay.hour.hour !== "quartHour" &&  hourDay.hour.hour}
-                                    </div>
+                                    <div className="text-center p-5">Day off</div>  
+                                : 
 
-                                    <>
-                                        {hourDay.available === "hoursOff" ? <div className="bg-slate-300 w-10/12" /> : 
-                                            <div className="w-10/12">
-                                                {hourDay.arrayQuart.map((quart, quartIndex) => (
-                                                    <div key={`${index}_${hourIndex}_${quartIndex}`} className="border-t-2">
-                                                        
-                                                        <div 
-                                                            className={`${quart.service === "available" ? "min-h-9" : "p-2"}`}
-                                                            style={{ cursor:"pointer" }}
-                                                            onClick={() => _handleHoursBooking(quart.book, quart)}
-                                                        >
-                                                            {/* {quart.service === "available" ? "" : quart.book.service}{quart.booùk.quart} */}
-                                                            {quart.service === "available" ? "" : quart.book.service} 
+                                    <div className="flex">
+
+                                        <div className={`text-center w-2/12 ${hourDay.hour.hour === "quartHour" ? "min-h-2" : ""}`}>
+                                            {hourDay.hour.hour !== "quartHour" &&  hourDay.hour.hour}
+                                        </div>
+
+                                        <>
+                                            {hourDay.available === "hoursOff" ? <div className="bg-slate-300 w-10/12" /> : 
+                                                <div className="w-10/12">
+                                                    {hourDay.arrayQuart.map((quart, quartIndex) => (
+                                                        <div key={`${index}_${hourIndex}_${quartIndex}`} className="border-t-2">
+                                                            
+                                                            <div 
+                                                                className={`${quart.service === "available" ? "min-h-9" : "p-2"}`}
+                                                                style={{ cursor:"pointer" }}
+                                                                onClick={() => _handleHoursBooking(quart.book, quart)}
+                                                            >
+                                                                {/* {quart.service === "available" ? "" : quart.book.service}{quart.booùk.quart} */}
+                                                                {quart.service === "available" ? "" : quart.book.service} 
+                                                            </div>
+                                                            
                                                         </div>
-                                                        
-                                                    </div>
-                                                ))}
+                                                    ))}
 
-                                            </div>
-                                        }
-                                    </>
+                                                </div>
+                                            }
+                                        </>
 
-                                </div>
-                            }
+                                    </div>
+                                }
 
-                        </div>
+                            </div>
 
-                    ))}
+                        ))}
 
-                </div>
-            ))}
+                    </div>
+                ))}
 
-        </Slider>
+            </Slider>
+            
+        </div>
     
     )
 }

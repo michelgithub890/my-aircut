@@ -51,6 +51,10 @@ const HomeClients = () => {
         if (isAuth?.status === 'pro') router.push('/pro/homePro')
     },[isAuth])
 
+    useEffect(() => {
+        if (isAuth?.status === 'staff' && isAuth[proId]) router.push('/staff/homeStaff')
+    },[isAuth])
+
     const _handleMap = () => {
         profil?.filter(pro => pro.proId == proId).map(pro => {
             window.open(pro.map, "_blank") 
