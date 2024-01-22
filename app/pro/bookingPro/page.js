@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 // NEXT 
 import { useRouter } from 'next/navigation' 
 import Image from 'next/image'
@@ -14,8 +14,6 @@ import useFirebase from '@/firebase/useFirebase'
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
-import ModalBookingSelected from '@/components/modals/ModalBookingSelected'
-import ModalAddBooking from '@/components/modals/ModalAddBooking'
 // COMPONENTS 
 
 const BookingPro = () => {  
@@ -39,13 +37,8 @@ const BookingPro = () => {
     } = useFirebase()
     // const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState()
-    const [modalBookingSelected, setModalBookingSelected] = useState(false)
-    const [bookSelected, setBookSelected] = useState()
-    const [confirmBooking, setConfirmBooking] = useState(false)
-    const [modalAddBooking, setModalAddBooking] = useState(false)
-    const [serviceSelected, setServiceSelected] = useState()
-    const [staffSelected, setStaffSelected] = useState()
     const router = useRouter()
+    const sliderRef = useRef()
 
     useEffect(() => {
         if (typeof window !== "undefined") { 
@@ -69,60 +62,39 @@ const BookingPro = () => {
         }
     },[proId])
 
+    useEffect(() => {
+        const lastSlideIndex = localStorage.getItem('lastSlideIndex')
+        if (lastSlideIndex !== null && sliderRef.current) {
+            sliderRef.current.slickGoTo(parseInt(lastSlideIndex))
+        }
+    }, [])
+
     let settings = {
         // dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 1,
-        slidesToScroll: 1
+        slidesToScroll: 1,
+        afterChange: currentSlide => {
+            localStorage.setItem('lastSlideIndex', currentSlide)
+        }
     }
-
-    const _openModalBookingSelected = (book, hourDay) => {
+ 
+    const _handleHoursBooking = (book, quart) => {
         if (book) {
-            console.log(`bookingPro _handleTest ${book}`, book)
-            setBookSelected(book)
-            setModalBookingSelected(true)
-        } else if (hourDay) {
-            console.log(`bookingPro _handleTest ${hourDay}`, hourDay.staff.id)
-            setModalAddBooking(true)
-            setStaffSelected({staffId:hourDay.staff.id, staffSurname:hourDay.staff.surname})
+            localStorage.setItem('book', JSON.stringify(book))
+            router.push("/pro/bookingPro/lookBookingPlanning")
+        } 
+
+        if (!book) {
+            localStorage.setItem('quart', JSON.stringify(quart))
+            router.push('/pro/bookingPro/addBookingPlanning')
+            // console.log('bookingPro _handleHoursBooking', quart)
         }
     }
 
-    const _handleClose = () => {
-        setModalBookingSelected(false)
-        setConfirmBooking(false)
-    }
-
-    const _handleConfirmBooking = () => {
-        setConfirmBooking(true)
-    }
- 
-    const _handleDeleteBooking = (id) => {
-        _deleteData(`pro/${proId}/books/${id}`)
-        setModalBookingSelected(false)
-        setConfirmBooking(false)
-    }
-
-    const _handleCloseAddBooking = () => {
-        setModalAddBooking(false)
-    }
-
-    const _handleAddBooking = () => {
-        setModalAddBooking(false)
-    }
-
-    const _handleSelectBooking = (service) => {
-        console.log(`bookingPro _handleSelectBooking`, service.id)
-        setServiceSelected(service.id)
-    }
-
-    const _handleCancelBooking = () => {
-        setServiceSelected()
-    }
-
     return (
-        <Slider {...settings}>
+        <Slider  ref={sliderRef} {...settings}>
             {_displayDays(staffs, books, profil, daysOff, hours).map((item, index) => (
                 <div key={`${index}`}> {/* Assurez-vous que item.day.id est unique */}
 
@@ -153,9 +125,10 @@ const BookingPro = () => {
                                                         <div 
                                                             className={`${quart.service === "available" ? "min-h-9" : "p-2"}`}
                                                             style={{ cursor:"pointer" }}
-                                                            onClick={() => _openModalBookingSelected(quart.book, hourDay)}
+                                                            onClick={() => _handleHoursBooking(quart.book, quart)}
                                                         >
-                                                            {quart.service === "available" ? "" : quart.book.service}
+                                                            {/* {quart.service === "available" ? "" : quart.book.service}{quart.booùk.quart} */}
+                                                            {quart.service === "available" ? "" : quart.book.service} 
                                                         </div>
                                                         
                                                     </div>
@@ -174,28 +147,6 @@ const BookingPro = () => {
 
                 </div>
             ))}
-
-            <ModalBookingSelected 
-                handleClose={_handleClose} 
-                open={modalBookingSelected}
-                bookSelected={bookSelected}
-                confirmBooking={confirmBooking}
-                _handleConfirmBooking={_handleConfirmBooking}
-                _handleDeleteBooking={_handleDeleteBooking}
-            />
-
-            <ModalAddBooking
-                handleClose={_handleCloseAddBooking} 
-                services={services}
-                lists={lists}
-                open={modalAddBooking}
-                _handleAddBooking={_handleAddBooking}
-                setServiceSelected={setServiceSelected}
-                serviceSelected={serviceSelected}
-                _handleSelectBooking={_handleSelectBooking}
-                _handleCancelBooking={_handleCancelBooking}
-                staffSelected={staffSelected}
-            />
 
         </Slider>
     

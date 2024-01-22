@@ -151,15 +151,17 @@ const usePlanningPro = () => {
                                     // console.log(`usePlanningPro ${book.time} - ${quart}`)
                             })
 
+                            // if not booking at this hour 
                             if (arrayQuart.length === 0) {
-                                arrayQuart.push({service:"available"})
+                                arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
                             }
 
+                            // if no booking all day
                             if (isBooking.length === 0) {
-                                arrayQuart.push({service:"available"})
-                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart, staff:staff})
+                                arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
+                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
                             } else {
-                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart, staff:staff})
+                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
                             }
 
                         } else {
