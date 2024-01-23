@@ -34,8 +34,9 @@ const validationSchema = Yup.object({
 
 const SignUp = () => {
     const [error, setError] = useState("")
-    const { _writeData, _readUsers, users } = useFirebase()
+    const { _writeData, _readUsers, users, _readTokens, tokens } = useFirebase()
     const [proId, setProId] = useState("")
+    const [mykey, setMykey] = useState("")
     const router = useRouter()
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
@@ -46,20 +47,32 @@ const SignUp = () => {
             const proIdStored = localStorage.getItem('proId')
             console.log("signup useEffect ", proIdStored)
             if (proIdStored) setProId(proIdStored)
+            const mykeyStored = localStorage.getItem('mykey')
+            if (mykeyStored) setMykey(mykeyStored)
         }
     },[])
 
     useEffect(() => {
         if (proId) {
             _readUsers(proId)
+            _readTokens(proId)
         }
     },[proId])
 
     const onSubmit = (data) => {
         const { email, password, name } = data
-        const endpoint = localStorage.getItem('endpoint')
-        const p256dh = localStorage.getItem('p256dh')
-        const auth = localStorage.getItem('auth')
+
+        console.log('signin mykey:', mykey)
+
+        let auth = ""
+        let endpoint = ""
+        let p256dh = ""
+
+        tokens?.filter(token => token.id === mykey).map(token => {
+            auth = token.auth
+            endpoint = token.endpoint
+            p256dh = token.p256dh 
+        })
 
         const isUser = users?.filter(user => user.email === email).length
 

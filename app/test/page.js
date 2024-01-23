@@ -13,44 +13,68 @@ const PageTest = () => {
     const [password2, setPassword2] = useState("")
     const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState()
-    const { _writeData, _readProfil, profil, _readDaysOff, daysOff, _readStaffs, staffs } = useFirebase()
+    const { _readTokens, tokens } = useFirebase()
+    const [mykey, setMykey] = useState()
 
     const array = ["michel", "juliet"]
 
-
-
     useEffect(() => {
+      if (typeof window !== "undefined") {
         const proIdStored = localStorage.getItem('proId')
-
+        setProId(proIdStored)
+        setMykey(localStorage.getItem('mykey'))
+      }
     },[])
 
-    const subscription = {
-        endpoint:"https://fcm.googleapis.com/fcm/send/c0vb0DnGado:APA91bEA-X3RablpFtZmeY3GrLbu9j0wwxK9aQPlrEjQgcpOX1xRFC17md_oYv8nEzZMl4E1s9FL7a9CwdItMyvZFKvRMdTMWZPz1D0dWNy9IagiEB2QdYH4hMMkXTj6Yaov9TwVmS0-",
-        keys: {
-            auth:"nk3CWnV8pMqfVcYobKQW0A==",
-            p256dh: "BPxtuuquPB98AhsKH/RH8e2Xcx0YJls2G8l6wzQWhsqYFZG4bwaSnw8rOd9VXgxpW+2PkSvsiaAZwkz9aX7E1zk="
+    useEffect(() => {
+      if (proId) {
+        _readTokens(proId)
+      }
+    },[proId])
+
+    const _getTokens = () => {
+      // console.log('test tokens:', proId)
+      tokens?.map(token => { 
+        // console.log('test tokens:', token)
+        const subscription = {
+          endpoint:token.endpoint,
+          keys: {
+            auth: token.auth,
+            p256dh: token.p256dh
+          }
         }
+        let title = "je suis le titre"
+        let body = "le suis le message"
+        if (subscription) {
+          _sendPush(subscription, title, body)
+          console.log('test tokens:', subscription, title, body)
+        }
+      })
     }
 
-    const _sendPush = async () => {
-        try {
-            const response = await fetch('/api/push/sendPushNotification', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(subscription), // Envoyer l'objet d'abonnement
-            });
-        
-            const data = await response.json();
-            if (data.success) {
-              console.log('Notification envoyée avec succès');
-            } else {
-              console.error('Erreur lors de l\'envoi de la notification');
-            }
-          } catch (error) {
-            console.error('Erreur lors de l\'appel à l\'API', error);
+    const _sendPush = async (subscription, title, body) => {
+      try {
+          const response = await fetch('/api/push/sendPushNotification', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json', 
+            },
+            body: JSON.stringify({
+              subscription:subscription,
+              title:title,
+              body:body,
+            }),             
+          })
+      
+          const data = await response.json()
+          if (data.success) {
+            console.log('Notification envoyée avec succès')
+          } else {
+            console.error('Erreur lors de l\'envoi de la notification')
           }
+        } catch (error) {
+          console.error('Erreur lors de l\'appel à l\'API', error)
+        }
     }
 
     return (
@@ -58,8 +82,10 @@ const PageTest = () => {
 
             <div className="text-center p-4">Page Test</div>
 
+            <div className="text-center my-5">mykey: {mykey}</div>
+
             <div className="flex justify-center">
-                <button className="myButton" onClick={_sendPush}>send push</button>
+              <button className="myButton" onClick={_getTokens}>send push</button>
             </div>
 
         </div>
@@ -83,6 +109,8 @@ export default PageTest
     }
 
 */
+
+
 
 
 

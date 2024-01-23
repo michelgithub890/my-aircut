@@ -33,9 +33,10 @@ const validationSchema = Yup.object({
 
 const PushPro = () => {
     const [showHistory, setShowHistory] = useState(false)
-    const { _readPushs, pushs, _writeData } = useFirebase()
+    const { _readPushs, pushs, _writeData, _readTokens, tokens } = useFirebase()
     const [proId, setProId] = useState()
     const router = useRouter()
+    const [mykey, setMykey] = useState()
     // Initialise React Hook Form
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: yupResolver(validationSchema)
@@ -45,14 +46,56 @@ const PushPro = () => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            setMykey(localStorage.getItem('mykey'))
         }
     },[])
 
     useEffect(() => {
         if (proId) {
             _readPushs(proId)
+            _readTokens(proId)
         }
     },[proId])
+
+    const _getTokens = (title, body) => {
+        tokens?.map(token => { 
+          const subscription = {
+            endpoint:token.endpoint,
+            keys: {
+              auth: token.auth,
+              p256dh: token.p256dh
+            }
+          }
+          if (subscription) {
+            _sendPush(subscription, title, body)
+          }
+        })
+      }
+
+    const _sendPush = async (subscription, title, body) => {
+        try {
+            const response = await fetch('/api/push/sendPushNotification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+                body: JSON.stringify({
+                    subscription:subscription,
+                    title:title,
+                    body:body,
+                }),             
+            })
+        
+            const data = await response.json()
+            if (data.success) {
+              console.log('Notification envoyée avec succès')
+            } else {
+              console.error('Erreur lors de l\'envoi de la notification')
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'appel à l\'API', error)
+        }
+    }
 
     // Function to handle form submission
     const onSubmit = async (data) => {
@@ -61,33 +104,7 @@ const PushPro = () => {
         const today = new Date()
         const formattedDate = format(today, 'eeee dd MMMM yyyy', { locale: fr })
 
-        const requestBody = {
-            title:title,
-            message:message,
-            // uidClient:user
-        } 
-
-        console.log('push ', requestBody)
-
-        try {
-            const response = await fetch(`https://node-server-solutionmobile.herokuapp.com/push`, {
-            // const response = await fetch(`http://localhost:8000/pushMyresto`, {
-                method: 'POST', // Changez GET en POST
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody) // Envoyez les données dans le corps de la requête
-            })
-    
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`)
-            }
-    
-            const responseData = await response.json()
-            console.log('Réponse du serveur:', responseData)
-        } catch (error) {
-            console.error('Erreur lors de l\'envoi du message push:', error)
-        }
+        _getTokens(title, message)
 
         const dataPush = {
             title:title,
@@ -102,35 +119,6 @@ const PushPro = () => {
 
     const _handleShowHistory = () => {
         setShowHistory(!showHistory)
-    }
-
-    const subscription = {
-        endpoint:"https://fcm.googleapis.com/fcm/send/c0vb0DnGado:APA91bEA-X3RablpFtZmeY3GrLbu9j0wwxK9aQPlrEjQgcpOX1xRFC17md_oYv8nEzZMl4E1s9FL7a9CwdItMyvZFKvRMdTMWZPz1D0dWNy9IagiEB2QdYH4hMMkXTj6Yaov9TwVmS0-",
-        keys: {
-            auth:"nk3CWnV8pMqfVcYobKQW0A==",
-            p256dh: "BPxtuuquPB98AhsKH/RH8e2Xcx0YJls2G8l6wzQWhsqYFZG4bwaSnw8rOd9VXgxpW+2PkSvsiaAZwkz9aX7E1zk="
-        }
-    }
-
-    const _sendPush = async () => {
-        try {
-            const response = await fetch('/api/push/sendPushNotification', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(subscription), // Envoyer l'objet d'abonnement
-            });
-        
-            const data = await response.json();
-            if (data.success) {
-              console.log('Notification envoyée avec succès');
-            } else {
-              console.error('Erreur lors de l\'envoi de la notification');
-            }
-          } catch (error) {
-            console.error('Erreur lors de l\'appel à l\'API', error);
-          }
     }
 
     return ( 
@@ -184,10 +172,6 @@ const PushPro = () => {
                     ))}
                 </div>
             }
-
-            <div className="flex justify-center">
-                <button className="myButtonGrey" onClick={_sendPush}>send push</button>
-            </div>
 
             <div style={{ height:400 }} />
 

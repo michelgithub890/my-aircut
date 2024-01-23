@@ -10,12 +10,11 @@ export default async function handler(req, res) {
       process.env.NEXT_PRIVATE_VAPID_KEY
     )
 
-    const subscription = req.body; // Supposons que le corps de la requête contient l'abonnement
+    const { subscription, title, body } = req.body 
 
-    const payload = JSON.stringify({
-      title: "Titre de la notification pwa 4",
-      body: "Corps de la notification pwa ",
-    });
+    const payload = JSON.stringify({ title, body })
+
+    console.log('sendPushNotification req.body => ', req.body)
 
     try {
       await webPush.sendNotification(subscription, payload)

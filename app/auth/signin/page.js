@@ -10,7 +10,7 @@ import Link from 'next/link'
 // YUP 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import { MODEL_COLOR } from '@/models/ModelColor'
+// COMPONENTS 
 import HeaderClients from '@/components/clients/HeaderClients'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
@@ -34,7 +34,8 @@ const Signin = () => {
     const router = useRouter()
     const [proId, setProId] = useState("")
     const [isAuth, setIsAuth] = useState("")
-    const { _readUsers, users, _updateData } = useFirebase()
+    const [mykey, setMykey] = useState("")
+    const { _readUsers, users, _updateData, _readTokens, tokens } = useFirebase()
     // Initialise React Hook Form
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
@@ -47,18 +48,33 @@ const Signin = () => {
             setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const mykeyStored = localStorage.getItem('mykey')
+            if (mykeyStored) setMykey(mykeyStored)
         }
     },[])
 
     useEffect(() => {
         if (proId) {
             _readUsers(proId)
+            _readTokens(proId)
         }
     },[proId])
 
     // Function to handle form submission
     const onSubmit = async (data) => {
         const { email, password } = data
+
+        console.log('signin mykey:', mykey)
+
+        let auth = ""
+        let endpoint = ""
+        let p256dh = ""
+
+        tokens?.filter(token => token.id === mykey).map(token => {
+            auth = token.auth
+            endpoint = token.endpoint
+            p256dh = token.p256dh 
+        })
 
         // demander is l'email est déja enregistré dans la base de donnée 
         const isExist = users.filter(user => user.email === email).length
@@ -67,16 +83,19 @@ const Signin = () => {
             // recuperer l'user 
             users.filter(user => user.email === email).map(user => {
 
-                // demander si le mot de passe et égale 
+                // demander si le mot de passe est égal
                 const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY
                 
                 const bytes  = CryptoJS.AES.decrypt(user.password, secretKey)
                 const originalPassword = bytes.toString(CryptoJS.enc.Utf8)
 
                 // comparer les mots de passes 
-                if (originalPassword === password) {
+                if (originalPassword === password && auth) {
                     const data = {
-                        [proId]:true
+                        [proId]:true,
+                        auth,
+                        endpoint,
+                        p256dh
                     }
                     _updateData(`pro/${proId}/users/${user.id}`, data)
                     localStorage.setItem('isAuth', JSON.stringify(user))
