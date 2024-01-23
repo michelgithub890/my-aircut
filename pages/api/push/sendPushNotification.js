@@ -13,8 +13,8 @@ export default async function handler(req, res) {
     const subscription = req.body; // Supposons que le corps de la requête contient l'abonnement
 
     const payload = JSON.stringify({
-      title: "Titre de la notification pwa 2",
-      body: "Corps de la notification pwa 2",
+      title: "Titre de la notification pwa 4",
+      body: "Corps de la notification pwa ",
     });
 
     try {
