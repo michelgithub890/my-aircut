@@ -78,16 +78,16 @@ const BookingPro = () => {
     }
  
     const _handleHoursBooking = (book, quart) => {
-        console.log('bookingPro ', quart)
-        // if (book) {
-        //     localStorage.setItem('book', JSON.stringify(book))
-        //     router.push("/pro/bookingPro/lookBookingPlanning")
-        // } 
+        // console.log('bookingPro ', quart)
+        if (book) {
+            localStorage.setItem('book', JSON.stringify(book))
+            router.push("/pro/bookingPro/lookBookingPlanning")
+        } 
 
-        // if (!book && isAuth?.status !== "staff") {
-        //     localStorage.setItem('quart', JSON.stringify(quart))
-        //     router.push('/pro/bookingPro/addBookingPlanning')
-        // }
+        if (!book && isAuth?.status !== "staff") {
+            localStorage.setItem('quart', JSON.stringify(quart))
+            router.push('/pro/bookingPro/addBookingPlanning')
+        }
     }
 
     const _handleReturn = () => {
