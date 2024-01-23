@@ -12,9 +12,6 @@ import useFirebase from '@/firebase/useFirebase'
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
-// COMPONENTS 
-import HeaderPro from '@/components/pro/HeaderPro'
-import HeaderCustom from '@/components/pro/HeaderCustom'
 
 const BookingPro = () => {  
     const { _displayDays } = usePlanningPro()
@@ -81,15 +78,16 @@ const BookingPro = () => {
     }
  
     const _handleHoursBooking = (book, quart) => {
-        if (book) {
-            localStorage.setItem('book', JSON.stringify(book))
-            router.push("/pro/bookingPro/lookBookingPlanning")
-        } 
+        console.log('bookingPro ', quart)
+        // if (book) {
+        //     localStorage.setItem('book', JSON.stringify(book))
+        //     router.push("/pro/bookingPro/lookBookingPlanning")
+        // } 
 
-        if (!book && isAuth?.status !== "staff") {
-            localStorage.setItem('quart', JSON.stringify(quart))
-            router.push('/pro/bookingPro/addBookingPlanning')
-        }
+        // if (!book && isAuth?.status !== "staff") {
+        //     localStorage.setItem('quart', JSON.stringify(quart))
+        //     router.push('/pro/bookingPro/addBookingPlanning')
+        // }
     }
 
     const _handleReturn = () => {
@@ -137,10 +135,14 @@ const BookingPro = () => {
                                             {hourDay.available === "hoursOff" ? <div className="bg-slate-300 w-10/12" /> : 
                                                 <div className="w-10/12">
                                                     {hourDay.arrayQuart.map((quart, quartIndex) => (
-                                                        <div key={`${index}_${hourIndex}_${quartIndex}`} className="border-t-2">
+                                                        <div key={`${index}_${hourIndex}_${quartIndex}`} className="">
                                                             
                                                             <div 
-                                                                className={`${quart.service === "available" ? "min-h-9" : "p-2"}`}
+                                                                className={`${quart.service === "available" ? 
+                                                                    "min-h-9 border-t-2" 
+                                                                : 
+                                                                    `p-2 bg-orange-300 ${quart.book.duration}`
+                                                                }`}
                                                                 style={{ cursor:"pointer" }}
                                                                 onClick={() => _handleHoursBooking(quart.book, quart)}
                                                             >

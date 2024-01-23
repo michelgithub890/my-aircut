@@ -203,7 +203,7 @@ const AddBookingPlanning = () => {
                                         </div>
 
                                         {users
-                                            ?.filter(user => user.name.toLowerCase().includes(name.toLowerCase().trim()) && user.status !== "pro")
+                                            ?.filter(user => user.name.toLowerCase().includes(name.toLowerCase().trim()) && user.status !== "pro" && user.status !== "staff")
                                             .sort((a,b) => a.name.localeCompare(b.name))
                                             .map(user => (
                                             <div key={user.id}>

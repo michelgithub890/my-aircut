@@ -134,20 +134,20 @@ const PushPro = () => {
                         inputProps={{ maxLength: 100 }}
                     />
 
-                    <button className="myButton" type="submit">Envoyer</button>
+                    <button className="myButtonGrey" type="submit">Envoyer</button>
 
                 </form>
 
             </div> 
         
             <div className="flex justify-center">
-                <button className="myButton" onClick={_handleShowHistory}>Afficher historique</button>
+                <button className="myButtonGrey" onClick={_handleShowHistory}>Afficher historique</button>
             </div>
 
             {showHistory && 
                 <div className="text-center">
                     {pushs?.sort((a, b) => b.date.localeCompare(a.date)).map(push => (
-                        <div key={push.id} className="bg-slate-300 m-2 p-2">
+                        <div key={push.id} className="m-2 p-2 border-2">
                             <div>{push.title}</div>
                             <div>{push.message}</div>
                             <div>{push.date}</div>
@@ -163,3 +163,13 @@ const PushPro = () => {
 }
 
 export default PushPro
+
+
+
+
+
+
+
+
+
+

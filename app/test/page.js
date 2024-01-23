@@ -17,29 +17,50 @@ const PageTest = () => {
 
     const array = ["michel", "juliet"]
 
-    let settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-    }
+
 
     useEffect(() => {
         const proIdStored = localStorage.getItem('proId')
 
     },[])
 
+    const subscription = {
+        endpoint:"https://fcm.googleapis.com/fcm/send/c0vb0DnGado:APA91bEA-X3RablpFtZmeY3GrLbu9j0wwxK9aQPlrEjQgcpOX1xRFC17md_oYv8nEzZMl4E1s9FL7a9CwdItMyvZFKvRMdTMWZPz1D0dWNy9IagiEB2QdYH4hMMkXTj6Yaov9TwVmS0-",
+        keys: {
+            auth:"nk3CWnV8pMqfVcYobKQW0A==",
+            p256dh: "BPxtuuquPB98AhsKH/RH8e2Xcx0YJls2G8l6wzQWhsqYFZG4bwaSnw8rOd9VXgxpW+2PkSvsiaAZwkz9aX7E1zk="
+        }
+    }
+
+    const _sendPush = async () => {
+        try {
+            const response = await fetch('/api/push/sendPushNotification', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(subscription), // Envoyer l'objet d'abonnement
+            });
+        
+            const data = await response.json();
+            if (data.success) {
+              console.log('Notification envoyée avec succès');
+            } else {
+              console.error('Erreur lors de l\'envoi de la notification');
+            }
+          } catch (error) {
+            console.error('Erreur lors de l\'appel à l\'API', error);
+          }
+    }
+
     return (
         <div>
 
             <div className="text-center p-4">Page Test</div>
 
-            {array.map(name => {
-                if (name === "juliet") {
-                    console.log(`page test ${name}`)
-                }
-            })}
+            <div className="flex justify-center">
+                <button className="myButton" onClick={_sendPush}>send push</button>
+            </div>
 
         </div>
     )
