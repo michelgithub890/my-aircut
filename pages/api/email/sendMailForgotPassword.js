@@ -14,28 +14,16 @@ export default async function handler(req, res) {
             },
         })
 
-        // const mailOptions = {
-        //     from: process.env.KEY_EMAIL, 
-        //     // to: email,
-        //     to: "laurentmichelst@gmail.com",
-        //     subject: `Réinitialisez votre mot de passe pour ${name}`,
-        //     text: `
-        //         Cliquez sur ce lien pour réinitialiser votre mot de passe pour ${name},\n
-        //         https://my-aircut.vercel.app//auth/newPassword?search=${proId}&key=${email}\n
-        //         Si vous n'avez pas demandé à réinitialiser votre mot de passe, vous pouvez ignorer cet e-mail.\n
-        //         Merci, Votre équipe ${name}`,
-        //     // Vous pouvez également utiliser `html` pour un contenu HTML
-        // }
-
         const mailOptions = {
             from: process.env.KEY_EMAIL, 
-            // to: email,
-            to: "laurentmichelst@gmail.com",
-            subject: `Réinitialisez votre mot de passe pour `,
+            to: email,
+            // to: "laurentmichelst@gmail.com",
+            subject: `Réinitialisez votre mot de passe pour ${name}`,
             text: `
-                Cliquez sur ce lien pour réinitialiser votre mot de passe pour ,\n
+                Cliquez sur ce lien pour réinitialiser votre mot de passe pour ${name},\n
+                https://my-aircut.vercel.app//auth/newPassword?search=${proId}&key=${email}\n
                 Si vous n'avez pas demandé à réinitialiser votre mot de passe, vous pouvez ignorer cet e-mail.\n
-                Merci, Votre équipe`,
+                Merci, Votre équipe ${name}`,
             // Vous pouvez également utiliser `html` pour un contenu HTML
         }
 
