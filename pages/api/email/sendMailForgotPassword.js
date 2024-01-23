@@ -4,7 +4,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
         const { name, email, proId } = req.body
-        console.log('send mail abonnement ', name, email, proId)
+        console.log('send mail abonnement ',)
 
         let transporter = nodemailer.createTransport({
             service: 'gmail', // Remplacez par votre service de messagerie
