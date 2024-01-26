@@ -3,8 +3,8 @@ import nodemailer from 'nodemailer'
 export default async function handler(req, res) {
 
     if (req.method === 'POST') {
-        const { name, email, proId } = req.body
-        console.log('send mail abonnement ',)
+        const { name, email, proId } = req.body 
+        console.log('send mail abonnement ', req.body)
 
         let transporter = nodemailer.createTransport({
             service: 'gmail', // Remplacez par votre service de messagerie
@@ -31,6 +31,7 @@ export default async function handler(req, res) {
             await transporter.sendMail(mailOptions);
             res.status(200).send('Email envoyé avec succès');
         } catch (error) {
+            console.error('Erreur lors envoi email', error)
             res.status(500).send('Erreur lors envoi email');
         }
         

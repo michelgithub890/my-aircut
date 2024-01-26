@@ -3,7 +3,7 @@ import webPush from 'web-push'
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    // Configuration webPush comme dans votre script
+    // Configuration webPush comme dans votre script 
     webPush.setVapidDetails(
       'mailto:laurentmichelst@gmail.com',
       process.env.NEXT_PUBLIC_VAPID_KEY,

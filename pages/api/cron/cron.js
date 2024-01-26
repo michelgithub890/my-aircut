@@ -1,9 +1,20 @@
-export default function handler(req, res) {
-  // Ajout d'un console.log pour enregistrer une information dans les logs
-  console.log("La méthode MonAPI a été appelée")
 
-  // Ici, vous pouvez mettre en place votre logique d'API
 
-  // Envoyer une réponse
-  res.status(200).json({ message: 'API appelée avec succès' })
-}
+
+export default async function handler() {
+    let nameUser = "michel"
+    let email = "laurentmichelst@gmail.com"
+    let proId = "fdjflsdsdmlkfjslmkdfjsdml"
+    // const response = await fetch('http://localhost:3000/api/email/sendMailForgotPassword', {
+    const response = await fetch('https://my-aircut.vercel.app/api/email/sendMailForgotPassword', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nameUser, email, proId }),
+    })
+} 
+
+
+
+// https://my-aircut.vercel.app/
