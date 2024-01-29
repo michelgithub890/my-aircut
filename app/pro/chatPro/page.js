@@ -32,38 +32,21 @@ const ChatPro = () => {
         router.push("/pro/chatPro/chatSingle")
     }
 
-    const _isNewsMessages = (userId) => {
-        // create array / creation d'un tableau vide
-        let messagesNews = []
-        // ask if new messages / chercher si il y a des nouveaux messages en provenance de l'utilisateur 
-        messagesChat
-            ?.filter(message => message.userId === userId && !message.read && message.destinataire === "pro")
-            // push news messages in array / si des nouveaux messages les ajouter dans la tableau
-            .map(message => messagesNews.push(message))
-
-            
-            // create let false / créer un let avec la valeur false 
-            let isNewMessage = false
-            // is new message return true / si il y a des nouveaux messages retourner true
-            if (messagesNews.length > 0) {isNewMessage = true}
-
-        // return true / false 
-        return isNewMessage
-    }
-
     return ( 
         <div> 
 
             <HeaderPro title="Chat" />
 
-            {users?.sort((a, b) => a.name.localeCompare(b.name)).map(user => (
-                <div key={user.id}>
-                    {_isNewsMessages(user.id) ? 
-                        messagesChat
-                            ?.filter(message => message.userId === user.id)
-                            .reverse()
-                            .map((message,i) => (
-                            i < 1 &&
+            {users
+                ?.sort((a, b) => a.name.localeCompare(b.name))
+                .map(user => (
+                    messagesChat
+                        ?.filter(message => message.destinataire === "pro")
+                        .filter(message => message.userId === user.id)
+                        .filter(message => !message.read)
+                        .reverse()
+                        .map((message, indexMessage) => (
+                            indexMessage < 1 &&
                             <div 
                                 key={message.id}
                                 className='bg-white border border-b-gray-300 p-2 cursor-pointer' 
@@ -74,12 +57,23 @@ const ChatPro = () => {
                                 <div className="text-green-500 italic text-sm">new</div>
                             </div>
                         ))
-                    : 
-                        messagesChat
-                            ?.filter(message => message.userId === user.id)
-                            .reverse()
-                            .map((message,i) => (
-                            i < 1 &&
+            ))}
+
+            {users
+                ?.sort((a, b) => a.name.localeCompare(b.name))
+                .map(user => (
+
+                    messagesChat
+                    ?.filter(message => message.destinataire === "pro")
+                    .filter(message => message.userId === user.id)
+                    .filter(message => !message.read).length === 0 && 
+
+                    messagesChat
+                        ?.filter(message => message.destinataire === "pro")
+                        .filter(message => message.userId === user.id)
+                        .reverse()
+                        .map((message, indexMessage) => (
+                            indexMessage < 1 &&
                             <div 
                                 key={message.id}
                                 className='bg-white border border-b-gray-300 p-2 cursor-pointer' 
@@ -89,8 +83,6 @@ const ChatPro = () => {
                                 <div className="text-slate-600 text-sm">{message.message}</div>
                             </div>
                         ))
-                    }
-                </div>
             ))}
 
             <div style={{ height:"400px" }} />

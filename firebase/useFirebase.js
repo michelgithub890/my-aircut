@@ -14,6 +14,26 @@ const useFirebase = () => {
     const [hours, setHours] = useState([])
     const [books, setBooks] = useState([])
     const [tokens, setTokens] = useState([])
+    const [pushToCome, setPushToCome] = useState([])
+
+
+    // READ USERS 
+    const _readPushToCome = () => {
+        setPushToCome([])
+        const starCountRef = ref(database, `/pushToCome`)
+        try {
+            onValue(starCountRef, (snapshot) => {
+                const data = snapshot.val()
+                const dataList = []
+                for (let id in data) {
+                  dataList.push({id,...data[id]})
+                }
+                setPushToCome(dataList)
+            })
+        } catch {
+            alert('il y a une erreur dans la lecture')
+        }
+    }
 
     // READ USERS 
     const _readTokens = (proId) => {
@@ -264,6 +284,8 @@ const useFirebase = () => {
         books,
         _readTokens,
         tokens,
+        _readPushToCome,
+        pushToCome
     }
 }
 

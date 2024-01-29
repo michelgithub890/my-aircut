@@ -97,6 +97,7 @@ const usePlanningPro = () => {
     }
 
     const _planningDay = (start, end, date, staff, books, daysOff, hours) => {
+
         let array = []
 
         // demander si le staff travail ce jour 
@@ -104,7 +105,6 @@ const usePlanningPro = () => {
         const isAvailable = _isDayOff(staff, daysOff, date.dayInt)
         if (staff[dayString] && isAvailable) {
 
-            // console.log('usePlanningPro le staff travail le ', dayString)
             _hoursDay(_convertTimeToHours(start[0]), _convertTimeToHours(end[0])).map(hour => {
 
                     _quarterHour(hour.hourInt).map((quart, index) => {
@@ -121,47 +121,54 @@ const usePlanningPro = () => {
                             let arrayQuart = []
                             const isBooking = books 
                                 .filter(book => book.staffId === staff.id)
-                                .filter(book => book.date === date.dayInt)
+                                .filter(book => book.date === date.dayInt) 
                                 .map(book => {
 
                                     // start end inside hours 
                                     if (
                                         book.time === quart && 
                                         book.time + book.duration === quart + 15 
-                                    ) {arrayQuart.push({ hour:hour, book:book })}
+                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
 
                                     // start 
                                     else if (
                                         book.time === quart &&
                                         book.time + book.duration > quart + 15
-                                    ) {arrayQuart.push({ hour:hour, book:book })}
+                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
 
                                     // middle 
                                     else if (
                                         book.time < quart &&
                                         book.time + book.duration > quart + 15
-                                    ) {arrayQuart.push({ hour:hour, book:book })}
+                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
 
-                                    // end
+                                    // end 
                                     else if (
                                         book.time < quart &&
                                         book.time + book.duration === quart + 15
-                                    ) {arrayQuart.push({ hour:hour, book:book })}
-
-                                    // console.log(`usePlanningPro ${book.time} - ${quart}`)
+                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
                             })
 
-                            // if not booking at this hour 
-                            if (arrayQuart.length === 0) {
-                                arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
-                            }
 
                             // if no booking all day
                             if (isBooking.length === 0) {
                                 arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
                                 array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
-                            } else {
-                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                            } 
+
+                            // if booking in day 
+                            if (isBooking.length > 0) {
+
+                                // if booking in hour 
+                                if (arrayQuart.length > 0) {
+                                    array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                                }
+
+                                // if not booking in hour 
+                                if (arrayQuart.length === 0) {
+                                    arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
+                                    array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                                }
                             }
 
                         } else {

@@ -12,7 +12,7 @@ import useFirebase from '@/firebase/useFirebase'
 import HeaderCustom from '@/components/pro/HeaderCustom'
 
 const BookingClientConfirm = () => {
-    const { _readBooks, books, _writeData } = useFirebase()
+    const { _readBooks, books, _writeData, _readProfil, profil, _readUsers, users } = useFirebase()
     const [isAuth, setIsAuth] = useState()
     const [servicesStorage, setServicesStorage] = useState()
     const [dataBook, setDataBook] = useState()
@@ -27,6 +27,9 @@ const BookingClientConfirm = () => {
             let servicesData = JSON.parse(localStorage.getItem("services"))
             // set services for show in render
             setServicesStorage(servicesData)
+            const auth = localStorage.getItem("isAuth")
+            const authData = auth ? JSON.parse(auth) : [] 
+            setIsAuth(authData)
             let dataBookStored = JSON.parse(localStorage.getItem("dataBook"))
             setDataBook(dataBookStored)
             const proIdStored = localStorage.getItem('proId')
@@ -43,6 +46,8 @@ const BookingClientConfirm = () => {
     useEffect(() => {
         if (proId) {
             _readBooks(proId)
+            _readProfil(proId)
+            _readUsers(proId)
         }
     },[proId])
 
@@ -81,29 +86,110 @@ const BookingClientConfirm = () => {
     }
 
     const _dataSave = (staff, level, time) => {
-        let dataSave = {
-            date: dataBook.date,
-            dateString: dataBook.dateString,
-            service:servicesStorage[level].name,
-            serviceId:servicesStorage[level].id,
-            price:servicesStorage[level].price,
-            time:time,
-            timeString:_convertMinutesToHHMM(time),
-            duration:parseInt(servicesStorage[level].duration),
-            staffId:staff.staffId,
-            staffSurname:staff.staffSurname,
-            authEmail:isAuth.email,
-            authId:isAuth.id,
-            authName:isAuth.name,
-        }
         
         if (isAuth.denied === true) {
             setOpenModalNotAllowed(true)
         } else {
-            _writeData(`pro/${proId}/books`, dataSave)
+
+            // PUSH DIRECT 
+            let endpoint = ""
+            let auth = ""
+            let p256dh = ""
+
+            users?.filter(user => user.email === isAuth.email).map(user => {
+                endpoint = user.endpoint
+                auth = user.auth
+                p256dh = user.p256dh
+            })
+
+            const subscription = {
+                endpoint:endpoint,
+                keys: {
+                  auth: auth,
+                  p256dh: p256dh
+                }
+            }
+
+            let company = profil[0].company
+            let title = `${company}`
+            let body = `Vous avez rendez-vous le ${dataBook.dateString} à ${_convertMinutesToHHMM(time)}`
+
+            if (subscription) {
+                _sendPush(subscription, title, body)
+            }
+
+            // DATE SAVE 
+            let dataSave = {
+                date: dataBook.date,
+                dateString: dataBook.dateString,
+                service:servicesStorage[level].name,
+                serviceId:servicesStorage[level].id,
+                price:servicesStorage[level].price,
+                time:time,
+                timeString:_convertMinutesToHHMM(time),
+                duration:parseInt(servicesStorage[level].duration),
+                staffId:staff.staffId, 
+                staffSurname:staff.staffSurname,
+                authEmail:isAuth.email,
+                authId:isAuth.id,
+                authName:isAuth.name, 
+                proId:proId,
+                company:company,
+                subscription:subscription,
+            }
+
+            // ECRIRE DANS BOOK LA RESERVATION 
+            _writeData(`pro/${proId}/books`, dataSave) 
+
+            // ECRIRE DANS  LA DATBASE LES PUSH A VENIR
+            _writeData(`pushToCome`, dataSave)
+
+            // EMAIL 
+            _sendEmailConfirm(isAuth.name, isAuth.email, company, dataBook.dateString, _convertMinutesToHHMM(time))
+
+            // REDIRECTION PAGE HOME CLIENT + REMOVE STORAGE 
             router.push("/clients/homeClients")
             localStorage.removeItem("dataBook")
             localStorage.removeItem("services")
+
+            // console.log('bookingClientConfirm ', company, "-", dataSave) 
+        }
+    }
+
+    const _sendEmailConfirm = async (name, email, company, date, hours) => {
+        const response = await fetch('/api/email/sendMailConfirmBooking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, company, date, hours }),
+        })
+ 
+        return response
+    }
+
+    const _sendPush = async (subscription, title, body) => {
+        try {
+            const response = await fetch('/api/push/sendPushNotification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+                body: JSON.stringify({
+                    subscription:subscription,
+                    title:title,
+                    body:body,
+                }),             
+            })
+        
+            const data = await response.json()
+            if (data.success) {
+              console.log('Notification envoyée avec succès')
+            } else {
+              console.error('Erreur lors de l\'envoi de la notification')
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'appel à l\'API', error)
         }
     }
 

@@ -83,24 +83,24 @@ const ProfilClients = () => {
             ))}
  
             <div className="mt-3 mx-3">
-                    <Card>
-                        <CardContent>
-                            <div className="flex justify-between" onClick={() => setShowHistory(!showHistory)}>
-                                <div>Historique des réservations</div>
-                                {showHistory ? 
-                                    <IoIosArrowUp style={{ height:20, width:20 }} /> : <IoIosArrowDown style={{ height:20, width:20 }} />
-                                }
-                            </div> 
-                        </CardContent> 
-                    </Card>
+                <Card>
+                    <CardContent>
+                        <div className="flex justify-between" onClick={() => setShowHistory(!showHistory)}>
+                            <div>Historique des réservations</div>
+                            {showHistory ? 
+                                <IoIosArrowUp style={{ height:20, width:20 }} /> : <IoIosArrowDown style={{ height:20, width:20 }} />
+                            }
+                        </div> 
+                    </CardContent> 
+                </Card>
             </div>
 
-            {showHistory && isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter((book, index) => book.date < todayDate).map(book => (
+            {showHistory && isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date > todayDate).map((book, index) => (
                 <div className="myBookGrey" key={index}>
-                        <div>{book.dateString} à {book.timeString}</div>
-                        <div>coupe: {book.service}</div> 
-                        <div>{book.duration}min {book.price}€</div>
-                        <div>avec {book.staffSurname}</div>
+                    <div>{book.dateString} à {book.timeString}</div>
+                    <div>coupe: {book.service}</div> 
+                    <div>{book.duration}min {book.price}€</div>
+                    <div>avec {book.staffSurname}</div>
                 </div>
             ))}
 

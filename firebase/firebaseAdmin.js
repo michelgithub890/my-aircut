@@ -13,7 +13,9 @@ if (!admin.apps.length) {
             // Assurez-vous que votre clé privée est correctement encodée dans les variables d'environnement
         }),
         // Ajoutez d'autres configurations nécessaires ici
+        databaseURL: process.env.FIREBASE_DATABASE_URL,
     })
 }
 
 export default admin
+

@@ -78,12 +78,15 @@ const BookingPro = () => {
     }
  
     const _handleHoursBooking = (book, quart) => {
-        // console.log('bookingPro ', quart)
+        // console.log('bookingPro ', book.time ,"===", quart.quartInt)
+
+        // si il y a une réservation 
         if (book) {
             localStorage.setItem('book', JSON.stringify(book))
             router.push("/pro/bookingPro/lookBookingPlanning")
         } 
 
+        // si il n'y a pas de réservation et que le status est différent de staff 
         if (!book && isAuth?.status !== "staff") {
             localStorage.setItem('quart', JSON.stringify(quart))
             router.push('/pro/bookingPro/addBookingPlanning')
@@ -129,7 +132,7 @@ const BookingPro = () => {
 
                                         <div className={`text-center w-2/12 ${hourDay.hour.hour === "quartHour" ? "min-h-2" : ""}`}>
                                             {hourDay.hour.hour !== "quartHour" &&  hourDay.hour.hour}
-                                        </div>
+                                        </div> 
 
                                         <>
                                             {hourDay.available === "hoursOff" ? <div className="bg-slate-300 w-10/12" /> : 
@@ -141,13 +144,15 @@ const BookingPro = () => {
                                                                 className={`${quart.service === "available" ? 
                                                                     "min-h-9 border-t-2" 
                                                                 : 
-                                                                    `p-2 bg-orange-300 ${quart.book.duration}`
+                                                                    `p-2 bg-orange-300 ${quart.book.duration} min-h-9`
                                                                 }`}
                                                                 style={{ cursor:"pointer" }}
                                                                 onClick={() => _handleHoursBooking(quart.book, quart)}
                                                             >
-                                                                {/* {quart.service === "available" ? "" : quart.book.service}{quart.booùk.quart} */}
-                                                                {quart.service === "available" ? "" : quart.book.service} 
+                                                                {quart.service === "available" ? "" : 
+                                                                    quart.book.time === quart.quartInt ?
+                                                                    quart.book.service : ""
+                                                                } 
                                                             </div>
                                                             
                                                         </div>

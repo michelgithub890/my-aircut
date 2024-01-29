@@ -15,6 +15,7 @@ import imageChatGif from '@/public/assets/images/chatgif.gif'
 import imageProfil from '@/public/assets/images/imageprofil.png'
 import imageProfilOn from '@/public/assets/images/profilon.png'
 import imageProfilOff from '@/public/assets/images/profiloff.png'
+import imagePlanning from '@/public/assets/images/planninggif.gif'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 import ModalConfirm from '@/components/modals/ModalConfirm'
@@ -133,7 +134,7 @@ const HomeClients = () => {
                         <div className='flex justify-center' /*  onClick={() => navigate('/bookingUsersPage')} */  >
                             <div className='w-full mx-2 p-2 rounded-lg shadow-xl'>
                                 <div className='flex justify-center'>
-                                    <Image src={imageCalendar} className='img-fluid' alt='image calendar' style={{ height:50, width:50 }} />
+                                    <Image src={imagePlanning} className='img-fluid' alt='image calendar' style={{ height:50, width:50 }} />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>PRENDRE RDV</div>
                             </div> 

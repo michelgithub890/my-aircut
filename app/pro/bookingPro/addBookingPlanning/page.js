@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 
-// Define your validation schema with Yup
+// Define your validation schema with Yup 
 const validationSchema = Yup.object({ 
     name: Yup.string(),
                 // .required("Le nom est obligatoire."),
@@ -66,7 +66,7 @@ const AddBookingPlanning = () => {
         setSelectedClient({id:client.id, name:client.name, email:client.email})
     }
 
-    const handleClearInput = () => {
+    const handleClearInput = () => { 
         setName('')
     }
 
@@ -77,6 +77,26 @@ const AddBookingPlanning = () => {
     }
 
     const _handleSave = () => {
+
+        // PUSH DIRECT 
+        let endpoint = ""
+        let auth = ""
+        let p256dh = ""
+
+        users?.filter(user => user.id === selectedClient.id).map(user => {
+            endpoint = user.endpoint
+            auth = user.auth
+            p256dh = user.p256dh
+        })
+
+        const subscription = {
+            endpoint:endpoint,
+            keys: {
+                auth: auth,
+                p256dh: p256dh
+            }
+        }
+
         const dataSave = {
             date: quartStored?.date.dayInt,
             dateString: quartStored?.date.day,
@@ -84,16 +104,20 @@ const AddBookingPlanning = () => {
             serviceId:selectedService?.id,
             price:selectedService?.price,
             duration:parseInt(selectedService?.duration),
-            time:quartStored?.quart,
+            time:quartStored?.quart, 
             timeString:_convertMinutesToHours(quartStored?.quart),
             staffId:quartStored?.staff.id,
             staffSurname:quartStored?.staff.surname,
             authEmail:selectedClient?.email,
-            authId:selectedClient?.id,
-            authName:selectedClient?.name
+            authId:selectedClient?.id, 
+            authName:selectedClient?.name,
+            subscription:subscription ? subscription : "",
         }
-        console.log('addBookingPlanning', dataSave)
+        // console.log('addBookingPlanning', dataSave)
         _writeData(`pro/${proId}/books`, dataSave)
+        if (endpoint) {
+            _writeData(`pushToCome`, dataSave)
+        }
         router.push('/pro/bookingPro')
     }
 
@@ -179,35 +203,33 @@ const AddBookingPlanning = () => {
 
                                 {!clientOff && 
                                     <>
-                                        <div onClick={_handleClientOff}>Client non enregistré</div>
+                                        <button className="myButtonGrey" onClick={_handleClientOff}>Client non enregistré</button>
 
-                                        <div className='grid place-items-center p-3'>
-                                            <form className="flex flex-col gap-3 bg-white p-5 rounded-lg w-full md:w-3/4 lg:w-1/2 max-w-2xl">
-                                                <TextField
-                                                    label="Rechercher un client"
-                                                    className="blackTextField"
-                                                    {...register("name")}
-                                                    error={!!errors.name}
-                                                    helperText={errors.name?.message}
-                                                    value={name}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                    InputProps={{
-                                                        endAdornment: (
-                                                            <IconButton onClick={handleClearInput}>
-                                                                <CloseIcon />
-                                                            </IconButton>
-                                                        ),
-                                                    }}
-                                                />
-                                            </form>
-                                        </div>
+                                        <form className="flex flex-col gap-3 bg-white p-5 rounded-lg w-full md:w-3/4 lg:w-1/2 max-w-2xl">
+                                            <TextField
+                                                label="Rechercher un client"
+                                                className="blackTextField"
+                                                {...register("name")}
+                                                error={!!errors.name}
+                                                helperText={errors.name?.message}
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <IconButton onClick={handleClearInput}>
+                                                            <CloseIcon />
+                                                        </IconButton>
+                                                    ),
+                                                }}
+                                            />
+                                        </form>
 
                                         {users
                                             ?.filter(user => user.name.toLowerCase().includes(name.toLowerCase().trim()) && user.status !== "pro" && user.status !== "staff")
                                             .sort((a,b) => a.name.localeCompare(b.name))
                                             .map(user => (
                                             <div key={user.id}>
-                                                <div className="p-3" style={{ cursor:"pointer" }} onClick={() => _handleClient(user)}>{user.name}</div>
+                                                <div className="p-3 border-2 mt-1" style={{ cursor:"pointer" }} onClick={() => _handleClient(user)}>{user.name}</div>
                                             </div>
                                         ))}
                                     </>
@@ -223,7 +245,6 @@ const AddBookingPlanning = () => {
                 }
 
             </div>
-
 
             <div style={{ height:400 }} /> 
 

@@ -18,6 +18,7 @@ import imageParametre from '@/public/assets/images/parametre.png'
 import imageStaff from '@/public/assets/images/staff.png'
 import imageProfil from '@/public/assets/images/imageprofil.png'
 import imageOutils from '@/public/assets/images/logo_outils.png'
+import imagePlanning from '@/public/assets/images/planninggif.gif'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 
@@ -66,7 +67,7 @@ const HomePro = () => {
                 <div className='flex justify-center' >
                     <div className='w-full mx-2 p-2 rounded-lg shadow-xl'>
                         <div className='flex justify-center'>
-                            <Image src={imageCalendar} priority={true} className='img-fluid' alt='image calendar' style={{ height:50, width:50 }} />
+                            <Image src={imagePlanning} priority={true} className='img-fluid' alt='image calendar' style={{ height:50, width:50 }} />
                         </div>
                         <div className='text-center' style={{fontSize:12}}>PLANNING</div>
                     </div> 
