@@ -1,6 +1,6 @@
 {
   "name": "my-aircut",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "jest --watch --verbose",
     "test:cov": "jest --coverage"
-  },
+  }, 
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",

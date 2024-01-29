@@ -7,6 +7,7 @@ import Link from 'next/link'
 // IMAGES 
 import imageCalendar from '@/public/assets/images/calendargif.gif'
 import imageHoraires from '@/public/assets/images/horaires.png'
+import imageHours from '@/public/assets/images/hours.png'
 import imageServices from '@/public/assets/images/service.png'
 import imageMap from '@/public/assets/images/map.png'
 import imagePhone from '@/public/assets/images/phone.png'
@@ -145,7 +146,7 @@ const HomeClients = () => {
                         {/* <Link href={"/clients/openingHours"}> */}
                             <Link href={"/clients/openingHours"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
                                 <div className="flex justify-center">
-                                    <Image src={imageHoraires} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                                    <Image src={imageHours} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>HORAIRES</div>
                             </Link>
