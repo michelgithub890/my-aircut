@@ -135,7 +135,7 @@ const HomeClients = () => {
                     {/* CARD CALENDAR */}
                     <Link href={"/clients/bookingClients"}>
                         <div className='flex justify-center' /*  onClick={() => navigate('/bookingUsersPage')} */  >
-                            <div className='w-full mx-2 p-2 rounded-lg shadow-xl'>
+                            <div className='w-full mx-2 p-2 rounded-lg shadow-xl custom-shadow'>
                                 <div className='flex justify-center'>
                                     <Image src={imagePlanning} className='img-fluid' alt='image calendar' style={{ height:50, width:50 }} />
                                 </div>
@@ -146,14 +146,14 @@ const HomeClients = () => {
 
                     <div className="flex justify-around mt-4">
                         {/* <Link href={"/clients/openingHours"}> */}
-                            <Link href={"/clients/openingHours"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
+                            <Link href={"/clients/openingHours"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl custom-shadow-purple">
                                 <div className="flex justify-center">
                                     <Image src={imageHours} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>HORAIRES</div>
                             </Link>
                         {/* </Link> */}
-                        <Link href={"/clients/bookingClients"} className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
+                        <Link href={"/clients/bookingClients"} className="w-2/4 me-2 p-2 rounded-lg  shadow-xl custom-shadow-brown">
                             <div className="flex justify-center">
                                 <Image src={imageServices} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                             </div>
@@ -162,13 +162,13 @@ const HomeClients = () => {
                     </div>
 
                     <div className="flex justify-around mt-4">
-                        <div className="w-2/4 ms-2 p-2 rounded-lg shadow-xl" onClick={_handleMap}>
+                        <div className="w-2/4 ms-2 p-2 rounded-lg shadow-xl custom-shadow-pink" onClick={_handleMap}>
                             <div className="flex justify-center">
                                 <Image src={imageMap} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>NOUS SITUER</div>
                         </div>
-                        <Link href={isAuth?.[proId] ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className="w-2/4 me-2 p-2 rounded-lg  shadow-xl">
+                        <Link href={isAuth?.[proId] ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className="w-2/4 me-2 p-2 rounded-lg  shadow-xl custom-shadow-orange">
                             <div className="flex justify-center">
                                 {messagesChat
                                     ?.filter(message => message.userEmail === isAuth?.email && message.destinataire === "client" && !message.read)
@@ -183,13 +183,13 @@ const HomeClients = () => {
                     </div>
 
                     <div className="flex justify-around mt-4">
-                        <Link href={isAuth?.[proId] ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
+                        <Link href={isAuth?.[proId] ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl custom-shadow-green">
                             <div className="flex justify-center">
                                 <Image src={imageProfil} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>MON PROFIL</div>
                         </Link>
-                        <div className="w-2/4 me-2 p-2 rounded-lg shadow-xl" onClick={_handlePhone}>
+                        <div className="w-2/4 me-2 p-2 rounded-lg shadow-xl custom-shadow-blue" onClick={_handlePhone}>
                             <div className="flex justify-center">
                                 <Image src={imagePhone} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                             </div>

@@ -103,3 +103,38 @@
     border-radius: 0.3rem;
     margin: 0.3rem;
 }
+
+.custom-shadow-purple {
+    box-shadow: 0 10px 15px -3px #c399edff, 0 4px 6px -2px #c399edff;
+}
+
+.custom-shadow {
+    box-shadow: 0 10px 15px -3px #99d6edff, 0 4px 6px -2px #99d6edff;
+}
+
+.custom-shadow-brown {
+    box-shadow: 0 10px 15px -3px #84623fff, 0 4px 6px -2px #84623fff;
+}
+
+.custom-shadow-pink {
+    box-shadow: 0 10px 15px -3px #ed9999ff, 0 4px 6px -2px #ed9999ff;
+}
+
+.custom-shadow-blue {
+    box-shadow: 0 10px 15px -3px #1d1da6ff, 0 4px 6px -2px #1d1da6ff;
+}
+
+.custom-shadow-orange {
+    box-shadow: 0 10px 15px -3px #edc399ff, 0 4px 6px -2px #edc399ff;
+}
+
+.custom-shadow-green {
+    box-shadow: 0 10px 15px -3px #99ed99ff, 0 4px 6px -2px #99ed99ff;
+}
+
+
+
+
+
+
+  
