@@ -4,10 +4,18 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link' 
+// MUI 
+import { Radio, FormControl, RadioGroup, FormControlLabel, FormLabel } from '@mui/material'
 // IMAGES 
 import imageCalendar from '@/public/assets/images/calendargif.gif'
 import imageHoraires from '@/public/assets/images/horaires.png'
-import imageHours from '@/public/assets/images/hours.png'
+import imageHoursBlue from '@/public/assets/images/hours.png'
+// import imageHours from '@/public/assets/images/hours.png'
+// import imageHours from '@/public/assets/images/hours.png'
+// import imageHours from '@/public/assets/images/hours.png'
+// import imageHours from '@/public/assets/images/hours.png'
+// import imageHours from '@/public/assets/images/hours.png'
+// import imageHours from '@/public/assets/images/hours.png'
 // import imageServices from '@/public/assets/images/service.png'
 import imageServices from '@/public/assets/images/services.png'
 import imageMap from '@/public/assets/images/map.png'
@@ -18,7 +26,7 @@ import imageChatGif from '@/public/assets/images/chatgif.gif'
 import imageProfil from '@/public/assets/images/profil.png'
 import imageProfilOn from '@/public/assets/images/profilon.png'
 import imageProfilOff from '@/public/assets/images/profiloff.png'
-import imagePlanning from '@/public/assets/images/planninggif.gif'
+import imagePlanning from '@/public/assets/images/planning.gif'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 import ModalConfirm from '@/components/modals/ModalConfirm'
@@ -30,6 +38,8 @@ const HomeClients = () => {
     const [customIcon, setCustomIcon] = useState()
     const [showModalRemove, setShowModalRemove] = useState(false)
     const router = useRouter()
+    const [value, setValue] = useState('blue')
+    const [valueShadow, setValueShadow] = useState('blue')
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -79,6 +89,14 @@ const HomeClients = () => {
     const _handleRemoveBook = (id) => {
         _deleteData(`pro/${proId}/books/${id}`)
         setShowModalRemove(false)
+    }
+
+    const handleChange = (event) => {
+        setValue(event.target.value)
+    }
+
+    const handleChangeShadow = (event) => {
+        setValueShadow(event.target.value)
     }
 
     return (
@@ -135,9 +153,9 @@ const HomeClients = () => {
                     {/* CARD CALENDAR */}
                     <Link href={"/clients/bookingClients"}>
                         <div className='flex justify-center' /*  onClick={() => navigate('/bookingUsersPage')} */  >
-                            <div className='w-full mx-2 p-2 rounded-lg shadow-xl custom-shadow'>
+                            <div className={`w-full mx-2 p-2 rounded-lg shadow-xl custom-shadow-${valueShadow}`}>
                                 <div className='flex justify-center'>
-                                    <Image src={imagePlanning} className='img-fluid' alt='image calendar' style={{ height:50, width:50 }} />
+                                    <Image src={`/assets/images/planning${value}.gif`} className='img-fluid' alt='image calendar' width={80} height={80} />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>PRENDRE RDV</div>
                             </div> 
@@ -146,36 +164,43 @@ const HomeClients = () => {
 
                     <div className="flex justify-around mt-4">
                         {/* <Link href={"/clients/openingHours"}> */}
-                            <Link href={"/clients/openingHours"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl custom-shadow-purple">
+                            <Link href={"/clients/openingHours"} className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl custom-shadow-${valueShadow}`}>
                                 <div className="flex justify-center">
-                                    <Image src={imageHours} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                                    <Image 
+                                        src={`/assets/images/hours${value}.png`} 
+                                        className='img-fluid' 
+                                        alt='image services' 
+                                        style={{ height:50, width:50 }} 
+                                        width={50} 
+                                        height={50} 
+                                    />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>HORAIRES</div>
                             </Link>
                         {/* </Link> */}
-                        <Link href={"/clients/bookingClients"} className="w-2/4 me-2 p-2 rounded-lg  shadow-xl custom-shadow-brown">
+                        <Link href={"/clients/bookingClients"} className={`w-2/4 me-2 ms-1 p-2 rounded-lg shadow-xl custom-shadow-${valueShadow}`}>
                             <div className="flex justify-center">
-                                <Image src={imageServices} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                                <Image src={`/assets/images/services${value}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>SERVICES</div>
                         </Link>
                     </div>
 
                     <div className="flex justify-around mt-4">
-                        <div className="w-2/4 ms-2 p-2 rounded-lg shadow-xl custom-shadow-pink" onClick={_handleMap}>
+                        <div className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl custom-shadow-${valueShadow}`} onClick={_handleMap}>
                             <div className="flex justify-center">
-                                <Image src={imageMap} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                                <Image src={`/assets/images/map${value}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>NOUS SITUER</div>
                         </div>
-                        <Link href={isAuth?.[proId] ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className="w-2/4 me-2 p-2 rounded-lg  shadow-xl custom-shadow-orange">
+                        <Link href={isAuth?.[proId] ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } className={`w-2/4 ms-1 me-2 p-2 rounded-lg shadow-xl custom-shadow-${valueShadow}`}>
                             <div className="flex justify-center">
                                 {messagesChat
                                     ?.filter(message => message.userEmail === isAuth?.email && message.destinataire === "client" && !message.read)
                                     .map(message => message.id).length > 0 ? 
                                     <Image src={imageChatGif} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
                                 : 
-                                    <Image src={imageChat} className='img-fluid' alt='image services' style={{ height:50, width:50 }} /> 
+                                    <Image src={`/assets/images/chat${value}.png`} className='img-fluid' alt='image services' height={50} width={50} /> 
                                 }
                             </div>
                             <div className='text-center' style={{fontSize:12}}>CHAT</div>
@@ -183,15 +208,15 @@ const HomeClients = () => {
                     </div>
 
                     <div className="flex justify-around mt-4">
-                        <Link href={isAuth?.[proId] ? "/clients/profilClients" : "/auth/signin"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl custom-shadow-green">
+                        <Link href={isAuth?.[proId] ? "/clients/profilClients" : "/auth/signin"} className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl custom-shadow-${valueShadow}`}>
                             <div className="flex justify-center">
-                                <Image src={imageProfil} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                                <Image src={`/assets/images/profil${value}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>MON PROFIL</div>
                         </Link>
-                        <div className="w-2/4 me-2 p-2 rounded-lg shadow-xl custom-shadow-blue" onClick={_handlePhone}>
+                        <div className={`w-2/4 me-2 ms-1 p-2 rounded-lg shadow-xl custom-shadow-${valueShadow}`} onClick={_handlePhone}>
                             <div className="flex justify-center">
-                                <Image src={imagePhone} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                                <Image src={`/assets/images/phone${value}.png`} className='img-fluid' alt='image services'  height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>APPELER</div>
                         </div>
@@ -199,6 +224,53 @@ const HomeClients = () => {
 
                 </div>
             ))}
+
+        <FormControl className="mt-10">
+            <FormLabel id="demo-controlled-radio-buttons-group">Couleurs</FormLabel>
+            <RadioGroup
+                aria-labelledby="demo-controlled-radio-buttons-group"
+                name="controlled-radio-buttons-group"
+                value={value}
+                onChange={handleChange}
+            >
+                <div className="ms-4">
+                    <FormControlLabel value="" control={<Radio />} label="bluelight" />
+                    <FormControlLabel value="brown" control={<Radio />} label="brown" />
+                    <FormControlLabel value="orange" control={<Radio />} label="orange" />
+                </div>
+                <div className="ms-4">
+                    <FormControlLabel value="pink" control={<Radio />} label="pink" />
+                    <FormControlLabel value="blue" control={<Radio />} label="blue" />
+                    <FormControlLabel value="green" control={<Radio />} label="green" />
+                    <FormControlLabel value="purple" control={<Radio />} label="purple" />
+                </div>
+            </RadioGroup>
+        </FormControl>
+
+        <div />
+
+        <FormControl className="mt-10">
+            <FormLabel id="demo-controlled-radio-buttons-group">Hombres</FormLabel>
+            <RadioGroup
+                aria-labelledby="demo-controlled-radio-buttons-group"
+                name="controlled-radio-buttons-group"
+                value={valueShadow}
+                onChange={handleChangeShadow}
+            >
+                <div className="ms-4">
+                    <FormControlLabel value="" control={<Radio />} label="grey" />
+                    <FormControlLabel value="bluelight" control={<Radio />} label="bluelight" />
+                    <FormControlLabel value="brown" control={<Radio />} label="brown" />
+                    <FormControlLabel value="orange" control={<Radio />} label="orange" />
+                </div>
+                <div className="ms-4">
+                    <FormControlLabel value="pink" control={<Radio />} label="pink" />
+                    <FormControlLabel value="blue" control={<Radio />} label="blue" />
+                    <FormControlLabel value="green" control={<Radio />} label="green" />
+                    <FormControlLabel value="purple" control={<Radio />} label="purple" />
+                </div>
+            </RadioGroup>
+        </FormControl>
 
             <div style={{ height:400 }} />
 
