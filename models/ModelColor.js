@@ -11,8 +11,8 @@ export const MODEL_COLOR = {
 /*
 
 grey = 808080ff  // b3b3b3ff
-green 99ed99ff
-blue 1d1da6ff 
+green 87deaaff
+blue 5f8dd3ff 
 pink ed9999ff
 orange edc399ff
 purple c399edff
