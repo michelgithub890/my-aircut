@@ -35,7 +35,6 @@ const HomeClients = () => {
     const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState("")
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat, _readBooks, books, _deleteData } = useFirebase()
-    const [customIcon, setCustomIcon] = useState()
     const [showModalRemove, setShowModalRemove] = useState(false)
     const router = useRouter()
     const [value, setValue] = useState('blue')
@@ -57,7 +56,6 @@ const HomeClients = () => {
             _readProfil(proId) 
             _readMessagesChat(proId)
             _readBooks(proId)
-            setCustomIcon(`../../../public/assets/images/profiloff.png`)
         }
     },[proId])
 
@@ -112,7 +110,7 @@ const HomeClients = () => {
                                     <div key={user.id} className="flex items-center gap-3">
                                         <div>{user.name}</div>
                                         <Link href={"/clients/profilClients"}>
-                                            <Image src={imageProfilOn} className='img-fluid' alt='image calendar' style={{ height:'2.2rem', width:'2.2rem' }} />
+                                            <Image src={`/assets/images/profilon${value}.png`} className='img-fluid' alt='image calendar' height={38} width={38} />
                                         </Link>
                                     </div>
                                 ))} 
@@ -121,14 +119,14 @@ const HomeClients = () => {
                             <>
                                 <div>Se connecter</div>
                                 <Link href={"/auth/signin"}>
-                                    <Image src={imageProfilOff} className='img-fluid' alt='image calendar' style={{ height:'2.2rem', width:'2.2rem' }} />
+                                    <Image src={imageProfilOff} className='img-fluid' alt='image calendar' height={38} width={38} />
                                 </Link>
                             </>
                         }
                     </div>
 
                     {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).map(book => (
-                        <div className="myBook" key={book.id}>
+                        <div className={`my-book${value}`} key={book.id}>
                             <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
                                 <div>{book.dateString} à {book.timeString}</div>
                                 <div>coupe: {book.service}</div>
@@ -198,7 +196,7 @@ const HomeClients = () => {
                                 {messagesChat
                                     ?.filter(message => message.userEmail === isAuth?.email && message.destinataire === "client" && !message.read)
                                     .map(message => message.id).length > 0 ? 
-                                    <Image src={imageChatGif} className='img-fluid' alt='image services' style={{ height:50, width:50 }} />
+                                    <Image src={`/assets/images/chatgif${value}.gif`} className='img-fluid' alt='image services' height={50} width={50} />
                                 : 
                                     <Image src={`/assets/images/chat${value}.png`} className='img-fluid' alt='image services' height={50} width={50} /> 
                                 }

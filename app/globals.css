@@ -104,6 +104,83 @@
     margin: 0.3rem;
 }
 
+.my-book {
+    background-color: #ecf7fc; 
+    border: 1px solid #99d6edff;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
+
+.my-bookbrown {
+    background-color: #a57a4f; 
+    border: 1px solid #84623fff;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
+
+.my-bookblue {
+    background-color: #9bb8e3; 
+    border: 1px solid #5f8dd3 ;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
+
+.my-bookorange {
+    background-color: #fcf4ec; 
+    border: 1px solid #edc399ff ;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
+
+.my-bookpink {
+    background-color: #fcecec; 
+    border: 1px solid #ed9999ff ;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
+
+.my-bookgreen {
+    background-color: #cdf1dc; 
+    border: 1px solid #87deaaff;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
+
+.my-bookpurple {
+    background-color: #f4ecfc; 
+    border: 1px solid #c399edff;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+}
+
 .custom-shadow-purple {
     box-shadow: 0 10px 15px -3px #c399edff, 0 4px 6px -2px whitesmoke;
 }
