@@ -8,7 +8,8 @@ import Link from 'next/link'
 import imageCalendar from '@/public/assets/images/calendargif.gif'
 import imageHoraires from '@/public/assets/images/horaires.png'
 import imageHours from '@/public/assets/images/hours.png'
-import imageServices from '@/public/assets/images/service.png'
+// import imageServices from '@/public/assets/images/service.png'
+import imageServices from '@/public/assets/images/services.png'
 import imageMap from '@/public/assets/images/map.png'
 import imagePhone from '@/public/assets/images/phone.png'
 import imageChat from '@/public/assets/images/chat.png' 
@@ -140,7 +141,7 @@ const HomeClients = () => {
                                 <div className='text-center' style={{fontSize:12}}>PRENDRE RDV</div>
                             </div> 
                         </div>
-                    </Link>
+                    </Link> 
 
                     <div className="flex justify-around mt-4">
                         {/* <Link href={"/clients/openingHours"}> */}

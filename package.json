@@ -1,6 +1,6 @@
 {
   "name": "my-aircut",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,7 +13,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
-    "@hookform/resolvers": "^3.3.3",
+    "@hookform/resolvers": "^3.3.3", 
     "@mui/icons-material": "^5.15.3",
     "@mui/material": "^5.15.3",
     "@mui/x-date-pickers": "^6.18.6",
