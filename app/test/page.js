@@ -77,18 +77,21 @@ const PageTest = () => {
         }
     }
 
+    // https://www.fdesouche.com/
+
     return (
-        <div>
+        // <div>
 
-            <div className="text-center p-4">Page Test</div>
+        //     <div className="text-center p-4">Page Test</div>
 
-            <div className="text-center my-5">mykey: {mykey}</div>
+        //     <div className="text-center my-5">mykey: {mykey}</div>
 
-            <div className="flex justify-center">
-              <button className="myButton" onClick={_getTokens}>send push</button>
-            </div>
+        //     <div className="flex justify-center">
+        //       <button className="myButton" onClick={_getTokens}>send push</button>
+        //     </div>
 
-        </div>
+        // </div>
+        <iframe src="https://www.fdesouche.com/"></iframe>
     )
 }
 

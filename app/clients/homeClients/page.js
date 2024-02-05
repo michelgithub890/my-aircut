@@ -28,6 +28,7 @@ const HomeClients = () => {
             const storedPro = localStorage.getItem("proId")
             if (storedPro) setProId(storedPro) 
         }
+    console.log('home_client')
     },[])
 
     useEffect(() => { 
@@ -199,7 +200,7 @@ const HomeClients = () => {
                 </div>
             ))}
 
-        <FormControl className="mt-10">
+        {/* <FormControl className="mt-10">
             <FormLabel id="demo-controlled-radio-buttons-group">Couleurs</FormLabel>
             <RadioGroup
                 aria-labelledby="demo-controlled-radio-buttons-group"
@@ -219,7 +220,7 @@ const HomeClients = () => {
                     <FormControlLabel value="purple" control={<Radio />} label="purple" />
                 </div>
             </RadioGroup>
-        </FormControl>
+        </FormControl> */}
 
         <div />
 
