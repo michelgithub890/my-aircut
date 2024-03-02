@@ -64,8 +64,6 @@ const Signin = () => {
     const onSubmit = async (data) => {
         const { email, password } = data
 
-        console.log('signin mykey:', mykey)
-
         let auth = ""
         let endpoint = ""
         let p256dh = ""
@@ -89,8 +87,12 @@ const Signin = () => {
                 const bytes  = CryptoJS.AES.decrypt(user.password, secretKey)
                 const originalPassword = bytes.toString(CryptoJS.enc.Utf8)
 
+                // U2FsdGVkX19tna22+G1TWJLyJQAXjtbZFG4vEfhJxv8=
+                console.log('signin mykey:', mykey)
+
                 // comparer les mots de passes 
-                if (originalPassword === password && auth) {
+                if (originalPassword === password) {
+
                     const data = {
                         [proId]:true,
                         auth,

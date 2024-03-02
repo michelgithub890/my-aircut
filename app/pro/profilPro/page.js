@@ -59,7 +59,7 @@ const ProfilPro = () => {
         }
     },[])
 
-    useEffect(() => {
+    useEffect(() => { 
         if (proId) {
             _readProfil(proId)
         }

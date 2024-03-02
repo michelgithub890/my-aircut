@@ -18,7 +18,7 @@ const HomeClients = () => {
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat, _readBooks, books, _deleteData } = useFirebase()
     const [showModalRemove, setShowModalRemove] = useState(false)
     const router = useRouter()
-    const [value, setValue] = useState('blue')
+    const [valueColor, setValueColor] = useState('')
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -27,8 +27,10 @@ const HomeClients = () => {
             setIsAuth(authData)
             const storedPro = localStorage.getItem("proId")
             if (storedPro) setProId(storedPro) 
+            const themeStored = localStorage.getItem("theme")
+            if (themeStored) setValueColor(themeStored)
         }
-    console.log('home_client')
+    console.log('home_client') 
     },[])
 
     useEffect(() => { 
@@ -37,8 +39,19 @@ const HomeClients = () => {
             _readProfil(proId) 
             _readMessagesChat(proId)
             _readBooks(proId)
-        }
+        } 
     },[proId])
+
+    useEffect(() => {
+        if (profil) {
+            const colorChoice = localStorage.getItem("themeColor")
+            profil.filter(pro => pro.proId === proId).map(pro => {
+                pro.themeColor !== colorChoice && 
+                localStorage.setItem("themeColor", pro.themeColor)
+                setValueColor(pro.themeColor)
+            })
+        }
+    },[profil])
 
     useEffect(() => {
         if (isAuth?.status === 'pro') router.push('/pro/homePro')
@@ -87,7 +100,7 @@ const HomeClients = () => {
                                     <div key={user.id} className="flex items-center gap-3">
                                         <div>{user.name}</div>
                                         <Link href={"/clients/profilClients"}>
-                                            <Image src={`/assets/images/profilon${value}.png`} className='img-fluid' alt='image calendar' height={38} width={38} />
+                                            <Image src={`/assets/images/profilon${valueColor}.png`} className='img-fluid' alt='image calendar' height={38} width={38} />
                                         </Link>
                                     </div>
                                 ))} 
@@ -103,7 +116,7 @@ const HomeClients = () => {
                     </div>
 
                     {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).map(book => (
-                        <div className={`my-book${value}`} key={book.id}>
+                        <div className={`my-book${valueColor}`} key={book.id}>
                             <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
                                 <div>{book.dateString} à {book.timeString}</div>
                                 <div>coupe: {book.service}</div>
@@ -130,7 +143,7 @@ const HomeClients = () => {
                         <div className='flex justify-center' /*  onClick={() => navigate('/bookingUsersPage')} */  >
                             <div className={`w-full mx-2 p-2 rounded-lg shadow-xl`}>
                                 <div className='flex justify-center'>
-                                    <Image src={`/assets/images/planning${value}.gif`} className='img-fluid' alt='image calendar' width={80} height={80} />
+                                    <Image src={`/assets/images/planning${valueColor}.gif`} className='img-fluid' alt='image calendar' width={80} height={80} />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>PRENDRE RDV</div>
                             </div> 
@@ -142,7 +155,7 @@ const HomeClients = () => {
                             <Link href={"/clients/openingHours"} className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl`}>
                                 <div className="flex justify-center">
                                     <Image 
-                                        src={`/assets/images/hours${value}.png`} 
+                                        src={`/assets/images/hours${valueColor}.png`} 
                                         className='img-fluid' 
                                         alt='image services' 
                                         style={{ height:50, width:50 }} 
@@ -155,7 +168,7 @@ const HomeClients = () => {
                         {/* </Link> */}
                         <Link href={"/clients/bookingClients"} className={`w-2/4 me-2 ms-1 p-2 rounded-lg shadow-xl`}>
                             <div className="flex justify-center">
-                                <Image src={`/assets/images/services${value}.png`} className='img-fluid' alt='image services' height={50} width={50} />
+                                <Image src={`/assets/images/services${valueColor}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>SERVICES</div>
                         </Link>
@@ -164,7 +177,7 @@ const HomeClients = () => {
                     <div className="flex justify-around mt-4">
                         <div className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl`} onClick={_handleMap}>
                             <div className="flex justify-center">
-                                <Image src={`/assets/images/map${value}.png`} className='img-fluid' alt='image services' height={50} width={50} />
+                                <Image src={`/assets/images/map${valueColor}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>NOUS SITUER</div>
                         </div>
@@ -173,9 +186,9 @@ const HomeClients = () => {
                                 {messagesChat
                                     ?.filter(message => message.userEmail === isAuth?.email && message.destinataire === "client" && !message.read)
                                     .map(message => message.id).length > 0 ? 
-                                    <Image src={`/assets/images/chatgif${value}.gif`} className='img-fluid' alt='image services' height={50} width={50} />
+                                    <Image src={`/assets/images/chatgif${valueColor}.gif`} className='img-fluid' alt='image services' height={50} width={50} />
                                 : 
-                                    <Image src={`/assets/images/chat${value}.png`} className='img-fluid' alt='image services' height={50} width={50} /> 
+                                    <Image src={`/assets/images/chat${valueColor}.png`} className='img-fluid' alt='image services' height={50} width={50} /> 
                                 }
                             </div>
                             <div className='text-center' style={{fontSize:12}}>CHAT</div>
@@ -185,13 +198,13 @@ const HomeClients = () => {
                     <div className="flex justify-around mt-4">
                         <Link href={isAuth?.[proId] ? "/clients/profilClients" : "/auth/signin"} className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl`}>
                             <div className="flex justify-center">
-                                <Image src={`/assets/images/profil${value}.png`} className='img-fluid' alt='image services' height={50} width={50} />
+                                <Image src={`/assets/images/profil${valueColor}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>MON PROFIL</div>
                         </Link>
                         <div className={`w-2/4 me-2 ms-1 p-2 rounded-lg shadow-xl`} onClick={_handlePhone}>
                             <div className="flex justify-center">
-                                <Image src={`/assets/images/phone${value}.png`} className='img-fluid' alt='image services'  height={50} width={50} />
+                                <Image src={`/assets/images/phone${valueColor}.png`} className='img-fluid' alt='image services'  height={50} width={50} />
                             </div>
                             <div className='text-center' style={{fontSize:12}}>APPELER</div>
                         </div>
