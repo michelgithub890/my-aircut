@@ -70,7 +70,7 @@ const PushPro = () => {
             _sendPush(subscription, title, body)
           }
         })
-      }
+    }
 
     const _sendPush = async (subscription, title, body) => {
         try {
@@ -108,7 +108,7 @@ const PushPro = () => {
 
         const dataPush = {
             title:title,
-            message:message,
+            message:message, 
             date:formattedDate
         }
 

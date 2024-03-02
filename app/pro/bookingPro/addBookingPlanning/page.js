@@ -113,11 +113,14 @@ const AddBookingPlanning = () => {
             authName:selectedClient?.name,
             subscription:subscription ? subscription : "",
         }
+        
         // console.log('addBookingPlanning', dataSave)
         _writeData(`pro/${proId}/books`, dataSave)
+
         if (endpoint) {
             _writeData(`pushToCome`, dataSave)
         }
+
         router.push('/pro/bookingPro')
     }
 
