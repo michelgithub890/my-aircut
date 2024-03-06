@@ -14,12 +14,20 @@ import useFirebase from '@/firebase/useFirebase'
 const StaffPro = () => { 
     const { _readStaffs, staffs } = useFirebase() 
     const [proId, setProId] = useState()
+    const [valueColor, setValueColor] = useState("")
     const router = useRouter()
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[])
 
@@ -41,11 +49,12 @@ const StaffPro = () => {
 
             <Link href={"/pro/staffPro/addStaff"} className="flex justify-center mt-4">
                 <Image 
-                    src={imageAddStaff} 
+                    src={`/assets/images/addStaff${valueColor}.png`} 
                     className='img-fluid shadow-lg' 
                     priority={true} 
                     alt='image calendar' 
-                    style={{ height:50, width:50 }} 
+                    height={50}
+                    width={50} 
                 />
             </Link>
 

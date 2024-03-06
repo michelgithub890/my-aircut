@@ -35,6 +35,7 @@ const BookingClients = () => {
     const [numberDays, setNumberDays] = useState(7)
     const [openModalAlert, setOpenModalAlert] = useState(false)
     const [showConfirmBooking, setShowConfirmBooking] = useState(false)
+    const [valueColor, setValueColor] = useState('')
     const router = useRouter()
 
     useEffect(() => {
@@ -53,6 +54,13 @@ const BookingClients = () => {
             setCurrentHour(hours * 60 + minutes)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[count])
 
@@ -169,6 +177,20 @@ const BookingClients = () => {
         router.push("/auth/signin")
     }
 
+    const getLightColor = (color) => {
+        const colors = {
+            green:'#cdf1dc',
+            blue:'#9bb8e3',
+            pink:'#ed9999ff',
+            orange:'#fcf4ec',
+            brown:'#a57a4f',
+            pink:'#fcecec',
+            purple:'#f4ecfc'
+          // Ajoutez plus de mappages selon vos besoins
+        }
+        return colors[color] || "lightblue"
+    }
+
     return (
         <div>
 
@@ -261,7 +283,7 @@ const BookingClients = () => {
                         {item.arrayTimes.map((booking,index2) => (
                             <div key={index2} className="ms-1 me-1">
                                 {_dateString(item.date) === todayDate && currentHour > booking.hour ? "" :
-                                <button className="myButton" onClick={() => _handleBooking(item, booking)}>{_convertMinutesToHHMM(booking.hour)}</button>}
+                                <button className={`myButton${valueColor}`} onClick={() => _handleBooking(item, booking)}>{_convertMinutesToHHMM(booking.hour)}</button>}
                             </div>
                         ))}
                     </div>

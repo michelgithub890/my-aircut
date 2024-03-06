@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 // MODELS 
 import { MODEL_COLOR } from '@/models/ModelColor'
 // MUI 
-import Input from '@mui/material/Input'
+import Input from '@mui/material/Input' 
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
+import DialogTitle from '@mui/material/DialogTitle' 
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import SendIcon from '@mui/icons-material/Send'
@@ -34,6 +34,7 @@ const ChatClients = () => {
     const [isAuth, setIsAuth] = useState("")
     const [proId, setProId] = useState("")
     const [messageToDelete, setMessageToDelete] = useState(null)
+    const [valueColor, setValueColor] = useState('')
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -42,6 +43,13 @@ const ChatClients = () => {
             setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[])
 
@@ -127,6 +135,20 @@ const ChatClients = () => {
         }
     }
 
+    const getLightColor = (color) => {
+        const colors = {
+            green:'#cdf1dc',
+            blue:'#9bb8e3',
+            pink:'#ed9999ff',
+            orange:'#fcf4ec',
+            brown:'#a57a4f',
+            pink:'#fcecec',
+            purple:'#f4ecfc'
+          // Ajoutez plus de mappages selon vos besoins
+        }
+        return colors[color] || "lightblue"
+    }
+
     return (
         <div className='wrap-text'>
             
@@ -149,7 +171,11 @@ const ChatClients = () => {
                             <InputAdornment position="end">
                                 <SendIcon 
                                     onClick={values.message.trim().length > 0 ? () => _handleSend(user) : null} 
-                                    style={{ color:MODEL_COLOR.blueApply, cursor: values.message.trim().length > 0 ? 'pointer' : 'not-allowed' }}
+                                    // style={{ color:MODEL_COLOR.blueApply, cursor: values.message.trim().length > 0 ? 'pointer' : 'not-allowed' }}
+                                    style={{ 
+                                        color:valueColor ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply, 
+                                        cursor: values.message.trim().length > 0 ? 'pointer' : 'not-allowed',
+                                    }}
                                 />
                             </InputAdornment>
                         }
@@ -184,11 +210,11 @@ const ChatClients = () => {
                                 if (!message.read && message.destinataire === "client") {
                                     _updateMessage(message.id)
                                 }
-
+ 
                                 return (
                                 <div 
                                     key={message.id} 
-                                    {...handleLongPress(message, user)}
+                                    {...handleLongPress(message, user)} 
                                     style={message.destinataire === "pro" ? 
                                     {
                                         backgroundColor:"lightgrey",
@@ -199,7 +225,8 @@ const ChatClients = () => {
                                     } 
                                     : 
                                     {
-                                        backgroundColor:"lightblue",
+                                        backgroundColor:getLightColor(valueColor),
+                                        // backgroundColor:"lightblue",
                                         margin:"10px",
                                         padding:"10px",
                                         borderRadius:15,

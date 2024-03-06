@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .myButton {
-    outline: none;
+    outline: none; 
     background-color: #1e90ff;
     color: white;
     transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
@@ -77,6 +77,132 @@
   
 .myButtonGrey:hover {
     background-color: black; /* Plus foncé que le noir pour l'effet de survol */
+    color: #ddd;   
+}
+
+.myButtonbrown {
+    outline: none;
+    background-color: #a57a4f; 
+    /* color: white; */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: grey;
+    border: 1px solid grey;
+}
+  
+.myButtonbrown:hover {
+    background-color: #84623fff; /* Plus foncé que le noir pour l'effet de survol */
+    color: #ddd;   
+}
+
+.myButtonblue {
+    outline: none;
+    background-color: #a57a4f; 
+    /* color: white; */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: grey;
+    border: 1px solid grey;
+}
+  
+.myButtonblue:hover {
+    background-color: #5f8dd3ff; /* Plus foncé que le noir pour l'effet de survol */
+    color: #ddd;   
+}
+
+.myButtongreen {
+    outline: none;
+    background-color: #cdf1dc; 
+    /* color: white; */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: grey;
+    border: 1px solid grey;
+}
+  
+.myButtongreen:hover {
+    background-color: #87deaaff; /* Plus foncé que le noir pour l'effet de survol */
+    color: #ddd;   
+}
+
+.myButtonorange {
+    outline: none;
+    background-color: #fcf4ec; 
+    /* color: white; */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: grey;
+    border: 1px solid grey;
+}
+  
+.myButtonorange:hover {
+    background-color: #edc399ff; /* Plus foncé que le noir pour l'effet de survol */
+    color: #ddd;   
+}
+
+.myButtonpink {
+    outline: none;
+    background-color: #fcecec; 
+    /* color: white; */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: grey;
+    border: 1px solid grey;
+}
+  
+.myButtonpink:hover {
+    background-color: #ed9999ff; /* Plus foncé que le noir pour l'effet de survol */
+    color: #ddd;   
+}
+
+.myButtonpurple {
+    outline: none;
+    background-color: #f4ecfc; 
+    /* color: white; */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+    border-radius: 0.3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: grey;
+    border: 1px solid grey;
+}
+  
+.myButtonpurple:hover {
+    background-color: #c399edff; /* Plus foncé que le noir pour l'effet de survol */
     color: #ddd;   
 }
 
@@ -166,7 +292,7 @@
     padding-bottom: 0.6rem;
     padding-left: 1.2rem;
     padding-right: 1.2rem;
-    border-radius: 0.3rem;
+    border-radius: 0.3rem; 
     margin: 0.3rem;
 }
 

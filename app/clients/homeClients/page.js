@@ -27,8 +27,13 @@ const HomeClients = () => {
             setIsAuth(authData)
             const storedPro = localStorage.getItem("proId")
             if (storedPro) setProId(storedPro) 
-            const themeStored = localStorage.getItem("theme")
-            if (themeStored) setValueColor(themeStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     console.log('home_client') 
     },[])
@@ -113,7 +118,7 @@ const HomeClients = () => {
                                 </Link>
                             </>
                         }
-                    </div>
+                    </div> 
 
                     {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).map(book => (
                         <div className={`my-book${valueColor}`} key={book.id}>
@@ -158,7 +163,6 @@ const HomeClients = () => {
                                         src={`/assets/images/hours${valueColor}.png`} 
                                         className='img-fluid' 
                                         alt='image services' 
-                                        style={{ height:50, width:50 }} 
                                         width={50} 
                                         height={50} 
                                     />

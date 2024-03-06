@@ -95,7 +95,7 @@ const UpdateList = () => {
                         defaultValue={initialName}
                         InputLabelProps={{ shrink: true }}
                     />
-                    <button className="myButton" type="submit">Enregistrer</button>
+                    <button className="myButtonGrey" type="submit">Enregistrer</button>
 
                 </form>
 

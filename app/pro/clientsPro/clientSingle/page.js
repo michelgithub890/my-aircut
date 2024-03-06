@@ -23,8 +23,9 @@ const ClientSingle = () => {
     const [checked, setCheched] = useState(true)
     const [showHistoryBooking, setShowHistoryBooking] = useState(false)
     const [proId, setProId] = useState()
+    const [valueColor, setValueColor] = useState("")
     const router = useRouter()
-
+ 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const userData = localStorage.getItem("user")
@@ -32,6 +33,13 @@ const ClientSingle = () => {
             setUserSelected(parsedUserData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[])
 
@@ -101,7 +109,7 @@ const ClientSingle = () => {
                         <div className="flex justify-center items-center gap-5 mt-5">
                             <div>CARTE DE FIDÉLITÉ</div>
                             <div onClick={_handleDeleteNumberCard}>
-                                <Image src={imageReset} className='img-fluid' alt='image services' style={{ height:30, width:30 }} />
+                                <Image src={`/assets/images/reset${valueColor}.png`} className='img-fluid' alt='image services' height={30} width={30} />
                             </div>
                         </div>
                         <div className="flex justify-center gap-4 items-center">
@@ -116,7 +124,7 @@ const ClientSingle = () => {
                     <div className="border-b-2 p-3" onClick={_handleMessages} style={{ cursor:"pointer" }}>Messages</div> 
                     
                     {/* ACCESS BOOKING TRUE / FALSE */}
-                    <div className="flex items-center p-3 gap-5 border-b-2">
+                    <div className="flex items-center p-3 gap-5 border-b-2"> 
                         <Switch
                             checked={checked}
                             onChange={_handleChangeSwitch} 
@@ -131,7 +139,7 @@ const ClientSingle = () => {
                     <Link href={"/pro/clientsPro/clientSingle/updateClient"} className="flex items-center p-3 justify-between border-b-2">
                         <div>{user.name}</div>
                         <div>
-                            <Image src={imageReset} className='img-fluid' alt='image services' style={{ height:25, width:25 }} />
+                            <Image src={`/assets/images/reset${valueColor}.png`} className='img-fluid' alt='image services' height={25} width={25} />
                         </div>
                     </Link>
 

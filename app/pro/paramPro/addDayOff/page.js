@@ -100,7 +100,7 @@ const AddDayOff = () => {
             </div>       
 
             <div className="flex justify-center">
-                <button className="myButton" onClick={_handleSaveDates}>Enregistrer</button>
+                <button className="myButtonGrey" onClick={_handleSaveDates}>Enregistrer</button>
             </div>
 
             <div style={{ height:400 }} />

@@ -36,7 +36,7 @@ const UpdateClient = () => {
             const parsedUserData = userData ? JSON.parse(userData) : null
             setUserSelected(parsedUserData)
             const proIdStored = localStorage.getItem('proId')
-            if (proIdStored) setProId(proIdStored)
+            if (proIdStored) setProId(proIdStored) 
         }
     },[])
 
@@ -87,7 +87,7 @@ const UpdateClient = () => {
                         InputLabelProps={{ shrink: true }}
                     /> 
 
-                    <button className="myButton" type="submit">Enregistrer</button>
+                    <button className="myButtonGrey" type="submit">Enregistrer</button>
                     
                 </form>
             </div>

@@ -28,6 +28,7 @@ const ChatSingle = () => {
     const [urlStored, setUrlStored] = useState("")
     const [emetteur, setEmetteur] = useState()
     const [proId, setProId] = useState()
+    const [valueColor, setValueColor] = useState('')
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -37,6 +38,13 @@ const ChatSingle = () => {
             setUrlStored(localStorage.getItem('url')) 
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[])
 
@@ -115,12 +123,26 @@ const ChatSingle = () => {
     
         return {
             onMouseDown: startPress,
-            onMouseUp: clearPress,
+            onMouseUp: clearPress, 
             onMouseLeave: clearPress,
             onTouchStart: startPress,
             onTouchEnd: clearPress,
             onTouchCancel: clearPress
         }
+    }
+
+    const getLightColor = (color) => {
+        const colors = {
+            green:'#cdf1dc',
+            blue:'#9bb8e3',
+            pink:'#ed9999ff',
+            orange:'#fcf4ec',
+            brown:'#a57a4f',
+            pink:'#fcecec',
+            purple:'#f4ecfc'
+          // Ajoutez plus de mappages selon vos besoins
+        }
+        return colors[color] || "lightblue"
     }
 
     return (
@@ -140,7 +162,10 @@ const ChatSingle = () => {
                             <InputAdornment position="end">
                                 <SendIcon 
                                     onClick={values.message.trim().length > 0 ? () => _handleSend(user) : null} 
-                                    style={{ color:MODEL_COLOR.blueApply, cursor: values.message.trim().length > 0 ? 'pointer' : 'not-allowed' }}
+                                    style={{ 
+                                        color:valueColor ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply, 
+                                        cursor: values.message.trim().length > 0 ? 'pointer' : 'not-allowed' 
+                                    }}
                                 />
                             </InputAdornment>
                         }
@@ -190,7 +215,8 @@ const ChatSingle = () => {
                                     } 
                                     : 
                                     {
-                                        backgroundColor:"lightblue",
+                                        // backgroundColor:"lightblue",
+                                        backgroundColor:getLightColor(valueColor),
                                         margin:"10px",
                                         padding:"10px",
                                         borderRadius:15,

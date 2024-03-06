@@ -29,11 +29,19 @@ const ParamPro = () => {
     const { _readDaysOff, daysOff, _deleteData, _readProfil, profil, _updateData } = useFirebase()
     const [proId, setProId] = useState()
     const [numberWeek, setNumberWeek] = useState(4)
+    const [valueColor, setValueColor] = useState("")
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[]) 
 
@@ -94,7 +102,7 @@ const ParamPro = () => {
                         <div className="flex justify-center gap-4 items-center p-3">
                             <div className='text-center'>Jours de fermetures</div>
                             <Link href={"/pro/paramPro/addDayOff"} className="flex justify-center">
-                                <Image src={imageAdd} className='img-fluid' alt='image services' style={{ height:30, width:30 }} />
+                                <Image src={`/assets/images/addServices${valueColor}.png`} className='img-fluid' alt='image services' height={30} width={30} />
                             </Link>
                         </div>
                     </div>
@@ -117,7 +125,7 @@ const ParamPro = () => {
                     <div className="text-center border-b-2 p-3 flex justify-center items-center gap-4">
                         <div>Horaires du planning</div>
                         <Link href={"/pro/paramPro/hoursOpenPlanning"} className="flex justify-center">
-                            <Image src={imageAdd} className='img-fluid' alt='image services' style={{ height:30, width:30 }} />
+                            <Image src={`/assets/images/addServices${valueColor}.png`} className='img-fluid' alt='image services' height={30} width={30} />
                         </Link>
                     </div>
 
@@ -136,76 +144,76 @@ const ParamPro = () => {
                         <div className='text-center my-3'>Thème couleurs</div>
                         <div className='flex justify-around mt-3'>
                             {!pro.themeColor || pro.themeColor === "" ?
-                                <Image src={boxbluelight} className='img-fluid' alt='boxbluelight' style={{ height:40, width:40 }} /> : 
+                                <Image src={boxbluelight} className='img-fluid' alt='boxbluelight' height={40} width={40} /> : 
                                 <Image 
                                     src={boxbluelightoff} 
                                     className='img-fluid' 
                                     alt='boxbluelightoff' 
-                                    style={{ height:40, width:40 }} 
+                                    height={40} width={40}
                                     onClick={() => _handleColor(pro.id, "")}
                                 />
                             }
                             {pro.themeColor === "blue" ?
-                                <Image src={boxblue} className='img-fluid' alt='boxblue' style={{ height:40, width:40 }} /> : 
+                                <Image src={boxblue} className='img-fluid' alt='boxblue' height={40} width={40} /> : 
                                 <Image 
                                     src={boxblueoff} 
                                     className='img-fluid' 
                                     alt='boxblueoff' 
-                                    style={{ height:40, width:40 }} 
+                                    height={40} width={40}
                                     onClick={() => _handleColor(pro.id, "blue")}
                                 />
                             }
                             {pro.themeColor === "green" ?
-                                <Image src={boxgreen} className='img-fluid' alt='boxgreen' style={{ height:40, width:40 }} /> : 
+                                <Image src={boxgreen} className='img-fluid' alt='boxgreen' height={40} width={40} /> : 
                                 <Image 
                                     src={boxgreenoff} 
                                     className='img-fluid' 
                                     alt='boxgreenoff' 
-                                    style={{ height:40, width:40 }} 
+                                    height={40} width={40}
                                     onClick={() => _handleColor(pro.id, "green")}
                                 />
                             }
                         </div>
                         <div className='flex justify-around mt-3'>
                             {pro.themeColor === "orange" ?
-                                <Image src={boxorange} className='img-fluid' alt='boxorange' style={{ height:40, width:40 }} /> : 
+                                <Image src={boxorange} className='img-fluid' alt='boxorange' height={40} width={40} /> : 
                                 <Image 
                                     src={boxorangeoff} 
                                     className='img-fluid' 
                                     alt='boxorangeoff' 
-                                    style={{ height:40, width:40 }} 
+                                    height={40} width={40} 
                                     onClick={() => _handleColor(pro.id, "orange")}
                                 />
                             }
                             {pro.themeColor === "pink" ?
-                                <Image src={boxpink} className='img-fluid' alt='boxpink' style={{ height:40, width:40 }} /> : 
+                                <Image src={boxpink} className='img-fluid' alt='boxpink' height={40} width={40} /> : 
                                 <Image 
                                     src={boxpinkoff} 
                                     className='img-fluid' 
                                     alt='boxpinkoff' 
-                                    style={{ height:40, width:40 }} 
+                                    height={40} width={40}
                                     onClick={() => _handleColor(pro.id, "pink")}
                                 />
                             }
                             {pro.themeColor === "purple" ?
-                                <Image src={boxpurple} className='img-fluid' alt='boxpurple' style={{ height:40, width:40 }} /> : 
+                                <Image src={boxpurple} className='img-fluid' alt='boxpurple' height={40} width={40} /> : 
                                 <Image 
                                     src={boxpurpleoff} 
                                     className='img-fluid' 
                                     alt='boxpurpleoff' 
-                                    style={{ height:40, width:40 }} 
+                                    height={40} width={40}
                                     onClick={() => _handleColor(pro.id, "purple")}
                                 />
                             }
                         </div>
                         <div className='flex justify-around mt-3'>
                             {pro.themeColor === "brown" ?
-                                <Image src={boxbrown} className='img-fluid' alt='boxbrown' style={{ height:40, width:40 }} /> : 
+                                <Image src={boxbrown} className='img-fluid' alt='boxbrown' height={40} width={40} /> : 
                                 <Image 
                                     src={boxbrownoff} 
                                     className='img-fluid' 
                                     alt='boxbrownoff' 
-                                    style={{ height:40, width:40 }} 
+                                    height={40} width={40}
                                     onClick={() => _handleColor(pro.id, "brown")}
                                 />
                             }

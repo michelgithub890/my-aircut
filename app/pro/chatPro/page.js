@@ -35,7 +35,7 @@ const ChatPro = () => {
     return ( 
         <div> 
 
-            <HeaderPro title="Chat" />
+            <HeaderPro title="Chat" /> 
 
             {users
                 ?.sort((a, b) => a.name.localeCompare(b.name))

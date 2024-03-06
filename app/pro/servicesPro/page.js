@@ -20,12 +20,20 @@ const ServicesPro = () => {
     const { _readLists, lists, _readServices, services } = useFirebase()
     const [showList, setShowList] = useState("")
     const [proId, setProId] = useState()
+    const [valueColor, setValueColor] = useState("")
     const router = useRouter()
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[])
 
@@ -61,11 +69,11 @@ const ServicesPro = () => {
 
             <Link href={"/pro/servicesPro/addList"} className="flex justify-center mt-4">
                 <Image 
-                    src={imageAddList} 
+                    src={`/assets/images/addList${valueColor}.png`} 
                     className='img-fluid shadow-lg' 
                     priority={true} 
                     alt='image calendar' 
-                    style={{ height:50, width:50 }} 
+                    height={50} width={50} 
                 />
             </Link>
 
@@ -80,15 +88,14 @@ const ServicesPro = () => {
                         {showList === list.id ? <IoIosArrowUp /> : <IoIosArrowDown />}
                     </div>
  
-         
                     {showList === list.id && 
                         <>
                             <div className="p-3 flex justify-around border-t-2 items-center">
                                 <div className="p-2" onClick={() => _handleAddService(list.id, list.name)} style={{ cursor:"pointer" }}>
-                                    <Image src={imageAddServices} className='img-fluid' alt='add service' style={{ height:30, width:30 }} />
+                                    <Image src={`/assets/images/addServices${valueColor}.png`} className='img-fluid' alt='add service' height={30} width={30} />
                                 </div>
                                 <div href={"/pro/clients/updateList"} className="p-2" onClick={() => _handleUpdateList(list)}>
-                                    <Image src={imageUpdateList} className='img-fluid' alt='update list' style={{ height:30, width:30 }} />
+                                    <Image src={`/assets/images/updateList${valueColor}.png`} className='img-fluid' alt='update list' height={30} width={30} />
                                 </div>
                             </div>
 

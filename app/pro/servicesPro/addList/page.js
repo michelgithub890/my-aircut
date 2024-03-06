@@ -65,7 +65,7 @@ const AddList = () => {
                         error={!!errors.name}
                         helperText={errors.name?.message}
                     />
-                    <button className="myButton" type="submit">Enregistrer</button>
+                    <button className="myButtonGrey" type="submit">Enregistrer</button>
                 </form>
             </div>
              

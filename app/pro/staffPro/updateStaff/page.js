@@ -18,6 +18,7 @@ const UpdateStaff = () => {
     const { _readStaffs, staffs, _readDaysOff, daysOff, _updateData, _readHours, hours, _deleteData } = useFirebase()
     const [staffId, setStaffId] = useState()
     const [proId, setProId] = useState()
+    const [valueColor, setValueColor] = useState("")
     const router = useRouter()
 
     useEffect(() => {
@@ -25,6 +26,13 @@ const UpdateStaff = () => {
             setStaffId(localStorage.getItem('staffId'))
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[])
 
@@ -107,8 +115,9 @@ const UpdateStaff = () => {
                             </div>
                             <Image 
                                 src={imageDelete} 
-                                className='img-fluid' alt='image services' 
-                                style={{ height:20, width:20 }} 
+                                className='img-fluid' alt='image services'
+                                height={20}
+                                width={20}
                                 onClick={() => _handleDeleteDaysOff(dayOff.id)}
                             />
                         </div>
@@ -125,7 +134,8 @@ const UpdateStaff = () => {
                                             src={imageCaseACocherOk} 
                                             className='img-fluid' 
                                             alt='image services' 
-                                            style={{ height:20, width:20 }} 
+                                            height={20}
+                                            width={20}
                                             onClick={() => _handlePutOffDay(dayWeek)}
                                         />
                                     :
@@ -133,7 +143,8 @@ const UpdateStaff = () => {
                                             src={imageCaseACocher} 
                                             className='img-fluid' 
                                             alt='image services' 
-                                            style={{ height:20, width:20 }} 
+                                            height={20}
+                                            width={20}
                                             onClick={() => _handlePutOnDay(dayWeek)}
                                         />
                                     }
@@ -145,9 +156,11 @@ const UpdateStaff = () => {
                                 <div className="border-b-2">
                                     <div className="flex justify-center p-2">
                                         <Image 
-                                            src={imageAddHours} 
+                                            src={`/assets/images/addServices${valueColor}.png`} 
                                             className='img-fluid' alt='image services' 
-                                            style={{ height:30, width:30, cursor:"pointer" }} 
+                                            style={{ cursor:"pointer" }} 
+                                            height={30}
+                                            width={30}
                                             onClick={() => _handleAddHours(dayWeek)}
                                         />
                                     </div>
@@ -158,7 +171,8 @@ const UpdateStaff = () => {
                                             <Image 
                                                 src={imageDelete} 
                                                 className='img-fluid' alt='image services' 
-                                                style={{ height:20, width:20 }} 
+                                                height={20}
+                                                width={20}
                                                 onClick={() => _handleDeleteHours(hour.id)}
                                             />
                                         </div>

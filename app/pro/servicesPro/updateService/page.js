@@ -179,7 +179,7 @@ const UpdateService = () => {
                         defaultValue={initialPrice} 
                         InputLabelProps={{ shrink: true }}
                     />
-                    <button className="myButton" type="submit">Enregistrer</button>
+                    <button className="myButtonGrey" type="submit">Enregistrer</button>
 
                 </form>
 

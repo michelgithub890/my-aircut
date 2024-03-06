@@ -104,7 +104,7 @@ const HoursOpenPlanning = () => {
             </div>
         
             <div className="flex justify-center mt-3">
-                <button onClick={_handleSaveDates} className="myButton">Enregistrer</button>
+                <button onClick={_handleSaveDates} className="myButtonGrey">Enregistrer</button>
             </div>
 
             <ModalAlert handleClose={handleClose} open={openModalConfirm} title={titleModal} />
