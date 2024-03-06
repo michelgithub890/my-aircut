@@ -103,7 +103,7 @@
 
 .myButtonblue {
     outline: none;
-    background-color: #a57a4f; 
+    background-color: #9bb8e3; 
     /* color: white; */
     transition: background-color 0.3s, color 0.3s; /* Ajoute une transition pour un effet plus doux */
     padding-top: 0.6rem;
