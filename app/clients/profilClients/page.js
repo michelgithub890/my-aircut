@@ -20,6 +20,7 @@ const ProfilClients = () => {
     const [showModalRemove, setShowModalRemove] = useState(false)
     const [showHistory, setShowHistory] = useState(false)
     const [todayDate, setTodayDate] = useState()
+    const [valueColor, setValueColor] = useState('')
     const router = useRouter()
 
     useEffect(() => {
@@ -33,6 +34,14 @@ const ProfilClients = () => {
             setTodayDate(todayInt)
             const storedProId = localStorage.getItem('proId')
             if (storedProId) setProId(storedProId)
+            // THEME COLOR 
+            const themeStored = localStorage.getItem("themeColor")
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[]) 
 
@@ -66,7 +75,7 @@ const ProfilClients = () => {
             ))}
 
             {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date >= todayDate).map(book => (
-                <div className="myBook" key={book.id}>
+                <div className={`my-book${valueColor}`} key={book.id}>
                     <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
                         <div>{book.dateString} à {book.timeString}</div>
                         <div>coupe: {book.service}</div> 
@@ -95,7 +104,7 @@ const ProfilClients = () => {
                 </Card>
             </div>
 
-            {showHistory && isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date > todayDate).map((book, index) => (
+            {showHistory && isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date < todayDate).map((book, index) => (
                 <div className="myBookGrey" key={index}>
                     <div>{book.dateString} à {book.timeString}</div>
                     <div>coupe: {book.service}</div> 

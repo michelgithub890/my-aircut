@@ -17,6 +17,7 @@ const HomeClients = () => {
     const [proId, setProId] = useState("")
     const { _readProfil, profil, _readUsers, users, _readMessagesChat, messagesChat, _readBooks, books, _deleteData } = useFirebase()
     const [showModalRemove, setShowModalRemove] = useState(false)
+    const [currentDate, setCurrentDate] = useState()
     const router = useRouter()
     const [valueColor, setValueColor] = useState('')
 
@@ -25,7 +26,7 @@ const HomeClients = () => {
             const auth = localStorage.getItem("isAuth")
             const authData = auth ? JSON.parse(auth) : []
             setIsAuth(authData)
-            const storedPro = localStorage.getItem("proId")
+            const storedPro = localStorage.getItem("proId") 
             if (storedPro) setProId(storedPro) 
             const themeStored = localStorage.getItem("themeColor")
             if (themeStored) {
@@ -34,6 +35,10 @@ const HomeClients = () => {
                 setValueColor("")
                 localStorage.setItem("themeColor", "")
             }
+            const date = new Date(Date.now()) 
+            date.setHours(0, 0, 0, 0)  
+            const dateInt = date.getTime()
+            setCurrentDate(dateInt)
         }
     console.log('home_client') 
     },[])
@@ -117,10 +122,10 @@ const HomeClients = () => {
                                     <Image src={imageProfilOff} className='img-fluid' alt='image calendar' height={38} width={38} />
                                 </Link>
                             </>
-                        }
+                        } 
                     </div> 
 
-                    {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).map(book => (
+                    {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date >= currentDate).map(book => (
                         <div className={`my-book${valueColor}`} key={book.id}>
                             <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
                                 <div>{book.dateString} à {book.timeString}</div>
