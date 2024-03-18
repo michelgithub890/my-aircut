@@ -169,7 +169,7 @@ const HomeClients = () => {
                             {/* <div className={`w-full mx-2 p-2 rounded-lg shadow-xl`}> */}
                             <div className={`w-full mx-2 p-2 rounded-lg`} style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
                                 <div className='flex justify-center'>
-                                    <Image src={`/assets/images/planning${valueColor}.gif`} className='img-fluid' alt='image calendar' width={50} height={50} />
+                                    <Image src={`/assets/images/planning${valueColor}.gif`} className='img-fluid' alt='image calendar' width={80} height={80} />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>PRENDRE RDV</div>
                             </div> 

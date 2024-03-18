@@ -20,6 +20,8 @@ import { fr } from 'date-fns/locale'
 import useFirebase from '@/firebase/useFirebase'
 // HOOKS 
 import usePlanningClient from '@/hooks/usePlanningClient'
+// MODELS 
+import { MODEL_COLOR } from '@/models/ModelColor'
 
 const BookingClients = () => {
     const { _readDaysOff, daysOff, _readStaffs, staffs, _readServices, services, _readHours, hours, _readLists, lists, _readProfil, profil, _readBooks, books, _writeData } = useFirebase()
@@ -201,8 +203,9 @@ const BookingClients = () => {
             {/* LIST SERVICES STORED */}
             {servicesStorage && servicesStorage.map((service, index) => (
                 <div key={index} className="mt-3 mx-3">
-                    <Card>
-                        <CardContent>
+                    <div className="mt-3 px-3 py-6 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                    {/* <Card>
+                        <CardContent> */}
                             <div className="flex justify-between items-center">
                                 <div>
                                     <div>{service.name}</div>
@@ -232,23 +235,24 @@ const BookingClients = () => {
                                     </Select>
                                 </FormControl>
                             </div>
-                        </CardContent>
-                    </Card>
+                        {/* </CardContent>
+                    </Card> */}
+                    </div>
                 </div>
             ))} 
 
             {/* IF NOT SERVICE */}
             {!servicesStorage || servicesStorage?.length === 0 && 
-                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
+                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} valueColor={valueColor} />
             }
 
             {!servicesStorage && 
-                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
+                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} valueColor={valueColor} />
             }
 
             {/* IF SERVICES STORED < 3 */}
             {showServices && 
-                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} />
+                <ChoiceServiceClient _handleChoiceService={_handleChoiceService} services={services} lists={lists} valueColor={valueColor} />
             }
 
             {/* ASK MORE SERVICES */}
@@ -266,9 +270,9 @@ const BookingClients = () => {
 
             {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours, profil, proId, books).map((item, index) => (
                 numberDays > index &&
-                <div className="mt-3 mx-3" key={index}>
-                    <Card>
-                        <CardContent>
+                <div className="mt-3" key={index}>
+                    {/* <Card>
+                        <CardContent style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
                             <div className="flex justify-between" onClick={() => setShowDay(showDay === item.date ? "" : item.date)}>
                                 <div>{_dateString(item.date)}</div>
                                 {showDay === item.date ? 
@@ -276,12 +280,20 @@ const BookingClients = () => {
                                 }
                             </div> 
                         </CardContent>
-                    </Card>
+                    </Card> */}
+                    <div className="mt-3 px-3 py-6 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                        <div className="flex justify-between" onClick={() => setShowDay(showDay === item.date ? "" : item.date)}>
+                            <div>{_dateString(item.date)}</div>
+                            {showDay === item.date ? 
+                                <IoIosArrowUp style={{ height:20, width:20 }} /> : <IoIosArrowDown style={{ height:20, width:20 }} />
+                            }
+                        </div>
+                    </div>
 
                     {showDay === item.date && 
                     <div className="flex flex-wrap">
-                        {item.arrayTimes.map((booking,index2) => (
-                            <div key={index2} className="ms-1 me-1">
+                        {item.arrayTimes.map((booking,index2) => ( 
+                            <div key={index2} className="mx-2">
                                 {_dateString(item.date) === todayDate && currentHour > booking.hour ? "" :
                                 <button className={`myButton${valueColor}`} onClick={() => _handleBooking(item, booking)}>{_convertMinutesToHHMM(booking.hour)}</button>}
                             </div>
