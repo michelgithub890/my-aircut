@@ -134,8 +134,8 @@ const ChatSingle = () => {
     const getLightColor = (color) => {
         const colors = {
             green:'#cdf1dc',
-            blue:'#9bb8e3',
-            pink:'#ed9999ff',
+            blue:'#9bb8e3', 
+            // pink:'#ed9999ff',
             orange:'#fcf4ec',
             brown:'#a57a4f',
             pink:'#fcecec',
@@ -216,9 +216,9 @@ const ChatSingle = () => {
                                     : 
                                     {
                                         // backgroundColor:"lightblue",
-                                        backgroundColor:getLightColor(valueColor),
+                                        backgroundColor:valueColor ? getLightColor(valueColor) : MODEL_COLOR.blueUltraLight,
                                         margin:"10px",
-                                        padding:"10px",
+                                        padding:"10px", 
                                         borderRadius:15,
                                         marginRight:"25%"
                                     }

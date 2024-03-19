@@ -141,7 +141,7 @@ const HomeClients = () => {
                     </div> 
 
                     {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date >= currentDate).map(book => (
-                        <div className={`my-book${valueColor}`} key={book.id}>
+                        <div className={`my-book${valueColor}`} key={book.id} style={{ marginLeft:"8px", marginRight:"8px"}}>
                             <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
                                 <div>{book.dateString} à {book.timeString}</div>
                                 <div>coupe: {book.service}</div>
@@ -167,9 +167,9 @@ const HomeClients = () => {
                     <Link href={"/clients/bookingClients"}>
                         <div className='flex justify-center' /*  onClick={() => navigate('/bookingUsersPage')} */  >
                             {/* <div className={`w-full mx-2 p-2 rounded-lg shadow-xl`}> */}
-                            <div className={`w-full mx-2 p-2 rounded-lg`} style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                            <div className={`w-full mx-2 p-2 rounded-lg`} style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                                 <div className='flex justify-center'>
-                                    <Image src={`/assets/images/planning${valueColor}.gif`} className='img-fluid' alt='image calendar' width={80} height={80} />
+                                    <Image src={`/assets/images/planning${valueColor}.gif`} className='img-fluid' alt='image calendar' width={65} height={65} />
                                 </div>
                                 <div className='text-center' style={{fontSize:12}}>PRENDRE RDV</div>
                             </div> 
@@ -179,7 +179,11 @@ const HomeClients = () => {
                     <div className="flex justify-around mt-3">
                         {/* <Link href={"/clients/openingHours"}> */}
                             {/* <Link href={"/clients/openingHours"} className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl`}> */}
-                            <Link href={"/clients/openingHours"} className={`w-2/4 ms-2 me-1 p-2 rounded-lg`} style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                            <Link 
+                                href={"/clients/openingHours"} 
+                                className={`w-2/4 ms-2 me-1 p-2 rounded-lg`} 
+                                style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
+                            >
                                 <div className="flex justify-center">
                                     <Image 
                                         src={`/assets/images/hours${valueColor}.png`} 
@@ -193,7 +197,11 @@ const HomeClients = () => {
                             </Link>
                         {/* </Link> */}
                         {/* <Link href={"/clients/bookingClients"} className={`w-2/4 me-2 ms-1 p-2 rounded-lg shadow-xl`}> */}
-                        <Link href={"/clients/bookingClients"} className={`w-2/4 me-2 ms-1 p-2 rounded-lg`} style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                        <Link 
+                            href={"/clients/bookingClients"} 
+                            className={`w-2/4 me-2 ms-1 p-2 rounded-lg`} 
+                            style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
+                        >
                             <div className="flex justify-center">
                                 <Image src={`/assets/images/services${valueColor}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
@@ -203,7 +211,11 @@ const HomeClients = () => {
 
                     <div className="flex justify-around mt-3">
                         {/* <div className={`w-2/4 ms-2 me-1 p-2 rounded-lg shadow-xl`} onClick={_handleMap}> */}
-                        <div className={`w-2/4 ms-2 me-1 p-2 rounded-lg`} onClick={_handleMap} style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                        <div 
+                            className={`w-2/4 ms-2 me-1 p-2 rounded-lg`} 
+                            onClick={_handleMap} 
+                            style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
+                        >
                             <div className="flex justify-center">
                                 <Image src={`/assets/images/map${valueColor}.png`} className='img-fluid' alt='image services' height={50} width={50} />
                             </div>
@@ -213,7 +225,7 @@ const HomeClients = () => {
                         <Link 
                             href={isAuth?.[proId] ? "/clients/chatClients" : "/clients/chatClients/chatClientsAuth" } 
                             className={`w-2/4 ms-1 me-2 p-2 rounded-lg`}
-                            style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}
+                            style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
                         > 
                             <div className="flex justify-center">
                                 {messagesChat
@@ -233,7 +245,7 @@ const HomeClients = () => {
                         <Link 
                             href={isAuth?.[proId] ? "/clients/profilClients" : "/auth/signin"} 
                             className={`w-2/4 ms-2 me-1 p-2 rounded-lg`}
-                            style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}
+                            style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
                         >
                             <div className="flex justify-center">
                                 <Image src={`/assets/images/profil${valueColor}.png`} className='img-fluid' alt='image services' height={50} width={50} />
@@ -241,7 +253,11 @@ const HomeClients = () => {
                             <div className='text-center' style={{fontSize:12}}>MON PROFIL</div>
                         </Link>
                         {/* <div className={`w-2/4 me-2 ms-1 p-2 rounded-lg shadow-xl`} onClick={_handlePhone}> */}
-                        <div className={`w-2/4 me-2 ms-1 p-2 rounded-lg`} onClick={_handlePhone} style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                        <div 
+                            className={`w-2/4 me-2 ms-1 p-2 rounded-lg`} 
+                            onClick={_handlePhone} 
+                            style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
+                        >
                             <div className="flex justify-center">
                                 <Image src={`/assets/images/phone${valueColor}.png`} className='img-fluid' alt='image services'  height={50} width={50} />
                             </div>

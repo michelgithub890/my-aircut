@@ -6,6 +6,8 @@ import ModalAlert from '@/components/modals/ModalAlert'
 import { useRouter } from 'next/navigation'
 // MUI 
 import { Card, CardContent } from '@mui/material'
+// MODELS 
+import { MODEL_COLOR } from '@/models/ModelColor'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 // HOOKS 
@@ -19,6 +21,7 @@ const BookingClientConfirm = () => {
     const [proId, setProId] = useState()
     const [openModalBooking, setOpenModalBooking] = useState(false)
     const [openModalNotAllowed, setOpenModalNotAllowed] = useState(false)
+    const [valueColor, setValueColor] = useState('')
     const router = useRouter()
 
     useEffect(() => {
@@ -34,6 +37,13 @@ const BookingClientConfirm = () => {
             setDataBook(dataBookStored)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
+            const themeStored = localStorage.getItem("themeColor") 
+            if (themeStored) {
+                setValueColor(themeStored)
+            } else {
+                setValueColor("")
+                localStorage.setItem("themeColor", "")
+            }
         }
     },[])
 
@@ -255,13 +265,14 @@ const BookingClientConfirm = () => {
     return ( 
         <div>
 
-            <HeaderCustom title="Retour" url={"/clients/bookingClients"} />
+            <HeaderCustom title="Retour" url={"/clients/bookingClients"} /> 
 
             {servicesStorage && servicesStorage.map((service, index) => (
                 <div key={index} className="mt-3 mx-3">
                     <div className="text-center p-3">Réservation</div>
-                    <Card>
-                        <CardContent>
+                    <div className={`my-book${valueColor}`}>
+                    {/* <Card>
+                        <CardContent> */}
                             <div className="flex justify-between items-center">
                                 <div>
                                     <div>{dataBook.dateString} à {_convertMinutesToHHMM(_displayTime(index))}</div>
@@ -272,8 +283,9 @@ const BookingClientConfirm = () => {
                                         : dataBook.arrayStaff1.filter(staff => staff.staffId === servicesStorage[index].idStaff).map(staff => staff.staffSurname)}</div>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+                        {/* </CardContent>
+                    </Card> */}
+                    </div>
                 </div>
             ))}
 

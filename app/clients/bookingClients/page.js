@@ -203,7 +203,7 @@ const BookingClients = () => {
             {/* LIST SERVICES STORED */}
             {servicesStorage && servicesStorage.map((service, index) => (
                 <div key={index} className="mt-3 mx-3">
-                    <div className="mt-3 px-3 py-6 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                    <div className="mt-3 px-3 py-6 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     {/* <Card>
                         <CardContent> */}
                             <div className="flex justify-between items-center">
@@ -266,7 +266,7 @@ const BookingClients = () => {
                 <div className="text-center pt-3" onClick={() => setShowServices(false)}>Fermer</div>
             }
 
-            <div className="border-t-2" />
+            <div />
 
             {_displayPlanningFinal(servicesStorage, staffs, services, daysOff, hours, profil, proId, books).map((item, index) => (
                 numberDays > index &&
@@ -281,7 +281,7 @@ const BookingClients = () => {
                             </div> 
                         </CardContent>
                     </Card> */}
-                    <div className="mt-3 px-3 py-6 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
+                    <div className="mt-3 px-3 py-6 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                         <div className="flex justify-between" onClick={() => setShowDay(showDay === item.date ? "" : item.date)}>
                             <div>{_dateString(item.date)}</div>
                             {showDay === item.date ? 

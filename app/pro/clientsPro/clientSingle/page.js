@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation'
 import imageReset from '@/public/assets/images/reset.png'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
+// MODELS 
+import { MODEL_COLOR } from '@/models/ModelColor'
 // MUI 
 import Switch from '@mui/material/Switch'
 // IMAGES 
@@ -105,7 +107,7 @@ const ClientSingle = () => {
                     <HeaderCustom title={user.name} url="/pro/clientsPro" />
 
                     {/* FIDELITY CARD */}
-                    <div className="border border-spacing-10 pb-4 m-5">
+                    <div className="pb-4 m-5"  style={{ border:`1px solid ${MODEL_COLOR[valueColor]}`}}>
                         <div className="flex justify-center items-center gap-5 mt-5">
                             <div>CARTE DE FIDÉLITÉ</div>
                             <div onClick={_handleDeleteNumberCard}>

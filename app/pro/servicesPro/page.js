@@ -11,6 +11,8 @@ import imageAddServices from '@/public/assets/images/addServices.png'
 import imageUpdateList from '@/public/assets/images/updateList.png'
 import { IoIosArrowDown } from "react-icons/io"
 import { IoIosArrowUp } from "react-icons/io"
+// MODELS 
+import { MODEL_COLOR } from '@/models/ModelColor'
 // COMPONENTS 
 import HeaderPro from '@/components/pro/HeaderPro'
 // FIREBASE 
@@ -70,7 +72,8 @@ const ServicesPro = () => {
             <Link href={"/pro/servicesPro/addList"} className="flex justify-center mt-4">
                 <Image 
                     src={`/assets/images/addList${valueColor}.png`} 
-                    className='img-fluid shadow-lg' 
+                    className='img-fluid' 
+                    style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
                     priority={true} 
                     alt='image calendar' 
                     height={50} width={50} 
@@ -78,7 +81,7 @@ const ServicesPro = () => {
             </Link>
 
             {lists?.sort((a,b) => a.name.localeCompare(b.name)).map(list => (
-                <div key={list.id} className="shadow-lg mt-1">
+                <div key={list.id} className="mt-3 py-3 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div 
                         className="flex justify-between p-3 items-center"
                         onClick={() => setShowList(showList === list.id ? '' : list.id)}
@@ -90,7 +93,7 @@ const ServicesPro = () => {
  
                     {showList === list.id && 
                         <>
-                            <div className="p-3 flex justify-around border-t-2 items-center">
+                            <div className="p-3 flex justify-around items-center" style={{ borderTop:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                                 <div className="p-2" onClick={() => _handleAddService(list.id, list.name)} style={{ cursor:"pointer" }}>
                                     <Image src={`/assets/images/addServices${valueColor}.png`} className='img-fluid' alt='add service' height={30} width={30} />
                                 </div>
@@ -100,7 +103,12 @@ const ServicesPro = () => {
                             </div>
 
                             {services.filter(service => service.idList === list.id).sort((a,b) => a.name.localeCompare(b.name)).map(service => (
-                                <div key={service.id} className="border-t-2 p-3" onClick={() => _handleUpdateService(service)} style={{ cursor:"pointer" }}>
+                                <div 
+                                    key={service.id} 
+                                    className="border-t-2 p-3" 
+                                    onClick={() => _handleUpdateService(service)} 
+                                    style={{ cursor:"pointer", borderTop:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}` }}
+                                >
                                     <div>{service.name}</div>
                                     <div className="text-sm text-slate-700">{service.duration}min - {service.price}€</div>
                                 </div>

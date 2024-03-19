@@ -9,6 +9,8 @@ import useFirebase from '@/firebase/useFirebase'
 import { Card, CardContent } from '@mui/material'
 // NEXT 
 import { useRouter } from 'next/navigation'
+// MODELS 
+import { MODEL_COLOR } from '@/models/ModelColor'
 // ICONS 
 import { IoIosArrowDown } from "react-icons/io"
 import { IoIosArrowUp } from "react-icons/io"
@@ -68,14 +70,14 @@ const ProfilClients = () => {
             <HeaderClients title="Retour" />
 
             {isAuth && users?.filter(user => user.email === isAuth?.email).map(user => (
-                <div key={user.id} className="text-center mt-6">
+                <div key={user.id} className="text-center my-6 text-lg">
                     <div>{user.name}</div>
-                    <div>{user.email}</div>
+                    {/* <div>{user.email}</div> */}
                 </div>
             ))}
 
             {isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date >= todayDate).map(book => (
-                <div className={`my-book${valueColor}`} key={book.id}>
+                <div className={`my-book${valueColor}`} key={book.id} style={{ marginLeft:"8px", marginRight:"8px" }}>
                     <div onClick={() => setShowModalRemove(true)} style={{ cursor:"pointer" }}>
                         <div>{book.dateString} à {book.timeString}</div>
                         <div>coupe: {book.service}</div> 
@@ -91,27 +93,28 @@ const ProfilClients = () => {
                 </div>   
             ))}
  
-            <div className="mt-3 mx-3">
-                <Card>
-                    <CardContent>
+            <div className="mt-3">
+                {/* <Card>
+                    <CardContent> */}
+                <div className="mt-3 p-6 mx-2" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                         <div className="flex justify-between" onClick={() => setShowHistory(!showHistory)}>
                             <div>Historique des réservations</div>
                             {showHistory ? 
                                 <IoIosArrowUp style={{ height:20, width:20 }} /> : <IoIosArrowDown style={{ height:20, width:20 }} />
                             }
                         </div> 
-                    </CardContent> 
-                </Card>
-            </div>
-
-            {showHistory && isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date < todayDate).map((book, index) => (
-                <div className="myBookGrey" key={index}>
-                    <div>{book.dateString} à {book.timeString}</div>
-                    <div>coupe: {book.service}</div> 
-                    <div>{book.duration}min {book.price}€</div>
-                    <div>avec {book.staffSurname}</div>
+                        {showHistory && isAuth?.[proId] && books?.filter(book => book.authId === isAuth?.id).filter(book => book.date < todayDate).map((book, index) => (
+                            <div className="myBookGrey" key={index} style={{ marginTop:"1.2rem"}}>
+                                <div>{book.dateString} à {book.timeString}</div>
+                                <div>coupe: {book.service}</div> 
+                                <div>{book.duration}min {book.price}€</div>
+                                <div>avec {book.staffSurname}</div>
+                            </div>
+                        ))}
+                    {/* </CardContent> 
+                </Card> */}
                 </div>
-            ))}
+            </div>
 
             <div className="flex justify-center mt-10">
                 <button className="myButtonGrey" onClick={_handleSignOut}>Se deconnecter</button>

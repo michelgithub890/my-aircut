@@ -6,6 +6,8 @@ import HeaderPro from '@/components/pro/HeaderPro'
 import Link from 'next/link' 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+// MODELS 
+import { MODEL_COLOR } from '@/models/ModelColor'
 // IMAGES 
 import imageAddStaff from '@/public/assets/images/addStaff.png'
 // FIREBASE 
@@ -50,7 +52,8 @@ const StaffPro = () => {
             <Link href={"/pro/staffPro/addStaff"} className="flex justify-center mt-4">
                 <Image 
                     src={`/assets/images/addStaff${valueColor}.png`} 
-                    className='img-fluid shadow-lg' 
+                    className='img-fluid' 
+                    style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}
                     priority={true} 
                     alt='image calendar' 
                     height={50}

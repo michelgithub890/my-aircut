@@ -19,6 +19,8 @@ import imageStaff from '@/public/assets/images/staff.png'
 import imageProfil from '@/public/assets/images/imageprofil.png'
 import imageOutils from '@/public/assets/images/logo_outils.png'
 import imagePlanning from '@/public/assets/images/planninggif.gif'
+// MODELS 
+import { MODEL_COLOR } from '@/models/ModelColor'
 // FIREBASE 
 import useFirebase from '@/firebase/useFirebase'
 
@@ -84,23 +86,23 @@ const HomePro = () => {
             {/* CARD CALENDAR */}
             <Link href={"/pro/bookingPro"}>
                 <div className='flex justify-center' >
-                    <div className='w-full mx-2 p-2 rounded-lg shadow-xl'>
+                    <div className='w-full mx-2 p-2 rounded-lg' style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                         <div className='flex justify-center'>
-                            <Image src={`/assets/images/planning${valueColor}.gif`} priority={true} className='img-fluid' alt='image calendar' width={80} height={80} />
+                            <Image src={`/assets/images/planning${valueColor}.gif`} priority={true} className='img-fluid' alt='image calendar' width={65} height={65} />
                         </div>
                         <div className='text-center' style={{fontSize:12}}>PLANNING</div>
                     </div> 
                 </div>  
             </Link>
 
-            <div className="flex justify-around mt-4"> 
-                <Link href={"/pro/clientsPro"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
+            <div className="flex justify-around mt-3"> 
+                <Link href={"/pro/clientsPro"} className="w-2/4 ms-2 me-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center">
                         <Image src={`/assets/images/clients${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
                     <div className='text-center' style={{fontSize:12}}>CLIENTS</div>
                 </Link>
-                <Link href={"/pro/pushPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/pushPro"} className="w-2/4 me-2 ms-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center">
                         <Image src={`/assets/images/imagepush${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
@@ -108,14 +110,14 @@ const HomePro = () => {
                 </Link>
             </div>  
 
-            <div className="flex justify-around mt-4">  
-                <Link href={"/pro/servicesPro"} className="w-2/4 ms-2 p-2 rounded-lg  shadow-xl">
+            <div className="flex justify-around mt-3">  
+                <Link href={"/pro/servicesPro"} className="w-2/4 ms-2 me-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center">
                         <Image src={`/assets/images/services${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
                     <div className='text-center' style={{fontSize:12}}>SERVICES</div> 
                 </Link>
-                <Link href={"/pro/chatPro"} className="w-2/4 me-2 p-2 rounded-lg  shadow-xl"> 
+                <Link href={"/pro/chatPro"} className="w-2/4 me-2 ms-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}> 
                     <div className="flex justify-center">
                     {messagesChat.filter(message => message.destinataire === "pro" && !message.read).map(message => message).length > 0 ? 
                             <Image src={`/assets/images/chatgif${valueColor}.gif`} className='img-fluid' alt='image services' width={50} height={50} />
@@ -127,15 +129,15 @@ const HomePro = () => {
                 </Link> 
             </div>
 
-            <div className="flex justify-around mt-4">
-                <Link href={"/pro/paramPro"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
+            <div className="flex justify-around mt-3">
+                <Link href={"/pro/paramPro"} className="w-2/4 ms-2 me-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center">
                         <Image src={`/assets/images/parametre${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
                     <div className='text-center' style={{fontSize:12}}>PARAMÈTRES</div>
                 </Link>
                 {/* QR CODE */}
-                <Link href={"/pro/siteWeb"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/siteWeb"} className="w-2/4 me-2 ms-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center">
                         <Image src={`/assets/images/homeqrcode${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
@@ -143,14 +145,14 @@ const HomePro = () => {
                 </Link>
             </div>
 
-            <div className="flex justify-around mt-4">
-                <Link href={"/pro/forfaitPro"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
+            <div className="flex justify-around mt-3">
+                <Link href={"/pro/forfaitPro"} className="w-2/4 ms-2 me-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center">
                         <Image src={`/assets/images/forfait${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
                     <div className='text-center' style={{fontSize:12}}>ABONNEMENT</div>
                 </Link>
-                <Link href={"/pro/staffPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/staffPro"} className="w-2/4 me-2 ms-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center"> 
                         <Image src={`/assets/images/staff${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
@@ -158,21 +160,20 @@ const HomePro = () => {
                 </Link>
             </div> 
 
-            <div className="flex justify-around mt-4">
-                <Link href={"/pro/profilPro"} className="w-2/4 ms-2 p-2 rounded-lg shadow-xl">
+            <div className="flex justify-around mt-3">
+                <Link href={"/pro/profilPro"} className="w-2/4 ms-2 me-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center"> 
                         <Image src={`/assets/images/imageprofil${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
                     <div className='text-center' style={{fontSize:12}}>PROFIL</div>
                 </Link>
-                <Link href={"/pro/aidesPro"} className="w-2/4 me-2 p-2 rounded-lg shadow-xl">
+                <Link href={"/pro/aidesPro"} className="w-2/4 me-2 ms-1 p-2 rounded-lg" style={{ border:`1px solid ${MODEL_COLOR[valueColor] ? MODEL_COLOR[valueColor] : MODEL_COLOR.blueApply}`}}>
                     <div className="flex justify-center"> 
                         <Image src={`/assets/images/logo_outils${valueColor}.png`} className='img-fluid' alt='image services' width={50} height={50} />
                     </div>
                     <div className='text-center' style={{fontSize:12}}>AIDES</div>
                 </Link>
             </div>
-    
 
             <div style={{ height:400 }} />
             
