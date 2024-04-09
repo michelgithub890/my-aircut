@@ -9,13 +9,15 @@ import useFirebase from '@/firebase/useFirebase'
 // IMAGES 
 import imageDelete from '@/public/assets/images/delete.png'
 import imageCaseACocher from '@/public/assets/images/caseACocher.png'
-import imageCaseACocherOk from '@/public/assets/images/caseACocherOk.png'
+import imageCaseACocherOk from '@/public/assets/images/caseACocherOk.png' 
 import imageAddHours from '@/public/assets/images/addServices.png'
+// CRYPTO JS 
+import CryptoJS from 'crypto-js'
 
 const daysWeek = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
 
 const UpdateStaff = () => {
-    const { _readStaffs, staffs, _readDaysOff, daysOff, _updateData, _readHours, hours, _deleteData } = useFirebase()
+    const { _readStaffs, staffs, _readDaysOff, daysOff, _updateData, _readHours, hours, _deleteData, users, _readUsers } = useFirebase()
     const [staffId, setStaffId] = useState()
     const [proId, setProId] = useState()
     const [valueColor, setValueColor] = useState("")
@@ -41,6 +43,7 @@ const UpdateStaff = () => {
             _readStaffs(proId)
             _readDaysOff(proId)
             _readHours(proId)
+            _readUsers(proId)
         }
         if (staffId) {
 
@@ -84,6 +87,16 @@ const UpdateStaff = () => {
         localStorage.setItem('staff', JSON.stringify(staff))
         router.push("updateStaff/createStaffAcces")
     }
+
+    const _getPassword = (password) => {
+        // demander si le mot de passe est égal
+        const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY
+
+        const bytes  = CryptoJS.AES.decrypt(password, secretKey)
+        const originalPassword = bytes.toString(CryptoJS.enc.Utf8)
+
+        return originalPassword
+    }
  
     return (
         <div>
@@ -105,7 +118,22 @@ const UpdateStaff = () => {
                         <div className="border-b-2 p-3">Jours de fermetures</div>
                     </Link>
 
-                    <div className="border-b-2 p-3" onClick={() => _handleStaffAcces(staff)}>Accès</div>
+                    <div className="border-b-2 p-3" onClick={() => _handleStaffAcces(staff)}>
+                        <div>Accès</div>
+                        {users.filter(user => user.staffId === staff.id).length > 0 ? 
+                            <div>
+                                <div>{staff.surname} {"a accès à l'application"}</div>
+                                {users.filter(user => user.staffId === staff.id).map(user => (
+                                    <div key={user.id}>
+                                        <div>Email: {user.email}</div> 
+                                        <div>Mot de passe: {_getPassword(user.password)}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        : 
+                            <div>{staff.surname} {"n'a pas accès a l'application"}</div> 
+                        }
+                    </div>
  
                     {daysOff?.sort((a, b) => a.startInt - b.startInt).filter(dayOff => dayOff.emetteur === staffId).map(dayOff => (
                         <div key={dayOff.id} className="border-b-2 p-3 flex justify-between items-center">
@@ -123,7 +151,7 @@ const UpdateStaff = () => {
                         </div>
                     ))}
 
-                    <div className="border-b-2 p-3">horaires</div>
+                    <div className="border-b-2 p-3">Horaires</div>
 
                     {daysWeek.map(dayWeek => (
                         <div key={dayWeek}>
