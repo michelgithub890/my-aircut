@@ -12,6 +12,11 @@ import useFirebase from '@/firebase/useFirebase'
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
+// MUI 
+import { Divider } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+
 
 const BookingPro = () => {  
     const { _displayDays } = usePlanningPro()
@@ -116,10 +121,76 @@ const BookingPro = () => {
                 {_displayDays(staffs, books, profil, daysOff, hours).map((item, index) => (
                     <div key={`${index}`}> {/* Assurez-vous que item.day.id est unique */}
 
-                        <div className="text-center mt-3">{item.day.day}</div>
+                        {/* <div className="text-center mt-3">{item.day.day}</div> */}
+                        <div className="text-center mt-3">{item.date.day}</div>
                         <div className="text-center mt-2 mb-5">{item.staffSurname}</div>
 
-                        {item.hours.map((hourDay, hourIndex) => (
+                        <div>{item.planning.map((hourDay,planningIndex) => (
+                            <div key={`${index}_${planningIndex}`}>
+                                {/* <Divider sx={{ marginLeft: `${hourDay.hour !== 15 && hourDay.hour !== 30 && hourDay.hour !== 45 ? '0px' : '50px'}` }} /> */}
+                                <div className="flex">
+                           
+                                    <div className="w-2/12 text-end">
+                                        {/* <Divider sx={{ marginLeft: `${hourDay.hour !== 15 && hourDay.hour !== 30 && hourDay.hour !== 45 ? '0px' : '50px'}` }} /> */}
+                                
+                                        {/* <div className="pe-4 pt-2" style={{ fontSize:10 }}>{hourDay.hour}</div>  */}
+                                        <div 
+                                            className="pe-4" 
+                                            style={{ 
+                                                fontSize:hourDay.hour !== 15 && hourDay.hour !== 30 && hourDay.hour !== 45 ? 10 : 8, 
+                                                marginTop:hourDay.hour !== 15 && hourDay.hour !== 30 && hourDay.hour !== 45 ? -8 : -6 
+                                            }}
+                                        >{hourDay.hour}</div> 
+                                    </div>
+
+                                    <div className="flex justify-between w-10/12 h-7">
+                                        {hourDay.array2.map((staffHours, staffHoursIndex) => (
+                                            <div 
+                                                key={`${index}_${planningIndex}_${staffHoursIndex}`} 
+                                                onClick={() => _handleHoursBooking(item.date,hourDay,staffHours)}
+                                                className={`
+                                                    flex-1 
+                                                    mx-1
+                                                    border-l-2
+                                                    ${staffHours.available === "off" && "bg-slate-100"}
+                                                    ${staffHours.available === "occuped" && "bg-orange-400"}
+                                                    ${staffHours.design === "start" && "rounded-t-sm mt-1"}
+                                                    ${staffHours.design === "end" && "rounded-b-sm"}
+                                                    ${staffHours.design === "start_end" && "rounded-sm mt-1"}
+                                                `}
+                                                style={staffHours.available !== "off" ? { cursor: "pointer" } : {}}
+                                            >
+                                                {staffHours.available === "on" && <Divider />}
+                                                <div className='ps-2 pt-1' style={{ fontSize:10 }}>
+                                                    {staffHours.design === "start_end" && staffHours.book?.service?.slice(0, 10)}
+                                                    {staffHours.design === "start" && staffHours.book?.service?.slice(0, 10)}
+                                                </div>  
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        ))}</div>
+
+                    </div>
+                ))}
+
+            </Slider>
+            
+        </div>
+    
+    )
+}
+
+export default BookingPro
+
+
+/*
+
+                        {item.hours.map((hourDay, hourIndex) => ( 
 
                             <div key={`${index}_${hourIndex}`}>
 
@@ -133,6 +204,16 @@ const BookingPro = () => {
                                         <div className={`text-center w-2/12 ${hourDay.hour.hour === "quartHour" ? "min-h-2" : ""}`}>
                                             {hourDay.hour.hour !== "quartHour" &&  hourDay.hour.hour}
                                         </div> 
+
+                                        <div className="w-2/12 text-end">
+                                            <div 
+                                                className="pe-4" 
+                                                style={{ 
+                                                    fontSize:hourDay.hour !== 15 && hourDay.hour !== 30 && hourDay.hour !== 45 ? 10 : 8, 
+                                                    marginTop:hourDay.hour !== 15 && hourDay.hour !== 30 && hourDay.hour !== 45 ? -8 : -6 
+                                                }}
+                                            >{hourDay.hour}</div> 
+                                        </div>
 
                                         <>
                                             {hourDay.available === "hoursOff" ? <div className="bg-slate-300 w-10/12" /> : 
@@ -169,15 +250,4 @@ const BookingPro = () => {
 
                         ))}
 
-                    </div>
-                ))}
-
-            </Slider>
-            
-        </div>
-    
-    )
-}
-
-export default BookingPro
-
+*/

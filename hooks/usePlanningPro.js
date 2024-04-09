@@ -29,13 +29,37 @@ const usePlanningPro = () => {
 
         let arrayDays = []
         const days = _arrayDays(numberWeek).map(day => {
+
             arrayStaff.map(staff => {
                 arrayDays.push({
-                    day:_displayDate(day), 
-                    staffSurname:staff.surname, 
-                    hours:_planningDay(start, end, _displayDate(day), staff, arrayBook, arrayDayOff, arrayHours)
+                    date:_displayDate(day),
+                    planning:_planningDay3(start, end, _displayDate(day), staff, arrayBook, arrayDayOff, arrayHours),
+                    staffSurname:staff.surname,
                 })
             })
+
+            // const planning = _planningDay3(start, end, _displayDate(day), staffMap, arrayBook, arrayDayOff, arrayHours)
+
+            // arrayDays.push({
+            //     date:_displayDate(day), 
+            //     planning:planning
+            // })
+
+            // arrayStaff.map(staff => {
+            //     arrayDays.push({
+            //         day:_displayDate(day), 
+            //         staffSurname:staff.surname, 
+            //         hours:_planningDay(start, end, _displayDate(day), staff, arrayBook, arrayDayOff, arrayHours)
+            //     })
+            // })
+
+            // arrayStaff.map(staff => {
+            //     arrayDays.push({
+            //         day:_displayDate(day), 
+            //         staffSurname:staff.surname, 
+            //         hours:_planningDay(start, end, _displayDate(day), staff, arrayBook, arrayDayOff, arrayHours)
+            //     })
+            // })
             
         })
 
@@ -96,6 +120,159 @@ const usePlanningPro = () => {
         return array
     }
 
+    const _planningDay3 = (start, end, date, staff, books, daysOff, hours) => {
+
+        let arrayHours = []
+
+        // les heures 
+        _hoursDay(_convertTimeToHours(start[0]), _convertTimeToHours(end[0])).map(hour => {
+            
+            // les minutes 
+            _quarterHour(hour.hourInt).map((quart, index) => {
+
+                // console.log('usePlanning quart:', quart)
+
+                let array2 = []
+
+                // staffs 
+                // staffs.sort((a, b) => a.surname.localeCompare(b.surname)).map(staff => {
+
+                    // demander si le staff travail ce jour 
+                    const dayString = _dayString(date.dayInt)
+                    const isAvailable = _isDayOff(staff, daysOff, date.dayInt)
+
+                    // si le staff est disponible ce jour 
+                    if (staff[dayString] && isAvailable) {
+
+                        // console.log('usePlanning', _convertQuartToMinutes(quart) === 0 ? hour.hour : _convertQuartToMinutes(quart))
+
+                        const isHours = hours
+                        .filter(hourStaff => hourStaff.emetteur === staff.id) 
+                        .filter(hourStaff => hourStaff.day === dayString)
+                        // console hours staff et quart 
+                        .filter(hourStaff => quart >= _convertTimeToMinutes(hourStaff.start))
+                        .filter(hourStaff => quart < _convertTimeToMinutes(hourStaff.end))
+
+                        // si il y a des heures disponibles ce jours
+                        if (isHours.length > 0) {
+
+                            let arrayIsBook = []
+
+                            const isBooking = books 
+                                .filter(book => book.staffId === staff.id)
+                                .filter(book => book.date === date.dayInt) 
+                                .map(book => {
+
+                                    // start end inside hours 
+                                    if (
+                                        book.time === quart && 
+                                        book.time + book.duration === quart + 15 
+                                    ) {
+                                        array2.push({
+                                            available:"occuped",
+                                            staff:staff,
+                                            book:book,
+                                            design:"start_end"
+                                        })
+                                        arrayIsBook.push("book")
+                                    }
+
+                                    // start 
+                                    else if (
+                                        book.time === quart &&
+                                        book.time + book.duration > quart + 15
+                                    ) {
+                                        array2.push({
+                                            available:"occuped",
+                                            staff:staff,
+                                            book:book,
+                                            design:"start"
+                                        })
+                                        arrayIsBook.push("book")
+                                    }
+
+                                    // middle 
+                                    else if (
+                                        book.time < quart &&
+                                        book.time + book.duration > quart + 15
+                                    ) {
+                                        array2.push({
+                                            available:"occuped",
+                                            staff:staff,
+                                            book:book,
+                                            design:"middle"
+                                        })
+                                        arrayIsBook.push("book")
+                                    }
+
+                                    // end 
+                                    else if (
+                                        book.time < quart &&
+                                        book.time + book.duration === quart + 15
+                                    ) {
+                                        array2.push({
+                                            available:"occuped",
+                                            staff:staff,
+                                            book:book,
+                                            design:"end"
+                                        })
+                                        arrayIsBook.push("book")
+                                    }
+                            })
+
+                            // si il n'y a pas de réservation dans le quart d'heure
+                            if (isBooking.length === 0) {
+                                array2.push({
+                                    available:"on",
+                                    staff:staff,
+                                    quart:quart
+                                })
+                            }
+                            
+                            if (isBooking.length > 0) {
+                                if (arrayIsBook.length === 0) {
+                                    array2.push({
+                                        available:"on",
+                                        staff:staff,
+                                        quart:quart
+                                    })
+                                }
+                            }
+
+                        // si il n'y a pas d'heures disponibles ce jour 
+                        } else {
+                            array2.push({
+                                available:"off",
+                                staff:staff,
+                            })
+                        }
+
+                    // le staff est indisponible ce jour 
+                    } else {
+                        
+                        array2.push({
+                            available:"off", 
+                            staff:staff
+                        })
+                    }
+
+                // })
+
+                arrayHours.push({
+                    hour:_convertQuartToMinutes(quart) === 0 ? hour.hour : _convertQuartToMinutes(quart),
+                    array2:array2
+                })
+            })
+        })
+
+        return arrayHours
+    }
+
+    const _convertQuartToMinutes = (time) => {
+        const minutes = time % 60 // Utilise le modulo pour obtenir le reste de la division par 60, qui correspond aux minutes
+        return minutes 
+    }
+
     const _planningDay = (start, end, date, staff, books, daysOff, hours) => {
 
         let array = []
@@ -107,79 +284,81 @@ const usePlanningPro = () => {
 
             _hoursDay(_convertTimeToHours(start[0]), _convertTimeToHours(end[0])).map(hour => {
 
-                    _quarterHour(hour.hourInt).map((quart, index) => {
+                _quarterHour(hour.hourInt).map((quart, index) => {
 
-                        const isHours = hours
-                        .filter(hourStaff => hourStaff.emetteur === staff.id)
-                        .filter(hourStaff => hourStaff.day === dayString)
-                        // console hours staff et quart 
-                        .filter(hourStaff => quart >= _convertTimeToMinutes(hourStaff.start))
-                        .filter(hourStaff => quart < _convertTimeToMinutes(hourStaff.end))
+                    const isHours = hours
+                    .filter(hourStaff => hourStaff.emetteur === staff.id)
+                    .filter(hourStaff => hourStaff.day === dayString)
+                    // console hours staff et quart 
+                    .filter(hourStaff => quart >= _convertTimeToMinutes(hourStaff.start))
+                    .filter(hourStaff => quart < _convertTimeToMinutes(hourStaff.end))
 
-                        if (isHours.length > 0) {
+                    if (isHours.length > 0) {
 
-                            let arrayQuart = []
-                            const isBooking = books 
-                                .filter(book => book.staffId === staff.id)
-                                .filter(book => book.date === date.dayInt) 
-                                .map(book => {
+                        let arrayQuart = []
+                        const isBooking = books 
+                            .filter(book => book.staffId === staff.id)
+                            .filter(book => book.date === date.dayInt) 
+                            .map(book => {
 
-                                    // start end inside hours 
-                                    if (
-                                        book.time === quart && 
-                                        book.time + book.duration === quart + 15 
-                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
+                                // start end inside hours 
+                                if (
+                                    book.time === quart && 
+                                    book.time + book.duration === quart + 15 
+                                ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
 
-                                    // start 
-                                    else if (
-                                        book.time === quart &&
-                                        book.time + book.duration > quart + 15
-                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
+                                // start 
+                                else if (
+                                    book.time === quart &&
+                                    book.time + book.duration > quart + 15
+                                ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
 
-                                    // middle 
-                                    else if (
-                                        book.time < quart &&
-                                        book.time + book.duration > quart + 15
-                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
+                                // middle 
+                                else if (
+                                    book.time < quart &&
+                                    book.time + book.duration > quart + 15
+                                ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
 
-                                    // end 
-                                    else if (
-                                        book.time < quart &&
-                                        book.time + book.duration === quart + 15
-                                    ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
-                            })
+                                // end 
+                                else if (
+                                    book.time < quart &&
+                                    book.time + book.duration === quart + 15
+                                ) {arrayQuart.push({ hour:hour, book:book, quartInt:quart })}
+                        })
 
 
-                            // if no booking all day
-                            if (isBooking.length === 0) {
-                                arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
+                        // if no booking all day
+                        if (isBooking.length === 0) {
+                            arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
+                            array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                        } 
+
+                        // if booking in day 
+                        if (isBooking.length > 0) {
+
+                            // if booking in hour 
+                            if (arrayQuart.length > 0) {
                                 array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
-                            } 
-
-                            // if booking in day 
-                            if (isBooking.length > 0) {
-
-                                // if booking in hour 
-                                if (arrayQuart.length > 0) {
-                                    array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
-                                }
-
-                                // if not booking in hour 
-                                if (arrayQuart.length === 0) {
-                                    arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
-                                    array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
-                                }
                             }
 
-                        } else {
-                            array.push({hour:{hour:index === 0 ? hour.hour : "quartHour"}, available:"hoursOff"})
+                            // if not booking in hour 
+                            if (arrayQuart.length === 0) {
+                                arrayQuart.push({service:"available", quart:quart, staff:staff, date:date})
+                                array.push({hour:index === 0 && hour, arrayQuart:arrayQuart})
+                            }
                         }
-                    })
+
+                    } else {
+                        array.push({hour:{hour:index === 0 ? hour.hour : "quartHour"}, available:"hoursOff"})
+                    }
+                })
             })
 
         } else {
             array.push({dayOff:true})
         }
+
+        console.log('usePlanningPro ', array)
 
         return array
     }
