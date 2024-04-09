@@ -82,20 +82,41 @@ const BookingPro = () => {
         }
     }
  
-    const _handleHoursBooking = (book, quart) => {
+    const _handleHoursBooking = (day,hourDay,staffHours) => {
         // console.log('bookingPro ', book.time ,"===", quart.quartInt)
 
-        // si il y a une réservation 
-        if (book) {
-            localStorage.setItem('book', JSON.stringify(book))
+        if (staffHours.available === "occuped") {
+            localStorage.setItem('book', JSON.stringify(staffHours.book))
             router.push("/pro/bookingPro/lookBookingPlanning")
-        } 
-
-        // si il n'y a pas de réservation et que le status est différent de staff 
-        if (!book && isAuth?.status !== "staff") {
-            localStorage.setItem('quart', JSON.stringify(quart))
-            router.push('/pro/bookingPro/addBookingPlanning')
         }
+
+        if (staffHours.available === "on") {
+
+            // éléments du quart 
+            const data = {
+                dayInt:day.dayInt,
+                day:day.day,
+                staff:staffHours.staff, 
+                quart:staffHours.quart
+            }
+
+            // console.log('bookingPro ', data)
+            localStorage.setItem('quart', JSON.stringify(data))
+            router.push('/pro/bookingPro/addBookingPlanning')
+
+        }
+
+        // si il y a une réservation 
+        // if (book) {
+        //     localStorage.setItem('book', JSON.stringify(book))
+        //     router.push("/pro/bookingPro/lookBookingPlanning")
+        // } 
+
+        // // si il n'y a pas de réservation et que le status est différent de staff 
+        // if (!book && isAuth?.status !== "staff") {
+        //     localStorage.setItem('quart', JSON.stringify(quart))
+        //     router.push('/pro/bookingPro/addBookingPlanning')
+        // }
     }
 
     const _handleReturn = () => {
