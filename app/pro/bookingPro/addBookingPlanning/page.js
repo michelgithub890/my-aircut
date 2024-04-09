@@ -26,6 +26,7 @@ const validationSchema = Yup.object({
 
 const AddBookingPlanning = () => {
     const { _readLists, lists, _readServices, services, _readUsers, users, _writeData, _readProfil, profil, _readBooks, books } = useFirebase()
+    const [isAuth, setIsAuth] = useState()
     const [proId, setProId] = useState()
     const [selectedService, setSelectedService] = useState()
     const [selectedClient, setSelectedClient] = useState()
@@ -44,6 +45,9 @@ const AddBookingPlanning = () => {
             const quart = localStorage.getItem('quart')
             const quartData = quart ? JSON.parse(quart) : []
             setQuartStored(quartData)
+            const auth = localStorage.getItem('isAuth')
+            const authData = auth ? JSON.parse(auth) : []
+            setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
         }
@@ -135,7 +139,7 @@ const AddBookingPlanning = () => {
                 subscription:subscription.endpoint ? subscription : "",
             }
 
-            console.log('addBookingPlanning ', dataSave)
+            // console.log('addBookingPlanning ', dataSave)
 
             _writeData(`pro/${proId}/books`, dataSave)
 
@@ -145,6 +149,7 @@ const AddBookingPlanning = () => {
             }
 
             router.push('/pro/bookingPro')
+
         }
 
     }
@@ -292,9 +297,10 @@ const AddBookingPlanning = () => {
 
                             </>
                         : 
-                            <div className="flex justify-center mt-5">
-                                <button className="myButtonGrey" onClick={_handleSave}>Enregistrer</button>
-                            </div>
+                            isAuth?.status !== "staff" &&
+                                <div className="flex justify-center mt-5">
+                                    <button className="myButtonGrey" onClick={_handleSave}>Enregistrer</button>
+                                </div>
                         }
                     </>
                 }

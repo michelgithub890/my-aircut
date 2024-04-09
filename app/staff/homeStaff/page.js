@@ -22,13 +22,17 @@ const HomeStaff = () => {
             setIsAuth(authData)
             const proIdStored = localStorage.getItem('proId')
             if (proIdStored) setProId(proIdStored)
-        }
+        } 
     },[])
 
     const _handleLogOut = () => {
         localStorage.removeItem('isAuth')
         router.replace("/")
     }
+
+    useEffect(() => {
+        isAuth && console.log('homeStaff ', isAuth.status)
+    },[isAuth])
 
     return (
         <div>
